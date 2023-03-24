@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SeasonMapper {
-    public SeasonDto mapSeasonToSeasonDbDto(Season season) {
+    public SeasonDto mapSeasonToSeasonDto(Season season) {
         return new SeasonDto(season.getYear());
     }
 }

@@ -9,13 +9,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-
 import java.net.URI;
-import java.util.Comparator;
+import java.util.*;
 
 @Component
 @RequiredArgsConstructor
@@ -24,31 +24,36 @@ public class FootballClient {
     private final RestTemplate restTemplate;
     private final FootballConfig config;
 
-    private URI uriBuild(String uri) {
+    private URI uriBuild() {
         try {
-            return UriComponentsBuilder.fromHttpUrl(config.getFootballApiEndpoint() + uri)
-                    .build()
-                    .encode()
-                    .toUri();
+            return UriComponentsBuilder.fromHttpUrl(config.getFootballApiEndpoint())
+                    .build().encode().toUri();
         } catch (Exception err) {
-            LOGGER.error(err.getMessage() + " --Incorrect uriBuild address-- ", err);
+            LOGGER.error(err.getMessage() + " --Incorrect URI address-- ", err);
             throw new IllegalArgumentException(err.getMessage(), err);
         }
     }
 
-    public String getFootballSeason(Long id) {
+    private URI uriForSeason(int id) {
+        return UriComponentsBuilder.fromHttpUrl(uriBuild() + "/leagues?id=" + id)
+                .build().encode().toUri();
+    }
+
+    private HttpEntity<Void> passHeaders(){
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(config.getFootballAppHeader(), config.getFootballAppKey());
+        return new HttpEntity<>(headers);
+    }
+
+    public String getFootballSeason(int id) {
         try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("x-rapidapi-key", config.getFootballAppKey());
+            ResponseEntity<ResponseDto> respond = restTemplate.exchange(uriForSeason(id),
+                    HttpMethod.GET, passHeaders(), ResponseDto.class);
 
-            HttpEntity<Void> entity = new HttpEntity<>(headers);
-            ResponseDto respond = restTemplate.exchange(uriBuild("/leagues?id=" + id), HttpMethod.GET, entity, ResponseDto.class).getBody();
+            return Collections.max(Objects.requireNonNull(respond.getBody()).getResponse()
+                    .stream().flatMap(season -> season.getSeasonsDto().stream()).map(SeasonDto::getYear).toList());
 
-            assert respond != null;
-            return respond.getResponse().stream()
-                    .flatMap(season->season.getSeasonsDto().stream()).map(SeasonDto::getYear)
-                    .max(Comparator.comparing(String::valueOf)).orElse(null);
-        }catch (RestClientException ex) {
+        } catch (RestClientException ex) {
             LOGGER.error(ex.getMessage(),ex);
             return null;
         }

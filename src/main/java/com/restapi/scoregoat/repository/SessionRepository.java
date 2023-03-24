@@ -1,16 +1,13 @@
 package com.restapi.scoregoat.repository;
 
-import com.restapi.scoregoat.domain.Season;
-import org.jetbrains.annotations.NotNull;
+import com.restapi.scoregoat.domain.Session;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
+import java.util.Optional;
 
 @Transactional
 @Repository
-public interface SeasonRepository extends CrudRepository<Season, Long> {
-    @Override
-    @NotNull
-    List<Season> findAll();
+public interface SessionRepository extends CrudRepository<Session, Long> {
+    Optional<Session> findByUserId(Long userId);
 }

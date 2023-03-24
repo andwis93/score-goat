@@ -11,4 +11,6 @@ public class FootballConfig {
     private String footballApiEndpoint;
     @Value("${football.app.key}")
     private String footballAppKey;
+    @Value("${football.app.header}")
+    private String footballAppHeader;
 }

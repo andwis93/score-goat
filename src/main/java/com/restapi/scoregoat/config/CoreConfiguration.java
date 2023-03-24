@@ -1,5 +1,6 @@
 package com.restapi.scoregoat.config;
 
+import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
@@ -10,4 +11,6 @@ public class CoreConfiguration {
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
+    @Bean
+    public StrongPasswordEncryptor encryptor(){return new StrongPasswordEncryptor();}
 }

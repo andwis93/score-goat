@@ -1,6 +1,6 @@
 package com.restapi.scoregoat.repository;
 
-import com.restapi.scoregoat.domain.Season;
+import com.restapi.scoregoat.domain.LogData;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -9,8 +9,8 @@ import java.util.List;
 
 @Transactional
 @Repository
-public interface SeasonRepository extends CrudRepository<Season, Long> {
+public interface LogDataRepository extends CrudRepository<LogData, Long> {
     @Override
     @NotNull
-    List<Season> findAll();
+    List<LogData> findAll();
 }
