@@ -28,12 +28,7 @@ public class UserService {
                     if (repository.findByEmail(user.getEmail()).isEmpty()) {
                         user.setPassword(encryptor.encryptPassword(user.getPassword()));
                         Long id = repository.save(user).getId();
-                        UserRespondDto respondDto = new UserRespondDto( Respond.USER_CREATED_OK.getRespond(), WindowStatus.CLOSE.getStatus());
-                        respondDto.setId(user.getId());
-                        respondDto.setUserName(user.getName());
-                        respondDto.setEmail(user.getEmail());
-                        respondDto.setLogIn(true);
-                        return respondDto;
+                        return setRespond(id, user);
                     } else {
                         return new UserRespondDto(Respond.EMAIL_EXISTS.getRespond(), WindowStatus.OPEN.getStatus());
                     }
@@ -46,5 +41,14 @@ public class UserService {
         } else {
             return new UserRespondDto(Respond.USER_EMPTY.getRespond(), WindowStatus.OPEN.getStatus());
         }
+    }
+
+    private UserRespondDto setRespond(Long id, User user) {
+        UserRespondDto respondDto = new UserRespondDto( Respond.USER_CREATED_OK.getRespond(), WindowStatus.CLOSE.getStatus());
+        respondDto.setId(id);
+        respondDto.setUserName(user.getName());
+        respondDto.setEmail(user.getEmail());
+        respondDto.setLogIn(true);
+        return respondDto;
     }
 }

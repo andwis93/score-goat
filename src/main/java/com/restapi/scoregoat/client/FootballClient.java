@@ -1,8 +1,10 @@
 package com.restapi.scoregoat.client;
 
 import com.restapi.scoregoat.config.FootballConfig;
+import com.restapi.scoregoat.domain.LogData;
 import com.restapi.scoregoat.domain.ResponseDto;
 import com.restapi.scoregoat.domain.SeasonDto;
+import com.restapi.scoregoat.service.LogDataService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +23,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class FootballClient {
     private static final Logger LOGGER = LoggerFactory.getLogger(FootballClient.class);
+    private final LogDataService logDataService;
     private final RestTemplate restTemplate;
     private final FootballConfig config;
 
@@ -54,7 +57,9 @@ public class FootballClient {
                     .stream().flatMap(season -> season.getSeasonsDto().stream()).map(SeasonDto::getYear).toList());
 
         } catch (RestClientException ex) {
-            LOGGER.error(ex.getMessage(),ex);
+            String message = ex.getMessage() + "  --ERROR: Couldn't get season from Api Client-- ";
+            logDataService.saveLog(new LogData(null,"League ID: " + id, message));
+            LOGGER.error(message,ex);
             return null;
         }
     }

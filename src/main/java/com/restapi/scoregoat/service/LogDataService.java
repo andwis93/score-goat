@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class LogDataService {
     private LogDataRepository repository;
-
     public void saveLog(LogData logData) {
         repository.save(logData);
     }

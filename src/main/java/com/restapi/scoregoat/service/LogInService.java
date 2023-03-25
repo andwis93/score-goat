@@ -15,44 +15,35 @@ import java.time.LocalDateTime;
 @Service
 @EnableAspectJAutoProxy
 public class LogInService {
-    private static final int MAX_ATTEMPT = 5;
     private LogInRepository repository;
     private UserRepository userRepository;
     private SessionRepository sessionRepository;
     private StrongPasswordEncryptor encryptor;
 
-    public UserRespondDto logInAttempt(UserParam userParam) {
+
+    public UserRespondDto logInAttempt(final UserParam userParam) {
         User user = checkIfUserExist(userParam.getName());
         if (user != null) {
             LogIn attempt = repository.findByUser(user).orElse(new LogIn(user));
             if (attempt.getLocked() == null) {
                 if (encryptor.checkPassword(userParam.getPassword(), user.getPassword())) {
-
-                    Session session = sessionRepository.findByUserId(user.getId()).orElse(new Session());
-                    session.setUser(user);
-                    refreshSession(session);
-                    sessionRepository.save(session);
-
-                    attempt.resetAttempt();
-                    repository.save(attempt);
-
-                    UserRespondDto respondDto = new UserRespondDto(Respond.USER_LOGGED_IN.getRespond(), WindowStatus.CLOSE.getStatus());
-                    respondDto.setId(user.getId());
-                    respondDto.setUserName(user.getName());
-                    respondDto.setEmail(user.getEmail());
-                    respondDto.setLogIn(true);
-                    return respondDto;
+                    setSession(user);
+                    setAttempt(attempt);
+                    return setResponse(user);
                 } else {
                     attempt.addAttempt();
-                    if (attempt.getAttempt() > MAX_ATTEMPT) {
-                        attempt.setLocked(LocalDateTime.now().plusHours(24));
+                    if (attempt.getAttempt() > DurationValues.MAX_ATTEMPT.getValue()) {
+                        attempt.setLocked(LocalDateTime.now().plusHours(DurationValues.ATTEMPT_BLOCKED.getValue()));
                     }
                     repository.save(attempt);
                     return new UserRespondDto(Respond.WRONG_PASSWORD.getRespond(), WindowStatus.OPEN.getStatus());
                 }
             } else {
-
-                return new UserRespondDto(Respond.TO_MANY_ATTEMPTS.getRespond() + getDuration(attempt.getLocked()), WindowStatus.OPEN.getStatus());
+                if (checkIfLessThen1H(attempt.getLocked())) {
+                    return new UserRespondDto(Respond.TO_MANY_ATTEMPTS_LESS_THEN_1H.getRespond(), WindowStatus.OPEN.getStatus());
+                } else {
+                    return new UserRespondDto(Respond.TO_MANY_ATTEMPTS.getRespond() + getDuration(attempt.getLocked()), WindowStatus.OPEN.getStatus());
+                }
             }
         } else {
             return new UserRespondDto(Respond.USER_NOT_EXIST.getRespond(), WindowStatus.OPEN.getStatus());
@@ -63,7 +54,7 @@ public class LogInService {
         session.setEnd(LocalDateTime.now());
     }
 
-    private User checkIfUserExist(String name) {
+    private User checkIfUserExist(final String name) {
         if (userRepository.findByName(name).isPresent()) {
             return userRepository.findByName(name).orElse(null);
         } else {
@@ -75,12 +66,36 @@ public class LogInService {
         }
     }
 
-    private String getDuration(LocalDateTime time) {
+    private void setSession(final User user) {
+        Session session = sessionRepository.findByUserId(user.getId()).orElse(new Session());
+        session.setUser(user);
+        refreshSession(session);
+        sessionRepository.save(session);
+    }
+
+    private void setAttempt(final LogIn attempt) {
+        attempt.resetAttempt();
+        repository.save(attempt);
+    }
+
+    private UserRespondDto setResponse(final User user) {
+        UserRespondDto respondDto = new UserRespondDto(Respond.USER_LOGGED_IN.getRespond(), WindowStatus.CLOSE.getStatus());
+        respondDto.setId(user.getId());
+        respondDto.setUserName(user.getName());
+        respondDto.setEmail(user.getEmail());
+        respondDto.setLogIn(true);
+        return respondDto;
+    }
+
+    private String getDuration(final LocalDateTime time) {
         Duration diff = Duration.between(time, LocalDateTime.now());
         String timeRemain = String.format("%d:%02d:%02d",
                 diff.toHours(),
                 diff.toMinutesPart(),
                 diff.toSecondsPart());
         return timeRemain.replace("-","");
+    }
+    private boolean checkIfLessThen1H(final LocalDateTime time) {
+        return Duration.between(time, LocalDateTime.now()).toHours() < 1;
     }
 }

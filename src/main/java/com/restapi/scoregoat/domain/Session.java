@@ -26,6 +26,6 @@ public class Session {
     private User user;
 
     public Session() {
-        this.end = LocalDateTime.now().plusMinutes(10);
+        this.end = LocalDateTime.now().plusMinutes(DurationValues.SESSION_LENGTH.getValue());
     }
 }

@@ -38,4 +38,9 @@ public class LogIn {
     public void resetAttempt() {
         this.attempt = 0;
     }
+
+    public void removeLocked() {
+        this.locked = null;
+        resetAttempt();
+    }
 }
