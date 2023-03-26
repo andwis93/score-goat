@@ -28,7 +28,7 @@ public class ScoreGoatFacadeTests {
     void shouldCreateUser() {
         //When
         UserDto userDto = new UserDto("Name1","Email1@test.com", "Password1");
-        UserRespondDto respond = new UserRespondDto("Create Name1", WindowStatus.CLOSE.getStatus());
+        UserRespondDto respond = new UserRespondDto("Create Name1");
         when(userService.signInUser(userDto)).thenReturn(respond);
 
         //When
@@ -36,14 +36,13 @@ public class ScoreGoatFacadeTests {
 
         //Then
         assertEquals("Create Name1", theRespond.getRespond());
-        assertEquals(WindowStatus.CLOSE.getStatus(), theRespond.getWindowStatus());
     }
 
     @Test
     void shouldTryLogIn() {
         //When
-        UserParam userParam = new UserParam("Name1", "Password1");
-        UserRespondDto respond = new UserRespondDto("Create Name1", WindowStatus.CLOSE.getStatus());
+        UserParamDto userParam = new UserParamDto("Name1", "Password1");
+        UserRespondDto respond = new UserRespondDto("Create Name1");
         when(logInService.logInAttempt(userParam)).thenReturn(respond);
 
         //When
@@ -51,7 +50,6 @@ public class ScoreGoatFacadeTests {
 
         //Then
         assertEquals("Create Name1", theRespond.getRespond());
-        assertEquals(WindowStatus.CLOSE.getStatus(), theRespond.getWindowStatus());
     }
 
     @Test

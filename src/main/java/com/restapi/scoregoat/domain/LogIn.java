@@ -1,5 +1,6 @@
 package com.restapi.scoregoat.domain;
 
+import com.restapi.scoregoat.repository.LogInRepository;
 import jakarta.persistence.*;
 import lombok.*;
 import org.jetbrains.annotations.NotNull;

@@ -1,6 +1,7 @@
 package com.restapi.scoregoat.service;
 
 import com.restapi.scoregoat.client.FootballClient;
+import com.restapi.scoregoat.domain.Code;
 import com.restapi.scoregoat.domain.LogData;
 import com.restapi.scoregoat.domain.Season;
 import com.restapi.scoregoat.repository.SeasonRepository;
@@ -28,7 +29,7 @@ public class SeasonService {
             return season;
         }catch (Exception ex) {
             String message = ex.getMessage() + " --ERROR: Couldn't replace season in DataBase-- ";
-            logDataService.saveLog(new LogData(null,"League ID: " + id, message));
+            logDataService.saveLog(new LogData(null,"League ID: " + id, Code.SEASON_SET_DB.getCode(), message));
             LOGGER.error(message,ex);
             return null;
         }

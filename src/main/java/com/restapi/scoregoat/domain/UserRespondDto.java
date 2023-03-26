@@ -15,10 +15,19 @@ public class UserRespondDto {
     private String email;
     private boolean isLogIn = false;
     private String respond;
-    private int windowStatus;
 
-    public UserRespondDto(String respond, int windowStatus) {
+
+
+    public UserRespondDto(String respond) {
         this.respond = respond;
-        this.windowStatus = windowStatus;
+    }
+
+    public UserRespondDto setExtendResponse(final User user, String respond) {
+        return new UserRespondDto(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                true,
+                respond);
     }
 }

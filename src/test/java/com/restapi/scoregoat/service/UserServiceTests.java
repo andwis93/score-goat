@@ -2,6 +2,7 @@ package com.restapi.scoregoat.service;
 
 import com.restapi.scoregoat.domain.*;
 import com.restapi.scoregoat.mapper.UserMapper;
+import com.restapi.scoregoat.repository.LogInRepository;
 import com.restapi.scoregoat.repository.UserRepository;
 import com.restapi.scoregoat.validator.EmailValidator;
 import org.jasypt.util.password.StrongPasswordEncryptor;
@@ -20,6 +21,12 @@ public class UserServiceTests {
     private UserService service;
     @Mock
     private UserRepository repository;
+    @Mock
+    private LogInRepository logInRepository;
+    @Mock
+    private LogInService logInService;
+    @Mock
+    private SessionService sessionService;
     @Mock
     private UserMapper mapper;
     @Mock
@@ -45,6 +52,26 @@ public class UserServiceTests {
 
         //Then
         assertEquals(Respond.USER_CREATED_OK.getRespond(), respondDto.getRespond());
-        assertEquals(WindowStatus.CLOSE.getStatus(), respondDto.getWindowStatus());
+    }
+
+    @Test
+    void testChangePassword() {
+        //Given
+        User user = new User("Name1","Email1@test.com", "OldPassword");
+        LogIn attempt = new LogIn(user);
+        PasswordDto passwordDto = new PasswordDto(1L, "OldPassword", "MatchPassword", "MatchPassword");
+        when(repository.findById(1L)).thenReturn(Optional.of(user));
+        when(logInRepository.findByUser(user)).thenReturn(Optional.of(attempt));
+        when(encryptor.checkPassword(passwordDto.getOldPassword(), user.getPassword())).thenReturn(true);
+        when(sessionService.saveRefreshedSession(any())).thenReturn(true);
+        when(logInService.resetAttempt(attempt)).thenReturn(true);
+
+        //When
+        UserRespondDto respondDto = service.changePassword(passwordDto);
+
+        //Then
+        assertEquals("Name1", respondDto.getUserName());
+        assertEquals("Email1@test.com", respondDto.getEmail());
+        assertEquals(Respond.PASSWORD_CHANGED_OK.getRespond(), respondDto.getRespond());
     }
 }

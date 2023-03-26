@@ -1,9 +1,6 @@
 package com.restapi.scoregoat.facade;
 
-import com.restapi.scoregoat.domain.Season;
-import com.restapi.scoregoat.domain.UserDto;
-import com.restapi.scoregoat.domain.UserParam;
-import com.restapi.scoregoat.domain.UserRespondDto;
+import com.restapi.scoregoat.domain.*;
 import com.restapi.scoregoat.service.LogInService;
 import com.restapi.scoregoat.service.SeasonService;
 import com.restapi.scoregoat.service.UserService;
@@ -17,19 +14,23 @@ public class ScoreGoatFacade {
     private final SeasonService seasonService;
     private final LogInService logInService;
 
-    public UserRespondDto createUser(UserDto userDto) {
-        return userService.signInUser(userDto);
-    }
-
-    public UserRespondDto tryLogIn(UserParam userParam) {
-        return logInService.logInAttempt(userParam);
-    }
-
     public Season fetchSeason(){
         return seasonService.getSeason();
     }
 
     public Season setSeason(int id){
         return seasonService.setSeason(id);
+    }
+
+    public UserRespondDto createUser(UserDto userDto) {
+        return userService.signInUser(userDto);
+    }
+
+    public UserRespondDto tryLogIn(UserParamDto userParam) {
+        return logInService.logInAttempt(userParam);
+    }
+
+    public UserRespondDto changePassword(PasswordDto passwordDto) {
+        return userService.changePassword(passwordDto);
     }
 }

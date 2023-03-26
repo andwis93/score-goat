@@ -1,5 +1,6 @@
 package com.restapi.scoregoat.domain;
 
+import com.restapi.scoregoat.repository.SessionRepository;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

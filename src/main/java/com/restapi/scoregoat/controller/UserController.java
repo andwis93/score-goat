@@ -1,5 +1,6 @@
 package com.restapi.scoregoat.controller;
 
+import com.restapi.scoregoat.domain.PasswordDto;
 import com.restapi.scoregoat.domain.UserDto;
 import com.restapi.scoregoat.domain.UserRespondDto;
 import com.restapi.scoregoat.facade.ScoreGoatFacade;
@@ -18,5 +19,10 @@ public class UserController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserRespondDto> createUser(@RequestBody UserDto userDto) {
         return ResponseEntity.ok(facade.createUser(userDto));
+    }
+
+    @PostMapping(value = "/passwordchange" ,consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserRespondDto> changePassword(@RequestBody PasswordDto passwordDto){
+       return ResponseEntity.ok(facade.changePassword(passwordDto));
     }
 }

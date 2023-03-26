@@ -1,6 +1,7 @@
 package com.restapi.scoregoat.client;
 
 import com.restapi.scoregoat.config.FootballConfig;
+import com.restapi.scoregoat.domain.Code;
 import com.restapi.scoregoat.domain.LogData;
 import com.restapi.scoregoat.domain.ResponseDto;
 import com.restapi.scoregoat.domain.SeasonDto;
@@ -58,7 +59,8 @@ public class FootballClient {
 
         } catch (RestClientException ex) {
             String message = ex.getMessage() + "  --ERROR: Couldn't get season from Api Client-- ";
-            logDataService.saveLog(new LogData(null,"League ID: " + id, message));
+            logDataService.saveLog(new LogData(
+                    null,"League ID: " + id, Code.SEASON_CLEAN.getCode(), message));
             LOGGER.error(message,ex);
             return null;
         }

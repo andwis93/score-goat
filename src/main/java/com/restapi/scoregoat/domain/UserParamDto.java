@@ -2,12 +2,14 @@ package com.restapi.scoregoat.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class UserParam {
+public class UserParamDto {
     private String name;
     private String password;
 }

@@ -33,5 +33,4 @@ public class DataScheduler {
     public void removeExpiredSessions() {
         sessionService.removeExpiredSession();
     }
-
 }

@@ -1,7 +1,8 @@
 package com.restapi.scoregoat.controller;
 
+import com.google.gson.Gson;
+import com.restapi.scoregoat.domain.UserParamDto;
 import com.restapi.scoregoat.domain.UserRespondDto;
-import com.restapi.scoregoat.domain.WindowStatus;
 import com.restapi.scoregoat.facade.ScoreGoatFacade;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -27,18 +28,23 @@ public class LogInControllerTests {
     @Test
     void shouldLogUserIn() throws Exception {
         //Given
-        UserRespondDto respond = new UserRespondDto("Create Name1", WindowStatus.CLOSE.getStatus());
+        UserParamDto userParamDto = new UserParamDto("Name1", "Password1");
+        UserRespondDto respond = new UserRespondDto("Create Name1");
         respond.setLogIn(true);
         when(facade.tryLogIn(any())). thenReturn(respond);
+        Gson gson = new Gson();
+        String jsonContent = gson.toJson(userParamDto);
+
 
         //When & Then
         mockMvc
                 .perform(MockMvcRequestBuilders
-                        .get("/v1/scoregoat/login?name=n3&password=12")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .post("/v1/scoregoat/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(jsonContent))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.respond", Matchers.is("Create Name1")))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.windowStatus", Matchers.is(0)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.logIn", Matchers.is(true)));
     }
 }

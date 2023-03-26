@@ -22,6 +22,8 @@ public class LogData {
     private Long id;
     @Column(name = "Date_Time")
     private LocalDateTime dateTime;
+    @Column(name = "CODE")
+    private String code;
     @Column(name = "DESCRIPTION")
     private String description;
     @Column(name = "USER_ID")
@@ -29,10 +31,11 @@ public class LogData {
     @Column(name = "OPEARTE_VALUE")
     private String operateValue;
 
-    public LogData(Long userId, String operateValue, String description) {
+    public LogData(Long userId, String operateValue, String code, String description) {
         this.userId = userId;
         this.operateValue = operateValue;
         this.dateTime = LocalDateTime.now();
+        this.code = code;
         this.description = description;
     }
 }

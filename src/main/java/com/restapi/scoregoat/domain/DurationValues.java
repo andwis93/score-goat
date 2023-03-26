@@ -11,5 +11,4 @@ public enum DurationValues {
     SESSION_LENGTH(10);
 
     private final int value;
-
 }

@@ -1,5 +1,6 @@
 package com.restapi.scoregoat.service;
 
+import com.restapi.scoregoat.domain.Code;
 import com.restapi.scoregoat.domain.LogData;
 import com.restapi.scoregoat.repository.LogDataRepository;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,7 @@ public class LogDataServiceTests {
     @Test
     public void testSaveLog() {
         //Given
-        LogData logData = new LogData(1L,"League ID: 39", "test");
+        LogData logData = new LogData(1L,"League ID: 39", "test", Code.LOGIN_LOCKED_DATES_UPDATE.getCode());
         when(repository.save(any(LogData.class))).thenReturn(logData);
 
         //When
