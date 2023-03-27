@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserMapper {
 
-    public User mapUserDtoToUser(UserDto userDto) {
+    public User mapUserDtoToUser(final UserDto userDto) {
         return new User(
                 userDto.getName(),
                 userDto.getEmail(),

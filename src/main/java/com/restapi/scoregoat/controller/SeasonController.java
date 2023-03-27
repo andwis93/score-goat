@@ -1,7 +1,7 @@
 package com.restapi.scoregoat.controller;
 
-import com.restapi.scoregoat.domain.Season;
-import com.restapi.scoregoat.domain.SeasonDto;
+import com.restapi.scoregoat.domain.client.Season;
+import com.restapi.scoregoat.domain.client.SeasonDto;
 import com.restapi.scoregoat.facade.ScoreGoatFacade;
 import com.restapi.scoregoat.mapper.SeasonMapper;
 import lombok.RequiredArgsConstructor;

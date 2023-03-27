@@ -2,9 +2,9 @@ package com.restapi.scoregoat.client;
 
 import com.restapi.scoregoat.config.FootballConfig;
 import com.restapi.scoregoat.domain.Code;
+import com.restapi.scoregoat.domain.FixtureParam;
 import com.restapi.scoregoat.domain.LogData;
-import com.restapi.scoregoat.domain.ResponseDto;
-import com.restapi.scoregoat.domain.SeasonDto;
+import com.restapi.scoregoat.domain.client.*;
 import com.restapi.scoregoat.service.LogDataService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -18,6 +18,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.*;
 
 @Component
@@ -39,7 +40,17 @@ public class FootballClient {
     }
 
     private URI uriForSeason(int id) {
-        return UriComponentsBuilder.fromHttpUrl(uriBuild() + "/leagues?id=" + id)
+        return UriComponentsBuilder.fromHttpUrl(uriBuild() + "/leagues")
+                .queryParam("id", id)
+                .build().encode().toUri();
+    }
+
+    private URI uriForFixture(FixtureParam param) {
+        return UriComponentsBuilder.fromHttpUrl(uriBuild() + "/fixtures")
+                .queryParam("league", param.getId())
+                .queryParam("season", param.getSeason())
+                .queryParam("from", LocalDate.now())
+                .queryParam("to", param.getToDate())
                 .build().encode().toUri();
     }
 
@@ -51,11 +62,10 @@ public class FootballClient {
 
     public String getFootballSeason(int id) {
         try {
-            ResponseEntity<ResponseDto> respond = restTemplate.exchange(uriForSeason(id),
-                    HttpMethod.GET, passHeaders(), ResponseDto.class);
+            ResponseEntity<SeasonDto[]> respond = restTemplate.exchange(uriForSeason(id),
+                    HttpMethod.GET, passHeaders(), SeasonDto[].class);
+          return Collections.max(Arrays.stream(Objects.requireNonNull(respond.getBody())).map(SeasonDto::getYear).toList());
 
-            return Collections.max(Objects.requireNonNull(respond.getBody()).getResponse()
-                    .stream().flatMap(season -> season.getSeasonsDto().stream()).map(SeasonDto::getYear).toList());
 
         } catch (RestClientException ex) {
             String message = ex.getMessage() + "  --ERROR: Couldn't get season from Api Client-- ";
@@ -65,4 +75,20 @@ public class FootballClient {
             return null;
         }
     }
+
+    public FixturesList getFixtures(FixtureParam param) {
+        try {
+            ResponseEntity<FixturesList> respond = restTemplate.exchange(uriForFixture(param),
+                    HttpMethod.GET, passHeaders(), FixturesList.class);
+            return respond.getBody();
+
+        } catch (RestClientException ex) {
+            String message = ex.getMessage() + "  --ERROR: Couldn't get fixtures from Api Client-- ";
+            logDataService.saveLog(new LogData(
+                    null,"League ID: " + param.getId(), Code.FIXTURE_GET.getCode(), message));
+            LOGGER.error(message,ex);
+            return null;
+        }
+    }
+
 }

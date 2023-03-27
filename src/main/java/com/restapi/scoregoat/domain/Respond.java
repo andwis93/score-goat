@@ -20,7 +20,8 @@ public enum Respond {
     WRONG_PASSWORD("Password, user name or email is incorrect. Please try again"),
     WRONG_OLD_PASSWORD("Old Password is incorrect"),
     NEW_REPEAT_PASSWORD_DIFFERENT("New password and repeat password are not the same"),
-    PASSWORD_CHANGED_OK("Password was changed successfully.");
+    PASSWORD_CHANGED_OK("Password was changed successfully."),
+    MATCH_UPLOAD_OK("All Matches were upload successfully.");
 
     private final String respond;
 }

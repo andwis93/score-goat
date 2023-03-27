@@ -1,6 +1,7 @@
 package com.restapi.scoregoat.facade;
 
 import com.restapi.scoregoat.domain.*;
+import com.restapi.scoregoat.domain.client.Season;
 import com.restapi.scoregoat.service.LogInService;
 import com.restapi.scoregoat.service.SeasonService;
 import com.restapi.scoregoat.service.UserService;

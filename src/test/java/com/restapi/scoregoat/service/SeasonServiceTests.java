@@ -1,7 +1,8 @@
 package com.restapi.scoregoat.service;
 
 import com.restapi.scoregoat.client.FootballClient;
-import com.restapi.scoregoat.domain.Season;
+import com.restapi.scoregoat.domain.Leagues;
+import com.restapi.scoregoat.domain.client.Season;
 import com.restapi.scoregoat.repository.SeasonRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,13 +27,12 @@ public class SeasonServiceTests {
     @Test
     public void shouldSetSeasonYear() {
         //Given
-        int id = 39;
-        Season season = new Season(client.getFootballSeason(id));
-        when(client.getFootballSeason(id)).thenReturn("2023");
+        Season season = new Season(1L, "2023");
         when(repository.save(season)).thenReturn(season);
+        when(client.getFootballSeason(Leagues.PREMIER_LEAGUE.getId())).thenReturn("2023");
 
         //When
-        Season theSeason = service.setSeason(id);
+        Season theSeason = service.setSeason(Leagues.PREMIER_LEAGUE.getId());
 
         //Then
         verify(repository, times(1)).deleteAll();

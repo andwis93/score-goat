@@ -3,7 +3,7 @@ package com.restapi.scoregoat.service;
 import com.restapi.scoregoat.client.FootballClient;
 import com.restapi.scoregoat.domain.Code;
 import com.restapi.scoregoat.domain.LogData;
-import com.restapi.scoregoat.domain.Season;
+import com.restapi.scoregoat.domain.client.Season;
 import com.restapi.scoregoat.repository.SeasonRepository;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;

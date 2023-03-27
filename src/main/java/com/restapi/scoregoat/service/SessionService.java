@@ -1,6 +1,5 @@
 package com.restapi.scoregoat.service;
 
-import com.restapi.scoregoat.client.FootballClient;
 import com.restapi.scoregoat.domain.Code;
 import com.restapi.scoregoat.domain.LogData;
 import com.restapi.scoregoat.domain.Session;

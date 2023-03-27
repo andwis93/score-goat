@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@Table(name = "LOG_IN_ATTEMPT")
+@Table(name = "LOG_IN_ATTEMPTS")
 public class LogIn {
     @Id
     @GeneratedValue

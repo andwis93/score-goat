@@ -1,8 +1,8 @@
 package com.restapi.scoregoat.controller;
 
 import com.google.gson.Gson;
-import com.restapi.scoregoat.domain.Season;
-import com.restapi.scoregoat.domain.SeasonDto;
+import com.restapi.scoregoat.domain.client.Season;
+import com.restapi.scoregoat.domain.client.SeasonDto;
 import com.restapi.scoregoat.facade.ScoreGoatFacade;
 import com.restapi.scoregoat.mapper.SeasonMapper;
 import org.hamcrest.Matchers;

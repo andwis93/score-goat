@@ -2,7 +2,7 @@ package com.restapi.scoregoat.watcher;
 
 import com.restapi.scoregoat.domain.Code;
 import com.restapi.scoregoat.domain.LogData;
-import com.restapi.scoregoat.domain.Season;
+import com.restapi.scoregoat.domain.client.Season;
 import com.restapi.scoregoat.domain.UserRespondDto;
 import com.restapi.scoregoat.service.LogDataService;
 import lombok.AllArgsConstructor;
