@@ -1,9 +1,9 @@
 package com.restapi.scoregoat.client;
 
 import com.restapi.scoregoat.config.FootballConfig;
+import com.restapi.scoregoat.config.SeasonConfig;
 import com.restapi.scoregoat.domain.FixtureParam;
-import com.restapi.scoregoat.domain.Leagues;
-import com.restapi.scoregoat.domain.client.*;
+import com.restapi.scoregoat.domain.client.mapJSON.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,7 +19,6 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class FootballClientTests {
-    private static final int LEAGUE_ID = 39;
     @InjectMocks
     private FootballClient client;
     @Mock
@@ -34,24 +33,29 @@ public class FootballClientTests {
         when(config.getFootballAppHeader()).thenReturn("AppHeaderTest");
         when(config.getFootballAppKey()).thenReturn("ApiKeyTest");
 
-        URI uri = new URI("https://test.com/leagues?id=39");
+        URI uri = new URI("https://test.com/leagues?id=" + SeasonConfig.DEFAULT_LEAGUE.getId());
 
-        SeasonDto[] season = new SeasonDto[1];
-        season[0] = new SeasonDto("2023");
+        Year year = new Year("2023");
+
+        Seasons season = new Seasons();
+        season.getYearsList().add(year);
+
+        SeasonsList seasonsList = new SeasonsList();
+        seasonsList.getSeasonsLists().add(season);
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("AppHeaderTest", "ApiKeyTest");
         HttpEntity<Object> header = new HttpEntity<>(headers);
 
-        ResponseEntity<SeasonDto[]> respond = new ResponseEntity<>(season, HttpStatus.OK);
+        ResponseEntity<SeasonsList> respond = new ResponseEntity<>(seasonsList, HttpStatus.OK);
 
-        when(rest.exchange(uri, HttpMethod.GET, header, SeasonDto[].class)).thenReturn(respond);
+        when(rest.exchange(uri, HttpMethod.GET, header, SeasonsList.class)).thenReturn(respond);
 
         //When
-        String year = client.getFootballSeason(LEAGUE_ID);
+        String theYear = client.getFootballSeason();
 
         //Then
-        assertEquals("2023", year);
+        assertEquals("2023", theYear);
     }
 
     @Test
@@ -61,13 +65,12 @@ public class FootballClientTests {
         when(config.getFootballAppHeader()).thenReturn("AppHeaderTest");
         when(config.getFootballAppKey()).thenReturn("ApiKeyTest");
 
-        LocalDate dateFrom = LocalDate.now();
         LocalDate dateTo = LocalDate.now().plusDays(10);
 
-        URI uri = new URI("https://test.com/fixtures?league=39&season=2023&from=" + dateFrom + "&to=" + dateTo);
+        FixtureParam param = new FixtureParam(SeasonConfig.DEFAULT_LEAGUE.getId() ,"2023", dateTo);
+        LocalDate dateFrom = LocalDate.now();
 
-        SeasonDto[] season = new SeasonDto[1];
-        season[0] = new SeasonDto("2023");
+        URI uri = new URI("https://test.com/fixtures?league=" + param.getId() + "&season=2023&from=" + dateFrom + "&to=" + dateTo);
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("AppHeaderTest", "ApiKeyTest");
@@ -87,9 +90,6 @@ public class FootballClientTests {
         ResponseEntity<FixturesList> respond = new ResponseEntity<>(fixturesList, HttpStatus.OK);
 
         when(rest.exchange(uri, HttpMethod.GET, header, FixturesList.class)).thenReturn(respond);
-
-        FixtureParam param = new FixtureParam(
-                Leagues.PREMIER_LEAGUE.getId(), "2023", dateTo);
 
         //When
         FixturesList theFixturesList = client.getFixtures(param);

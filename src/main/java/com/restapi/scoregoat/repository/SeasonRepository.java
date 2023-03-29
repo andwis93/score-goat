@@ -1,6 +1,6 @@
 package com.restapi.scoregoat.repository;
 
-import com.restapi.scoregoat.domain.client.Season;
+import com.restapi.scoregoat.domain.Season;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

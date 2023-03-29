@@ -16,8 +16,6 @@ public class UserRespondDto {
     private boolean isLogIn = false;
     private String respond;
 
-
-
     public UserRespondDto(String respond) {
         this.respond = respond;
     }

@@ -2,7 +2,7 @@ package com.restapi.scoregoat.mapper;
 
 import com.restapi.scoregoat.domain.Match;
 import com.restapi.scoregoat.domain.MatchDto;
-import com.restapi.scoregoat.domain.client.FixtureRespond;
+import com.restapi.scoregoat.domain.client.mapJSON.FixtureRespond;
 import org.springframework.stereotype.Service;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -15,6 +15,7 @@ public class MatchMapper {
         return new MatchDto(
                 match.getId(),
                 match.getLeagueId(),
+                match.getFixtureId(),
                 match.getDate().toString(),
                 match.getStatus(),
                 match.getElapsed(),
@@ -28,7 +29,25 @@ public class MatchMapper {
                 match.getAwayGoals());
     }
 
-    public static Match mapFixtureToMatch(final FixtureRespond fixtureRespond) {
+    public Match mapMatchDtoToMatch(final MatchDto matchDto) {
+        return new Match(
+                matchDto.getId(),
+                matchDto.getLeagueId(),
+                matchDto.getFixtureId(),
+                OffsetDateTime.parse(matchDto.getDate()),
+                matchDto.getStatus(),
+                matchDto.getElapsed(),
+                matchDto.getHomeTeam(),
+                matchDto.getHomeLogo(),
+                matchDto.isHomeWinner(),
+                matchDto.getAwayTeam(),
+                matchDto.getAwayLogo(),
+                matchDto.isAwayWinner(),
+                matchDto.getHomeGoals(),
+                matchDto.getAwayGoals());
+    }
+
+    public Match mapFixtureToMatch(final FixtureRespond fixtureRespond) {
         Match match = new Match();
         match.setLeagueId(fixtureRespond.getLeague().getId());
         match.setFixtureId(fixtureRespond.getFixture().getFixtureId());
@@ -46,8 +65,12 @@ public class MatchMapper {
         return match;
     }
 
-    public List<Match> mapToList(final List<FixtureRespond> fixtureRespondList) {
+    public List<Match> mapFixtureRespondToMatchList(final List<FixtureRespond> fixtureRespondList) {
         return fixtureRespondList.stream()
-                .map(MatchMapper::mapFixtureToMatch).collect(toList());
+                .map(this::mapFixtureToMatch).collect(toList());
+    }
+
+    public List<MatchDto> mapMatchToMatchDtoList(final List<Match> matchList) {
+        return matchList.stream().map(this::mapMatchToMatchDto).collect(toList());
     }
 }

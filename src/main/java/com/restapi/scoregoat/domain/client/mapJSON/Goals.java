@@ -1,4 +1,4 @@
-package com.restapi.scoregoat.domain.client;
+package com.restapi.scoregoat.domain.client.mapJSON;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Teams {
+public class Goals {
     @JsonProperty("home")
-    private Team homeTeam;
+    private int home;
     @JsonProperty("away")
-    private Team awayTeam;
+    private int away;
 }

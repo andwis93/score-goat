@@ -14,5 +14,4 @@ public class PasswordDto {
     private String oldPassword;
     private String newPassword;
     private String repeatPassword;
-
 }

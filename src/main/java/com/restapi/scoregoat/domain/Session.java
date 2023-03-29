@@ -1,6 +1,5 @@
 package com.restapi.scoregoat.domain;
 
-import com.restapi.scoregoat.repository.SessionRepository;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,7 +21,7 @@ public class Session {
     @Column(name = "SESSION_ENDS")
     private LocalDateTime end;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "USER_ID")
     private User user;
 

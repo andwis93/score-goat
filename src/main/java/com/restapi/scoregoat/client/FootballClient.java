@@ -1,10 +1,14 @@
 package com.restapi.scoregoat.client;
 
 import com.restapi.scoregoat.config.FootballConfig;
+import com.restapi.scoregoat.config.SeasonConfig;
 import com.restapi.scoregoat.domain.Code;
 import com.restapi.scoregoat.domain.FixtureParam;
 import com.restapi.scoregoat.domain.LogData;
-import com.restapi.scoregoat.domain.client.*;
+import com.restapi.scoregoat.domain.client.mapJSON.FixturesList;
+import com.restapi.scoregoat.domain.client.mapJSON.Seasons;
+import com.restapi.scoregoat.domain.client.mapJSON.SeasonsList;
+import com.restapi.scoregoat.domain.client.mapJSON.Year;
 import com.restapi.scoregoat.service.LogDataService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -39,9 +43,9 @@ public class FootballClient {
         }
     }
 
-    private URI uriForSeason(int id) {
+    private URI uriForSeason() {
         return UriComponentsBuilder.fromHttpUrl(uriBuild() + "/leagues")
-                .queryParam("id", id)
+                .queryParam("id", SeasonConfig.DEFAULT_LEAGUE.getId())
                 .build().encode().toUri();
     }
 
@@ -60,17 +64,18 @@ public class FootballClient {
         return new HttpEntity<>(headers);
     }
 
-    public String getFootballSeason(int id) {
+    public String getFootballSeason() {
         try {
-            ResponseEntity<SeasonDto[]> respond = restTemplate.exchange(uriForSeason(id),
-                    HttpMethod.GET, passHeaders(), SeasonDto[].class);
-          return Collections.max(Arrays.stream(Objects.requireNonNull(respond.getBody())).map(SeasonDto::getYear).toList());
-
-
+        ResponseEntity<SeasonsList> responseEntity =
+                restTemplate.exchange(
+                        uriForSeason(), HttpMethod.GET, passHeaders(), SeasonsList.class);
+        List<Year> yearList = Objects.requireNonNull(responseEntity.getBody())
+                .getSeasonsLists().stream().map(Seasons::getYearsList).flatMap(Collection::stream).toList();
+        return Collections.max(yearList.stream().map(Year::getYear).toList());
         } catch (RestClientException ex) {
             String message = ex.getMessage() + "  --ERROR: Couldn't get season from Api Client-- ";
             logDataService.saveLog(new LogData(
-                    null,"League ID: " + id, Code.SEASON_CLEAN.getCode(), message));
+                    null,"League ID: " + SeasonConfig.DEFAULT_LEAGUE.getId(), Code.SEASON_CLEAN.getCode(), message));
             LOGGER.error(message,ex);
             return null;
         }
@@ -90,5 +95,4 @@ public class FootballClient {
             return null;
         }
     }
-
 }

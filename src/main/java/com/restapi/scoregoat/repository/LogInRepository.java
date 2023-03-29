@@ -15,5 +15,4 @@ public interface LogInRepository extends CrudRepository<LogIn, Long> {
     @NotNull
     List<LogIn> findAll();
     Optional<LogIn> findByUser(User user);
-
 }

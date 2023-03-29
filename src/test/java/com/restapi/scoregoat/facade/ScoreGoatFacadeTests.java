@@ -1,7 +1,7 @@
 package com.restapi.scoregoat.facade;
 
 import com.restapi.scoregoat.domain.*;
-import com.restapi.scoregoat.domain.client.Season;
+import com.restapi.scoregoat.domain.Season;
 import com.restapi.scoregoat.service.LogInService;
 import com.restapi.scoregoat.service.SeasonService;
 import com.restapi.scoregoat.service.UserService;
@@ -15,7 +15,6 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ScoreGoatFacadeTests {
-    private static final int LEAGUE_ID = 39;
     @InjectMocks
     private ScoreGoatFacade facade;
     @Mock
@@ -57,7 +56,7 @@ public class ScoreGoatFacadeTests {
     void shouldFetchSeason() {
         //When
         Season season = new Season("2023");
-        when(seasonService.getSeason()).thenReturn(season);
+        when(seasonService.fetchSeason()).thenReturn(season);
 
         //When
         Season theSeason = facade.fetchSeason();
@@ -70,10 +69,10 @@ public class ScoreGoatFacadeTests {
     void shouldSetSeason() {
         //When
         Season season = new Season("2023");
-        when(seasonService.setSeason(LEAGUE_ID)).thenReturn(season);
+        when(seasonService.setSeason()).thenReturn(season);
 
         //When
-        Season theSeason = facade.setSeason(LEAGUE_ID);
+        Season theSeason = facade.setSeason();
 
         //Then
         assertEquals("2023", theSeason.getYear());

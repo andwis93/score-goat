@@ -1,6 +1,7 @@
 package com.restapi.scoregoat.scheduler;
 
-import com.restapi.scoregoat.domain.Leagues;
+import com.restapi.scoregoat.facade.ScoreGoatFacade;
+import com.restapi.scoregoat.service.MatchService;
 import com.restapi.scoregoat.service.UpdateLogInService;
 import com.restapi.scoregoat.service.SeasonService;
 import com.restapi.scoregoat.service.SessionService;
@@ -18,10 +19,13 @@ public class DataScheduler {
     private UpdateLogInService cleanLogInService;
     @Autowired
     private SessionService sessionService;
+    @Autowired
+    private ScoreGoatFacade facade;
 
-    @Scheduled(cron = "0 0 2 1 * ?", zone="Europe/Warsaw")
+
+    @Scheduled(cron = "0 58 3 1 * ?", zone="Europe/Warsaw")
     public void reloadData() {
-        seasonService.setSeason(Leagues.PREMIER_LEAGUE.getId());
+        seasonService.setSeason();
     }
 
     @Scheduled(cron = "0 59 * * * ?", zone="Europe/Warsaw")
@@ -32,5 +36,10 @@ public class DataScheduler {
     @Scheduled(cron = "0 */5 * * * ?", zone="Europe/Warsaw")
     public void removeExpiredSessions() {
         sessionService.removeExpiredSession();
+    }
+
+    @Scheduled(cron = "0 0 4 * * ?", zone="Europe/Warsaw")
+    public void updateMatches() {
+        facade.uploadMatchesFromLeagueConfigList();
     }
 }

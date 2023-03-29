@@ -1,4 +1,4 @@
-package com.restapi.scoregoat.domain.client;
+package com.restapi.scoregoat.domain.client.mapJSON;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

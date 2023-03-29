@@ -9,5 +9,4 @@ class ScoreGoatApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }

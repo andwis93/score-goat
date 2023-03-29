@@ -1,6 +1,5 @@
 package com.restapi.scoregoat.domain;
 
-import com.restapi.scoregoat.repository.LogInRepository;
 import jakarta.persistence.*;
 import lombok.*;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +22,7 @@ public class LogIn {
     private int attempt;
     @Column(name = "LOCKED_TILL")
     private LocalDateTime locked;
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "USER_ID")
     private User user;
 

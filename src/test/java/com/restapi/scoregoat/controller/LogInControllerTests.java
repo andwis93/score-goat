@@ -35,7 +35,6 @@ public class LogInControllerTests {
         Gson gson = new Gson();
         String jsonContent = gson.toJson(userParamDto);
 
-
         //When & Then
         mockMvc
                 .perform(MockMvcRequestBuilders

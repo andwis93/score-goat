@@ -1,7 +1,5 @@
-package com.restapi.scoregoat.domain.client;
+package com.restapi.scoregoat.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,6 +25,4 @@ public class Season {
     public Season(String year) {
         this.year = year;
     }
-
-
 }

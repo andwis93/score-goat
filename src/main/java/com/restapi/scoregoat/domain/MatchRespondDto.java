@@ -9,6 +9,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class MatchesRespondDto {
+public class MatchRespondDto {
+    private int leagueId;
     private String respond;
+
+    public MatchRespondDto(String respond) {
+        this.respond = respond;
+    }
 }

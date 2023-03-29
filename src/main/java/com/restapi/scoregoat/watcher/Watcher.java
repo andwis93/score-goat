@@ -1,9 +1,6 @@
 package com.restapi.scoregoat.watcher;
 
-import com.restapi.scoregoat.domain.Code;
-import com.restapi.scoregoat.domain.LogData;
-import com.restapi.scoregoat.domain.client.Season;
-import com.restapi.scoregoat.domain.UserRespondDto;
+import com.restapi.scoregoat.domain.*;
 import com.restapi.scoregoat.service.LogDataService;
 import lombok.AllArgsConstructor;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -68,6 +65,24 @@ public class Watcher {
         String message = "Attempt to change password for user with ID: " + respond.getId() + " with respond: "
                 + respond.getRespond() + " -- Class: " + object;
         logDataService.saveLog(new LogData(respond.getId(), null, Code.USER_PASSWORD_CHANGED.getCode(), message));
+        LOGGER.info(message);
+    }
+
+    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.MatchService.uploadMatches(..))"
+            + "&&target(object)" , returning = "respond", argNames = "respond,object")
+    public void logUploadMatches(MatchRespondDto respond, Object object) {
+        String message = "Attempt to upload matches for League ID: " + respond.getLeagueId() + " with respond: "
+                + respond.getRespond() + " -- Class: " + object;
+        logDataService.saveLog(new LogData((long) respond.getLeagueId(), null, Code.UPLOAD_MATCHES_OK.getCode(), message));
+        LOGGER.info(message);
+    }
+
+    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.MatchService.uploadMatchesFromLeagueConfigList(..))"
+            + "&&target(object)" , returning = "respond", argNames = "respond,object")
+    public void logUploadAllMatches(MatchRespondDto respond, Object object) {
+        String message = "Attempt to upload all matches with respond: "
+                + respond.getRespond() + " -- Class: " + object;
+        logDataService.saveLog(new LogData(null, "LeagueConfigList", Code.UPLOAD_ALL_MATCHES_OK.getCode(), message));
         LOGGER.info(message);
     }
 }

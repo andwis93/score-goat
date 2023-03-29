@@ -1,6 +1,5 @@
 package com.restapi.scoregoat.domain;
 
-import com.restapi.scoregoat.repository.SessionRepository;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,5 +34,15 @@ public class User {
         this.email = email;
         this.password = password;
         this.created = LocalDate.now();
+    }
+
+    @Override
+    public String toString() {
+        return "\nUSER:\n" +
+                " id:" + id +
+                "\n name: " + name +
+                "\n email: " + email +
+                "\n password: *****" +
+                "\n created: " + created;
     }
 }

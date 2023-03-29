@@ -1,8 +1,8 @@
 package com.restapi.scoregoat.controller;
 
 import com.google.gson.Gson;
-import com.restapi.scoregoat.domain.client.Season;
-import com.restapi.scoregoat.domain.client.SeasonDto;
+import com.restapi.scoregoat.domain.Season;
+import com.restapi.scoregoat.domain.client.mapJSON.Year;
 import com.restapi.scoregoat.facade.ScoreGoatFacade;
 import com.restapi.scoregoat.mapper.SeasonMapper;
 import org.hamcrest.Matchers;
@@ -15,7 +15,6 @@ import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @SpringJUnitWebConfig
@@ -31,10 +30,10 @@ public class SeasonControllerTests {
     @Test
     void shouldGetSeason() throws Exception {
         //Given
-        SeasonDto seasonDto = new SeasonDto("2023Dto");
+        Year year = new Year("2023Dto");
         Season season = new Season("2023");
         when(facade.fetchSeason()).thenReturn(season);
-        when(mapper.mapSeasonToSeasonDto(season)).thenReturn(seasonDto);
+        when(mapper.mapSeasonToSeasonDto(season)).thenReturn(year);
 
         //When & Then
         mockMvc
@@ -48,12 +47,12 @@ public class SeasonControllerTests {
     @Test
     void shouldSetSeason() throws Exception {
         //Given
-        SeasonDto seasonDto = new SeasonDto("2023Dto");
+        Year year = new Year("2023Dto");
         Season season = new Season("2023");
-        when(facade.setSeason(any(Integer.class))).thenReturn(season);
-        when(mapper.mapSeasonToSeasonDto(season)).thenReturn(seasonDto);
+        when(facade.setSeason()).thenReturn(season);
+        when(mapper.mapSeasonToSeasonDto(season)).thenReturn(year);
         Gson gson = new Gson();
-        String jsonContent = gson.toJson(seasonDto);
+        String jsonContent = gson.toJson(year);
 
 
         //When & Then

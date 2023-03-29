@@ -1,12 +1,8 @@
 package com.restapi.scoregoat.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 public class MatchDto {
     private Long id;
     private int leagueId;
+    private Long fixtureId;
     private String date;
     private String status;
     private String elapsed;

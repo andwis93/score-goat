@@ -5,6 +5,7 @@ import com.restapi.scoregoat.domain.UserRespondDto;
 import com.restapi.scoregoat.facade.ScoreGoatFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,7 +16,7 @@ public class LogInController {
     private final ScoreGoatFacade facade;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public UserRespondDto logUserIn(@RequestBody UserParamDto userParam) {
-        return facade.tryLogIn(userParam);
+    public ResponseEntity<UserRespondDto> logUserIn(@RequestBody UserParamDto userParam) {
+        return ResponseEntity.ok(facade.tryLogIn(userParam));
     }
 }

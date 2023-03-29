@@ -1,12 +1,12 @@
 package com.restapi.scoregoat.mapper;
 
-import com.restapi.scoregoat.domain.client.Season;
-import com.restapi.scoregoat.domain.client.SeasonDto;
+import com.restapi.scoregoat.domain.Season;
+import com.restapi.scoregoat.domain.client.mapJSON.Year;
 import org.springframework.stereotype.Service;
 
 @Service
 public class SeasonMapper {
-    public SeasonDto mapSeasonToSeasonDto(final Season season) {
-        return new SeasonDto(season.getYear());
+    public Year mapSeasonToSeasonDto(final Season season) {
+        return new Year(season.getYear());
     }
 }

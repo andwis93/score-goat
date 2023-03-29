@@ -1,6 +1,5 @@
 package com.restapi.scoregoat.domain;
 
-import jakarta.persistence.GeneratedValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -13,12 +12,15 @@ public enum Code {
     LOGIN_RESET_ATTEMPT("E004"),
     FIXTURE_GET("E005"),
     MATCH_UPLOAD("E006"),
+    MATCH_UPLOAD_ALL("E007"),
     SEASON_SET("I001"),
     USER_CREATE("I002"),
     USER_LOGIN("I003"),
     LOGIN_LOCKED_DATES_UPDATE("I004"),
     SESSION_EXPIRED_REMOVE("I005"),
-    USER_PASSWORD_CHANGED("I006");
+    USER_PASSWORD_CHANGED("I006"),
+    UPLOAD_MATCHES_OK("I007"),
+    UPLOAD_ALL_MATCHES_OK("I008");
 
     private final String code;
 }
