@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import java.time.OffsetDateTime;
+import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -46,4 +47,19 @@ public class Match {
     private int homeGoals;
     @Column(name = "AWAY_GOALS")
     private int awayGoals;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Match match = (Match) o;
+        return leagueId == match.leagueId && id.equals(match.id) && Objects.equals(fixtureId, match.fixtureId) &&
+                Objects.equals(date, match.date) && Objects.equals(homeTeam, match.homeTeam) &&
+                Objects.equals(awayTeam, match.awayTeam);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, leagueId, date);
+    }
 }

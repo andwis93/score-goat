@@ -59,13 +59,13 @@ public class MatchService {
         } catch (Exception ex) {
             String message = ex.getMessage() + " --ERROR: Couldn't upload all Matches to DataBase-- ";
             logDataService.saveLog(new LogData(null, "LeagueConfigList"
-                   , Code.MATCH_UPLOAD_ALL.getCode(), message));
+                    , Code.MATCH_UPLOAD_ALL.getCode(), message));
             LOGGER.error(message,ex);
             return null;
         }
     }
 
-    public List<Match> findByLeagueId(int id) {
-       return repository.findByLeagueId(id);
+    public List<Match> findByLeagueIdOrderByDate(int id) {
+        return repository.findByLeagueIdOrderByDate(id);
     }
 }

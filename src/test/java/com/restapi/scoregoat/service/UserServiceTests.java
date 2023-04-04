@@ -74,4 +74,25 @@ public class UserServiceTests {
         assertEquals("Email1@test.com", respondDto.getEmail());
         assertEquals(Respond.PASSWORD_CHANGED_OK.getRespond(), respondDto.getRespond());
     }
+
+    @Test
+    void testChangeAccountInformation() {
+        //Given
+        User user = new User("Name1","Email1@test.com", "password");
+        LogIn attempt = new LogIn(user);
+        AccountDto accountDto = new AccountDto(1L, "Test", "Test@test.com", "password");
+        when(repository.findById(anyLong())).thenReturn(Optional.of(user));
+        when(logInRepository.findByUser(user)).thenReturn(Optional.of(attempt));
+        when(encryptor.checkPassword(accountDto.getPassword(), user.getPassword())).thenReturn(true);
+        when(sessionService.saveRefreshedSession(any())).thenReturn(true);
+        when(logInService.resetAttempt(attempt)).thenReturn(true);
+
+        //When
+        UserRespondDto respondDto = service.accountChange(accountDto);
+
+        //Then
+        assertEquals("Test", respondDto.getUserName());
+        assertEquals("Test@test.com", respondDto.getEmail());
+        assertEquals(Respond.ACCOUNT_CHANGED_OK.getRespond(), respondDto.getRespond());
+    }
 }

@@ -4,7 +4,10 @@ import com.restapi.scoregoat.domain.Match;
 import com.restapi.scoregoat.domain.MatchDto;
 import com.restapi.scoregoat.domain.client.mapJSON.FixtureRespond;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import static java.util.stream.Collectors.toList;
 
@@ -16,7 +19,8 @@ public class MatchMapper {
                 match.getId(),
                 match.getLeagueId(),
                 match.getFixtureId(),
-                match.getDate().toString(),
+                match.getDate().toLocalDate().toString(),
+                match.getDate().toLocalTime().toString(),
                 match.getStatus(),
                 match.getElapsed(),
                 match.getHomeTeam(),
@@ -27,24 +31,6 @@ public class MatchMapper {
                 match.isAwayWinner(),
                 match.getHomeGoals(),
                 match.getAwayGoals());
-    }
-
-    public Match mapMatchDtoToMatch(final MatchDto matchDto) {
-        return new Match(
-                matchDto.getId(),
-                matchDto.getLeagueId(),
-                matchDto.getFixtureId(),
-                OffsetDateTime.parse(matchDto.getDate()),
-                matchDto.getStatus(),
-                matchDto.getElapsed(),
-                matchDto.getHomeTeam(),
-                matchDto.getHomeLogo(),
-                matchDto.isHomeWinner(),
-                matchDto.getAwayTeam(),
-                matchDto.getAwayLogo(),
-                matchDto.isAwayWinner(),
-                matchDto.getHomeGoals(),
-                matchDto.getAwayGoals());
     }
 
     public Match mapFixtureToMatch(final FixtureRespond fixtureRespond) {

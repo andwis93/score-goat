@@ -21,6 +21,7 @@ public enum Respond {
     WRONG_OLD_PASSWORD("Old Password is incorrect"),
     NEW_REPEAT_PASSWORD_DIFFERENT("New password and repeat password are not the same"),
     PASSWORD_CHANGED_OK("Password was changed successfully."),
+    ACCOUNT_CHANGED_OK("Account was changed successfully."),
     MATCH_UPLOAD_OK_LEAGUE("Matches were upload successfully --LEAGUE ID: "),
     MATCH_UPLOAD_OK_DATE(" --Up to date: "),
     MATCH_UPLOAD_OK_SEASON(" --For Season: "),

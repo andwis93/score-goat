@@ -30,12 +30,12 @@ public class MatchControllerTests {
     @Test
     void shouldGetMatches() throws Exception {
         //Given
-        MatchDto matchDto = new MatchDto(1L, 39, 365L, "2023-04-01T14:00:00+00:00",
+        MatchDto matchDto = new MatchDto(1L, 39, 365L, "2023-04-01", "00:00",
                 "Not Started", "81:48", "Liverpool", "Liverpool.logo",
                 true, "Everton", "Everton.logo", false, 2, 1);
         List<MatchDto> matchDtoList = new ArrayList<>();
         matchDtoList.add(matchDto);
-        when(facade.findMatchByLeagueId(any(Integer.class))).thenReturn(matchDtoList);
+        when(facade.findByLeagueIdOrderByDate(any(Integer.class))).thenReturn(matchDtoList);
 
         //When & Then
         mockMvc
@@ -47,7 +47,8 @@ public class MatchControllerTests {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].id", Matchers.is(1)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].leagueId", Matchers.is(39)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].fixtureId", Matchers.is(365)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].date", Matchers.is("2023-04-01T14:00:00+00:00")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].date", Matchers.is("2023-04-01")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].time", Matchers.is("00:00")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].status", Matchers.is("Not Started")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].elapsed", Matchers.is("81:48")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].homeTeam", Matchers.is("Liverpool")))

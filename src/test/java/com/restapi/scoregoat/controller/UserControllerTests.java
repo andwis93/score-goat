@@ -1,6 +1,7 @@
 package com.restapi.scoregoat.controller;
 
 import com.google.gson.Gson;
+import com.restapi.scoregoat.domain.AccountDto;
 import com.restapi.scoregoat.domain.PasswordDto;
 import com.restapi.scoregoat.domain.UserDto;
 import com.restapi.scoregoat.domain.UserRespondDto;
@@ -64,5 +65,25 @@ public class UserControllerTests {
                         .content(jsonContent))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.respond", Matchers.is("Password was changed")));
+    }
+
+    @Test
+    void shouldChangeAccountInformation() throws Exception {
+        //Given
+        AccountDto accountDto = new AccountDto(1L, "Test", "Test@test.com", "password");
+        UserRespondDto respondDto = new UserRespondDto("Account information were changed");
+        when(facade.accountChange(any())).thenReturn(respondDto);
+        Gson gson = new Gson();
+        String jsonContent = gson.toJson(accountDto);
+
+        //When & Then
+        mockMvc
+                .perform(MockMvcRequestBuilders
+                        .post("/v1/scoregoat/users/accountchange")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(jsonContent))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.respond", Matchers.is("Account information were changed")));
     }
 }

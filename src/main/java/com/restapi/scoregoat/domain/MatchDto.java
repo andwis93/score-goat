@@ -12,6 +12,7 @@ public class MatchDto {
     private int leagueId;
     private Long fixtureId;
     private String date;
+    private String time;
     private String status;
     private String elapsed;
     private String homeTeam;

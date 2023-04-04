@@ -40,11 +40,15 @@ public class ScoreGoatFacade {
         return userService.changePassword(passwordDto);
     }
 
+    public UserRespondDto accountChange(AccountDto accountDto) {
+        return userService.accountChange(accountDto);
+    }
     public MatchRespondDto uploadMatchesFromLeagueConfigList(){
         return matchService.uploadMatchesFromLeagueConfigList();
     }
 
-    public List<MatchDto> findMatchByLeagueId(int id) {
-        return mapper.mapMatchToMatchDtoList(matchService.findByLeagueId(id));
+    public List<MatchDto> findByLeagueIdOrderByDate(int id) {
+        return mapper.mapMatchToMatchDtoList(matchService.findByLeagueIdOrderByDate(id));
     }
+
 }

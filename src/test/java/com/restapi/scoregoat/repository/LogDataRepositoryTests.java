@@ -22,8 +22,8 @@ public class LogDataRepositoryTests {
 
         //When
         repository.save(logData);
-        List<LogData> logDataList = repository.findAll()
-                .stream().filter(l -> l.getOperateValue().equals("OperationValueTest")).toList();
+        List<LogData> logDataList = repository.findAll();
+        List<LogData> newList = logDataList.stream().filter(l -> l.getOperateValue().equals("OperationValueTest")).toList();
 
         //Then
         assertEquals(1, logDataList.size());

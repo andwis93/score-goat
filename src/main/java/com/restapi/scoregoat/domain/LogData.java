@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,5 +38,20 @@ public class LogData {
         this.dateTime = LocalDateTime.now();
         this.code = code;
         this.description = description;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LogData logData = (LogData) o;
+        return id.equals(logData.id) && Objects.equals(dateTime, logData.dateTime) &&
+                Objects.equals(code, logData.code) && Objects.equals(description, logData.description) &&
+                Objects.equals(userId, logData.userId) && Objects.equals(operateValue, logData.operateValue);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, dateTime, code, description, userId, operateValue);
     }
 }

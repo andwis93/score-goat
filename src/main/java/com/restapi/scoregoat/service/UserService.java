@@ -95,6 +95,45 @@ public class UserService {
         }
     }
 
+    public UserRespondDto accountChange(AccountDto accountDto){
+        if (accountDto.getUserId() != null && accountDto.getPassword() != null &&
+                accountDto.getPassword().matches(".*\\w.*")){
+            User user = repository.findById(accountDto.getUserId()).orElse(null);
+            if (user != null) {
+                LogIn attempt = logInRepository.findByUser(user).orElse(new LogIn(user));
+                if (attempt.getLocked() == null) {
+                    if (encryptor.checkPassword(accountDto.getPassword(), user.getPassword())) {
+                            user.setName(accountDto.getUserName());
+                            user.setEmail(accountDto.getEmail());
+                            repository.save(user);
+                            sessionService.saveRefreshedSession(user);
+                            logInService.resetAttempt(attempt);
+                            return new UserRespondDto().setExtendResponse(
+                                    user, Respond.ACCOUNT_CHANGED_OK.getRespond());
+                    } else {
+                        attempt.addAttempt();
+                        if (attempt.getAttempt() > DurationValues.MAX_ATTEMPT.getValue()) {
+                            attempt.setLocked(LocalDateTime.now().plusHours(DurationValues.ATTEMPT_BLOCKED.getValue()));
+                        }
+                        logInRepository.save(attempt);
+                        return new UserRespondDto(Respond.WRONG_OLD_PASSWORD.getRespond());
+                    }
+                } else {
+                    if (manager.checkIfLessThen1H(attempt.getLocked())) {
+                        return new UserRespondDto(Respond.TO_MANY_ATTEMPTS_LESS_THEN_1H.getRespond());
+                    } else {
+                        return new UserRespondDto(Respond.TO_MANY_ATTEMPTS.getRespond()
+                                + manager.getDuration(attempt.getLocked()));
+                    }
+                }
+            } else {
+                return new UserRespondDto(Respond.USER_NOT_EXIST.getRespond());
+            }
+        } else {
+            return new UserRespondDto(Respond.FIELDS_EMPTY.getRespond());
+        }
+    }
+
     private UserRespondDto setRespond(User user, String respond) {
         UserRespondDto respondDto = new UserRespondDto(respond);
         respondDto.setId(user.getId());

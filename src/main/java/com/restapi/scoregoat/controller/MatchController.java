@@ -1,10 +1,8 @@
 package com.restapi.scoregoat.controller;
 
-import com.restapi.scoregoat.domain.Match;
 import com.restapi.scoregoat.domain.MatchDto;
 import com.restapi.scoregoat.domain.MatchRespondDto;
 import com.restapi.scoregoat.facade.ScoreGoatFacade;
-import com.restapi.scoregoat.mapper.MatchMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +18,7 @@ public class MatchController {
 
     @GetMapping()
     public ResponseEntity<List<MatchDto>> getMatchesByLeagueId(@RequestParam int id) {
-        return ResponseEntity.ok(facade.findMatchByLeagueId(id));
+        return ResponseEntity.ok(facade.findByLeagueIdOrderByDate(id));
     }
 
     @PutMapping()
