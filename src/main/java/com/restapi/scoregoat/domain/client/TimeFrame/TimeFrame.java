@@ -6,8 +6,8 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum TimeFrame {
-    DAYS(10);
+    DAYS_BEFORE(10),
+    DAYS_AFTER(10);
 
     private final int timeFrame;
-
 }

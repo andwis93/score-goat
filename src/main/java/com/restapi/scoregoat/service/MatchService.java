@@ -4,15 +4,16 @@ import com.restapi.scoregoat.client.FootballClient;
 import com.restapi.scoregoat.config.LeaguesListConfig;
 import com.restapi.scoregoat.domain.*;
 import com.restapi.scoregoat.domain.client.mapJSON.FixturesList;
-import com.restapi.scoregoat.domain.client.TimeFrame.TimeFrame;
 import com.restapi.scoregoat.mapper.MatchMapper;
+import com.restapi.scoregoat.repository.MatchPredictionRepository;
 import com.restapi.scoregoat.repository.MatchRepository;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +23,7 @@ import java.util.Map;
 public class MatchService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MatchService.class);
     private final MatchRepository repository;
+    private MatchPredictionRepository matchPredictionRepository;
     private final MatchMapper mapper;
     private final FootballClient client;
     private final SeasonService seasonService;
@@ -52,7 +54,7 @@ public class MatchService {
             deleteFixtures();
             for (Map.Entry<Integer, String> league : leaguesList.createList().entrySet()) {
                 FixtureParam param = new FixtureParam(
-                        league.getKey(), season, LocalDate.now().plusDays(TimeFrame.DAYS.getTimeFrame()));
+                        league.getKey(), season);
                 uploadMatches(param);
             }
             return new MatchRespondDto(Respond.ALL_MATCH_UPLOAD_OK.getRespond());
@@ -65,7 +67,27 @@ public class MatchService {
         }
     }
 
-    public List<Match> findByLeagueIdOrderByDate(int id) {
-        return repository.findByLeagueIdOrderByDate(id);
+    public List<Match> findByLeagueIdOrderByDate(int leagueId) {
+        return repository.findByLeagueIdOrderByDate(leagueId);
+    }
+
+    public List<Match> eliminateSelected(Long userId, int leagueId){
+        List<Match> finalMatchList = new ArrayList<>();
+        for (Match match: findByLeagueIdOrderByDate(leagueId)) {
+            if (!matchPredictionRepository.existsMatchPredictionByUserIdAndMatchId(userId, match.getId())) {
+                finalMatchList.add(match);
+            }
+        }
+        return finalMatchList;
+    }
+
+    public List<Match> eliminateStarted(Long userId, int leagueId){
+        List<Match> finalMatchList = new ArrayList<>();
+        for (Match match: eliminateSelected(userId, leagueId)) {
+            if (match.getDate().isAfter(OffsetDateTime.now())) {
+                finalMatchList.add(match);
+            }
+        }
+        return finalMatchList;
     }
 }

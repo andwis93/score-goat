@@ -32,7 +32,7 @@ public class LogIn {
     }
 
     public void addAttempt() {
-        this.attempt += 1;
+        this.attempt++;
     }
 
     public void resetAttempt() {

@@ -29,7 +29,7 @@ public class ScoreGoatFacade {
     }
 
     public UserRespondDto createUser(UserDto userDto) {
-        return userService.signInUser(userDto);
+        return userService.signUpUser(userDto);
     }
 
     public UserRespondDto tryLogIn(UserParamDto userParam) {
@@ -47,8 +47,8 @@ public class ScoreGoatFacade {
         return matchService.uploadMatchesFromLeagueConfigList();
     }
 
-    public List<MatchDto> findByLeagueIdOrderByDate(int id) {
-        return mapper.mapMatchToMatchDtoList(matchService.findByLeagueIdOrderByDate(id));
-    }
+    public List<MatchDto> findByLeagueIdOrderByDate(long userId, int leagueId) {
 
+        return mapper.mapMatchToMatchDtoList(matchService.eliminateStarted(userId, leagueId));
+    }
 }

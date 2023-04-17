@@ -29,7 +29,7 @@ public class ScoreGoatFacadeTests {
         //When
         UserDto userDto = new UserDto("Name1","Email1@test.com", "Password1");
         UserRespondDto respond = new UserRespondDto("Create Name1");
-        when(userService.signInUser(userDto)).thenReturn(respond);
+        when(userService.signUpUser(userDto)).thenReturn(respond);
 
         //When
         UserRespondDto theRespond = facade.createUser(userDto);

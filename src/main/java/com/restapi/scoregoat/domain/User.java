@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,21 +30,22 @@ public class User {
     private String password;
     @Column(name = "CREATED")
     private LocalDate created;
+    @Column(name = "POINTS")
+    private int points;
+    @Column(name = "PLACE")
+    private Long place;
+    @OneToMany(
+            targetEntity =  MatchPrediction.class,
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER
+    )
+    private List<MatchPrediction> matchPredictions = new ArrayList<>();
 
     public User(String name, String email, String password) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.created = LocalDate.now();
-    }
-
-    @Override
-    public String toString() {
-        return "\nUSER:\n" +
-                " id:" + id +
-                "\n name: " + name +
-                "\n email: " + email +
-                "\n password: *****" +
-                "\n created: " + created;
     }
 }

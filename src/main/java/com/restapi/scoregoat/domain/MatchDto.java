@@ -3,6 +3,7 @@ package com.restapi.scoregoat.domain;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,4 +24,5 @@ public class MatchDto {
     private boolean awayWinner;
     private int homeGoals;
     private int awayGoals;
+    private List<MatchPredictionDto> matchPredictionsDto;
 }

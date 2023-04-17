@@ -25,7 +25,7 @@ public class UserService {
     private final StrongPasswordEncryptor encryptor;
     private final DurationManager manager;
 
-    public UserRespondDto signInUser(UserDto userDto) {
+    public UserRespondDto signUpUser(UserDto userDto) {
         if (userDto != null && userDto.getName() != null && userDto.getEmail() != null && userDto.getPassword() != null
                 && userDto.getName().matches(".*\\w.*") && userDto.getEmail().matches(".*\\w.*")
                 && userDto.getPassword().matches(".*\\w.*")) {
@@ -35,7 +35,7 @@ public class UserService {
                     if (repository.findByEmail(user.getEmail()).isEmpty()) {
                         user.setPassword(encryptor.encryptPassword(user.getPassword()));
                         user = repository.save(user);
-                        return setRespond(user, Respond.USER_CREATED_OK.getRespond());
+                        return new UserRespondDto().setExtendResponse(user, Respond.USER_CREATED_OK.getRespond());
                     } else {
                         return new UserRespondDto(Respond.EMAIL_EXISTS.getRespond());
                     }
@@ -132,14 +132,5 @@ public class UserService {
         } else {
             return new UserRespondDto(Respond.FIELDS_EMPTY.getRespond());
         }
-    }
-
-    private UserRespondDto setRespond(User user, String respond) {
-        UserRespondDto respondDto = new UserRespondDto(respond);
-        respondDto.setId(user.getId());
-        respondDto.setUserName(user.getName());
-        respondDto.setEmail(user.getEmail());
-        respondDto.setLogIn(true);
-        return respondDto;
     }
 }

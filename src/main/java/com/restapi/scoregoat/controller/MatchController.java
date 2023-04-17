@@ -6,7 +6,6 @@ import com.restapi.scoregoat.facade.ScoreGoatFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -16,9 +15,9 @@ import java.util.List;
 public class MatchController {
     private final ScoreGoatFacade facade;
 
-    @GetMapping()
-    public ResponseEntity<List<MatchDto>> getMatchesByLeagueId(@RequestParam int id) {
-        return ResponseEntity.ok(facade.findByLeagueIdOrderByDate(id));
+    @PostMapping
+    public ResponseEntity<List<MatchDto>> getMatchesByLeagueId(@RequestParam Long userId, @RequestParam int leagueId) {
+        return ResponseEntity.ok(facade.findByLeagueIdOrderByDate(userId, leagueId));
     }
 
     @PutMapping()

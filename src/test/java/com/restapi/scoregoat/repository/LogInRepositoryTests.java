@@ -27,7 +27,8 @@ public class LogInRepositoryTests {
 
         repository.saveAll(logInList);
         List<LogIn> logInListFound = repository.findAll().stream()
-                .filter(u -> u.getUser().getName().equals("UserNameTest")).toList();
+                .filter(userList -> userList.getUser() != null)
+                .filter(list -> list.getUser().getName().equals("UserNameTest")).toList();
 
         //Then
         assertEquals(1, logInListFound.size());

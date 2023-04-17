@@ -24,7 +24,7 @@ public class Watcher {
         LOGGER.info(message);
     }
 
-    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.UserService.signInUser(..))"
+    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.UserService.signUpUser(..))"
             + "&&target(object)" , returning = "respond", argNames = "respond,object")
     public void logSetCreateUser(UserRespondDto respond, Object object) {
         String message = "Create User with ID: " + respond.getId() + " with respond: " + respond.getRespond()

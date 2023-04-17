@@ -6,6 +6,7 @@ import com.restapi.scoregoat.domain.*;
 import com.restapi.scoregoat.domain.client.TimeFrame.TimeFrame;
 import com.restapi.scoregoat.domain.client.mapJSON.*;
 import com.restapi.scoregoat.mapper.MatchMapper;
+import com.restapi.scoregoat.repository.MatchPredictionRepository;
 import com.restapi.scoregoat.repository.MatchRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,6 +32,8 @@ public class MatchServiceTests {
     @Mock
     private MatchRepository repository;
     @Mock
+    private MatchPredictionRepository matchPredictionRepository;
+    @Mock
     private MatchMapper mapper;
 
     @Test
@@ -41,22 +44,22 @@ public class MatchServiceTests {
         Team homeTeam = new Team("LiverPool", "http://Logo.png", true);
         Team awayTeam = new Team("Everton", "http://Logo2.png", false);
         Status status = new Status("Not Started", null);
-        Fixture fixture = new Fixture(39L,"2023-04-01T14:00:00+00:00", status);
-        League league = new League(39, "Premier League", "http://PremierLeague.png" );
+        Fixture fixture = new Fixture(189L,"2023-04-01T14:00:00+00:00", status);
+        League league = new League(SeasonConfig.DEFAULT_LEAGUE.getId(), "Premier League", "http://PremierLeague.png" );
         Teams teams = new Teams(homeTeam, awayTeam);
         Goals goals = new Goals(2,1);
         FixtureRespond fixtureRespond = new FixtureRespond(fixture, league, teams, goals);
         FixturesList fixturesList = new FixturesList();
         fixturesList.getFixtureList().add(fixtureRespond);
 
-        LocalDate toDate = LocalDate.now().plusDays(TimeFrame.DAYS.getTimeFrame());
+        LocalDate toDate = LocalDate.now().plusDays(TimeFrame.DAYS_AFTER.getTimeFrame());
 
         FixtureParam param = new FixtureParam(SeasonConfig.DEFAULT_LEAGUE.getId(),
-                season.getYear(), toDate);
+                season.getYear());
 
         when(client.getFixtures(param)).thenReturn(fixturesList);
 
-        Match match = new Match(1L, 39, 365L, OffsetDateTime.parse("2023-04-01T14:00:00+00:00"),
+        Match match = new Match(1L, SeasonConfig.DEFAULT_LEAGUE.getId(), 365L, OffsetDateTime.parse("2023-04-01T14:00:00+00:00"),
                 "Not Started", "81:48", "Liverpool", "Liverpool.logo",
                 true, "Everton", "Everton.logo", false, 2, 1);
 
@@ -83,8 +86,8 @@ public class MatchServiceTests {
         Team homeTeam = new Team("LiverPool", "http://Logo.png", true);
         Team awayTeam = new Team("Everton", "http://Logo2.png", false);
         Status status = new Status("Not Started", null);
-        Fixture fixture = new Fixture(39L,"2023-04-01T14:00:00+00:00", status);
-        League league = new League(39, "Premier League", "http://PremierLeague.png" );
+        Fixture fixture = new Fixture(189L,"2023-04-01T14:00:00+00:00", status);
+        League league = new League(SeasonConfig.DEFAULT_LEAGUE.getId(), "Premier League", "http://PremierLeague.png" );
         Teams teams = new Teams(homeTeam, awayTeam);
         Goals goals = new Goals(2,1);
         FixtureRespond fixtureRespond = new FixtureRespond(fixture, league, teams, goals);
@@ -94,7 +97,7 @@ public class MatchServiceTests {
         doReturn(season).when(seasonService).fetchSeason();
         when(client.getFixtures(any())).thenReturn(fixturesList);
 
-        Match match = new Match(1L, 39, 365L, OffsetDateTime.parse("2023-04-01T14:00:00+00:00"),
+        Match match = new Match(1L, SeasonConfig.DEFAULT_LEAGUE.getId(), 365L, OffsetDateTime.parse("2023-04-01T14:00:00+00:00"),
                 "Not Started", "81:48", "Liverpool", "Liverpool.logo",
                 true, "Everton", "Everton.logo", false, 2, 1);
 
@@ -109,5 +112,58 @@ public class MatchServiceTests {
 
         //Then
         assertEquals(Respond.ALL_MATCH_UPLOAD_OK.getRespond(), theRespond.getRespond());
+    }
+
+    @Test
+    void shouldEliminateSelected() {
+        //Given
+        Match match1 = new Match(67L, SeasonConfig.DEFAULT_LEAGUE.getId(), 365L, OffsetDateTime.parse("2023-04-01T14:00:00+00:00"),
+                "Not Started", "00:00", "Liverpool", "Liverpool.logo",
+                true, "Everton", "Everton.logo", false,
+                2, 1);
+
+        Match match2 = new Match(25L, SeasonConfig.DEFAULT_LEAGUE.getId(), 367L, OffsetDateTime.parse("2023-04-01T19:00:00+00:00"),
+                "Not Started", "00:00", "Arsenal", "Arsenal.logo",
+                false, "WestHam", "WestHam.logo", true, 2, 3);
+
+        List<Match> matchList = new ArrayList<>();
+        matchList.add(match1);
+        matchList.add(match2);
+
+        when(service.findByLeagueIdOrderByDate(SeasonConfig.DEFAULT_LEAGUE.getId())).thenReturn(matchList);
+        when(matchPredictionRepository.existsMatchPredictionByUserIdAndMatchId(1L,67L)).thenReturn(false);
+        when(matchPredictionRepository.existsMatchPredictionByUserIdAndMatchId(1L,25L)).thenReturn(true);
+
+        //When
+        List<Match> theMatchList = service.eliminateSelected(1L, 39);
+
+        //Then
+        assertEquals(1, theMatchList.size());
+    }
+
+    @Test
+    void shouldEliminateStarted() {
+        //Given
+        Match match1 = new Match(67L, SeasonConfig.DEFAULT_LEAGUE.getId(), 365L, OffsetDateTime.now().plusDays(1),
+                "Not Started", "00:00", "Liverpool", "Liverpool.logo",
+                true, "Everton", "Everton.logo", false,
+                2, 1);
+
+        Match match2 = new Match(25L, SeasonConfig.DEFAULT_LEAGUE.getId(), 367L, OffsetDateTime.now().minusDays(1),
+                "Not Started", "00:00", "Arsenal", "Arsenal.logo",
+                false, "WestHam", "WestHam.logo", true, 2, 3);
+
+        List<Match> matchList = new ArrayList<>();
+        matchList.add(match1);
+        matchList.add(match2);
+
+        when(service.eliminateSelected(1L, SeasonConfig.DEFAULT_LEAGUE.getId())).thenReturn(matchList);
+
+
+        //When
+        List<Match> theMatchList = service.eliminateStarted(1L, SeasonConfig.DEFAULT_LEAGUE.getId());
+
+        //Then
+        assertEquals(1, theMatchList.size());
     }
 }

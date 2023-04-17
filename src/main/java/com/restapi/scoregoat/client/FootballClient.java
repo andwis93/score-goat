@@ -22,7 +22,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
-import java.time.LocalDate;
 import java.util.*;
 
 @Component
@@ -53,7 +52,7 @@ public class FootballClient {
         return UriComponentsBuilder.fromHttpUrl(uriBuild() + "/fixtures")
                 .queryParam("league", param.getId())
                 .queryParam("season", param.getSeason())
-                .queryParam("from", LocalDate.now())
+                .queryParam("from", param.getFromDate())
                 .queryParam("to", param.getToDate())
                 .build().encode().toUri();
     }
@@ -66,12 +65,12 @@ public class FootballClient {
 
     public String getFootballSeason() {
         try {
-        ResponseEntity<SeasonsList> responseEntity =
-                restTemplate.exchange(
-                        uriForSeason(), HttpMethod.GET, passHeaders(), SeasonsList.class);
-        List<Year> yearList = Objects.requireNonNull(responseEntity.getBody())
-                .getSeasonsLists().stream().map(Seasons::getYearsList).flatMap(Collection::stream).toList();
-        return Collections.max(yearList.stream().map(Year::getYear).toList());
+            ResponseEntity<SeasonsList> responseEntity =
+                    restTemplate.exchange(
+                            uriForSeason(), HttpMethod.GET, passHeaders(), SeasonsList.class);
+            List<Year> yearList = Objects.requireNonNull(responseEntity.getBody())
+                    .getSeasonsLists().stream().map(Seasons::getYearsList).flatMap(Collection::stream).toList();
+            return Collections.max(yearList.stream().map(Year::getYear).toList());
         } catch (RestClientException ex) {
             String message = ex.getMessage() + "  --ERROR: Couldn't get season from Api Client-- ";
             logDataService.saveLog(new LogData(

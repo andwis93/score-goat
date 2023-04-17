@@ -7,13 +7,13 @@ import lombok.Getter;
 @Getter
 public enum Respond {
     USER_NOT_CREATED("User with this name already exists. Please choose different user name and try again."),
-    USER_CREATED_OK("User created successfully."),
+    USER_CREATED_OK("User created successfully. Please try to log in."),
     EMAIL_INCORRECT("Wrong email address. Please enter valid email address and try again."),
     USERNAME_EXISTS("User name already exists. Please choose different user name."),
     EMAIL_EXISTS("User with provided email address already exists. Please choose different email address."),
     FIELDS_EMPTY("Pleaser provide all necessary information and try again"),
     USER_LOGGED_IN("User logged in successfully"),
-
+    USER_ID_INCORRECT("User id is incorrect"),
     USER_NOT_EXIST("User with this name or email does not exist."),
     TO_MANY_ATTEMPTS("You have reached the maximum number of login attempts. Please try again in approximately: "),
     TO_MANY_ATTEMPTS_LESS_THEN_1H("You have reached the maximum number of login attempts. Account will be unlocked within 2 hour"),
@@ -25,6 +25,7 @@ public enum Respond {
     MATCH_UPLOAD_OK_LEAGUE("Matches were upload successfully --LEAGUE ID: "),
     MATCH_UPLOAD_OK_DATE(" --Up to date: "),
     MATCH_UPLOAD_OK_SEASON(" --For Season: "),
+    PREDICTIONS_SAVE_OK("Predictions were saved successfully"),
     ALL_MATCH_UPLOAD_OK("All Matches were uploaded successfully.");
 
     private final String respond;

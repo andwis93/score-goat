@@ -4,15 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class MatchRespondDto {
-    private int leagueId;
-    private String respond;
-    public MatchRespondDto(String respond) {
-        this.respond = respond;
-    }
+public class PredictionDto {
+    private Long userId;
+    private List<MatchSelection> matchSelections;
 }

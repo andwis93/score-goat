@@ -48,7 +48,7 @@ public class UserServiceTests {
         when(repository.save(user)).thenReturn(user);
 
         //When
-        UserRespondDto respondDto = service.signInUser(userDto);
+        UserRespondDto respondDto = service.signUpUser(userDto);
 
         //Then
         assertEquals(Respond.USER_CREATED_OK.getRespond(), respondDto.getRespond());

@@ -1,7 +1,6 @@
 package com.restapi.scoregoat.controller;
 
-import com.restapi.scoregoat.domain.MatchDto;
-import com.restapi.scoregoat.domain.MatchRespondDto;
+import com.restapi.scoregoat.domain.*;
 import com.restapi.scoregoat.facade.ScoreGoatFacade;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -15,7 +14,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.ArrayList;
 import java.util.List;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -30,19 +28,23 @@ public class MatchControllerTests {
     @Test
     void shouldGetMatches() throws Exception {
         //Given
+        MatchPredictionDto matchPredictionDto1 = new MatchPredictionDto(11L, Result.HOME.getResult(), 1L, 2L );
+        List<MatchPredictionDto> matchPredictionsDto = new ArrayList<>();
+        matchPredictionsDto.add(matchPredictionDto1);
         MatchDto matchDto = new MatchDto(1L, 39, 365L, "2023-04-01", "00:00",
                 "Not Started", "81:48", "Liverpool", "Liverpool.logo",
-                true, "Everton", "Everton.logo", false, 2, 1);
+                true, "Everton", "Everton.logo", false, 2, 1, matchPredictionsDto);
         List<MatchDto> matchDtoList = new ArrayList<>();
         matchDtoList.add(matchDto);
-        when(facade.findByLeagueIdOrderByDate(any(Integer.class))).thenReturn(matchDtoList);
-
-        //When & Then
+        when(facade.findByLeagueIdOrderByDate(any(Long.class), any(Integer.class))).thenReturn(matchDtoList);
         mockMvc
                 .perform(MockMvcRequestBuilders
-                        .get("/v1/scoregoat/match")
+                        .post("/v1/scoregoat/match")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("id","39"))
+                        .param("userId", "1")
+                        .param("leagueId","39")
+                        .characterEncoding("UTF-8"))
+
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].id", Matchers.is(1)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].leagueId", Matchers.is(39)))
@@ -58,7 +60,11 @@ public class MatchControllerTests {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].awayLogo", Matchers.is("Everton.logo")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].awayWinner", Matchers.is(false)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].homeGoals", Matchers.is(2)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].awayGoals", Matchers.is(1)));
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].awayGoals", Matchers.is(1)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].matchPredictionsDto[0].id", Matchers.is(11)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].matchPredictionsDto[0].whoWin", Matchers.is(Result.HOME.getResult())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].matchPredictionsDto[0].userId", Matchers.is(1)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].matchPredictionsDto[0].matchId", Matchers.is(2)));
     }
 
     @Test

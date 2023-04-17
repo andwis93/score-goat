@@ -1,7 +1,6 @@
 package com.restapi.scoregoat.scheduler;
 
 import com.restapi.scoregoat.facade.ScoreGoatFacade;
-import com.restapi.scoregoat.service.MatchService;
 import com.restapi.scoregoat.service.UpdateLogInService;
 import com.restapi.scoregoat.service.SeasonService;
 import com.restapi.scoregoat.service.SessionService;
@@ -38,7 +37,7 @@ public class DataScheduler {
         sessionService.removeExpiredSession();
     }
 
-    @Scheduled(cron = "0 0 4 * * ?", zone="Europe/Warsaw")
+    @Scheduled(cron = "0 */30 * * * ?", zone="Europe/Warsaw")
     public void updateMatches() {
         facade.uploadMatchesFromLeagueConfigList();
     }

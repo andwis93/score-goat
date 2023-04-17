@@ -1,16 +1,16 @@
 package com.restapi.scoregoat.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -47,6 +47,33 @@ public class Match {
     private int homeGoals;
     @Column(name = "AWAY_GOALS")
     private int awayGoals;
+    @OneToMany(
+            targetEntity =  MatchPrediction.class,
+            mappedBy = "match",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER
+    )
+    private List<MatchPrediction> matchPredictions;
+
+    public Match(@NotNull Long id, int leagueId, Long fixtureId, OffsetDateTime date, String status, String elapsed,
+                 String homeTeam, String homeLogo, boolean homeWinner, String awayTeam, String awayLogo,
+                 boolean awayWinner, int homeGoals, int awayGoals) {
+        this.id = id;
+        this.leagueId = leagueId;
+        this.fixtureId = fixtureId;
+        this.date = date;
+        this.status = status;
+        this.elapsed = elapsed;
+        this.homeTeam = homeTeam;
+        this.homeLogo = homeLogo;
+        this.homeWinner = homeWinner;
+        this.awayTeam = awayTeam;
+        this.awayLogo = awayLogo;
+        this.awayWinner = awayWinner;
+        this.homeGoals = homeGoals;
+        this.awayGoals = awayGoals;
+        this.matchPredictions = new ArrayList<>();
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -63,3 +90,5 @@ public class Match {
         return Objects.hash(id, leagueId, date);
     }
 }
+
+

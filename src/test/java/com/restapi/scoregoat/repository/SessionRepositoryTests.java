@@ -13,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class SessionRepositoryTests {
     @Autowired
     private SessionRepository repository;
-
     @Autowired
     private UserRepository userRepository;
 
@@ -61,7 +60,5 @@ public class SessionRepositoryTests {
         } catch (Exception ex) {
             //do nothing
         }
-
     }
-
 }
