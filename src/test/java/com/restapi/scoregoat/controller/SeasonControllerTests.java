@@ -54,7 +54,6 @@ public class SeasonControllerTests {
         Gson gson = new Gson();
         String jsonContent = gson.toJson(year);
 
-
         //When & Then
         mockMvc
                 .perform(MockMvcRequestBuilders

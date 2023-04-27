@@ -59,6 +59,16 @@ public class Watcher {
                 Code.SESSION_EXPIRED_REMOVE.getCode(), message));
         LOGGER.info(message);
     }
+
+    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.UserService.accountChange(..))"
+            + "&&target(object)" , returning = "respond", argNames = "respond,object")
+    public void accountChange(UserRespondDto respond, Object object) {
+        String message = "Attempt to change account Information for user with ID: " + respond.getId() + " with respond: "
+                + respond.getRespond() + " -- Class: " + object;
+        logDataService.saveLog(new LogData(respond.getId(), null, Code.USER_ACCOUNT_INFO_CHSNGE.getCode(), message));
+        LOGGER.info(message);
+    }
+
     @AfterReturning(value = "execution(* com.restapi.scoregoat.service.UserService.changePassword(..))"
             + "&&target(object)" , returning = "respond", argNames = "respond,object")
     public void logChangingPassword(UserRespondDto respond, Object object) {
@@ -83,6 +93,15 @@ public class Watcher {
         String message = "Attempt to upload all matches with respond: "
                 + respond.getRespond() + " -- Class: " + object;
         logDataService.saveLog(new LogData(null, "LeagueConfigList", Code.UPLOAD_ALL_MATCHES_OK.getCode(), message));
+        LOGGER.info(message);
+    }
+
+    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.MatchPredictionService.savePredictions(..))"
+            + "&&args(predictionDto) &&target(object)" ,returning = "respond", argNames = "predictionDto, respond, object")
+    public void saveUserPredictions(PredictionDto predictionDto, String respond, Object object) {
+        String message = "Attempt to save all matches predictions by user: " + predictionDto.getUserId() + " with respond: "
+                + respond + " -- Class: " + object;
+        logDataService.saveLog(new LogData(null, "LeagueConfigList", Code.SAVE_ALL_PREDICTIONS.getCode(), message));
         LOGGER.info(message);
     }
 }

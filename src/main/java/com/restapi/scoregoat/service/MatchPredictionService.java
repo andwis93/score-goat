@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 @AllArgsConstructor
@@ -29,17 +30,17 @@ public class MatchPredictionService {
         }
     }
 
-    public String savePredictions(PredictionDto predictionDto) {
+    public NotificationRespondDto savePredictions(PredictionDto predictionDto) {
         if (userRepository.existsById(predictionDto.getUserId())) {
             User user = userRepository.findById(predictionDto.getUserId()).orElseThrow(NoSuchElementException::new);
-            for (MatchSelection match : predictionDto.getMatchSelections()) {
-                if (!repository.existsMatchPredictionByUserIdAndMatchId(user.getId(), match.getMatchId())) {
+            for (Map.Entry<Long, String> match : predictionDto.getMatchSelections().entrySet()) {
+                if (!repository.existsMatchPredictionByUserIdAndMatchId(user.getId(), match.getKey())) {
                     try {
-                        Match theMatch = findMatch(match.getMatchId());
+                        Match theMatch = findMatch(match.getKey());
                         MatchPrediction prediction = new MatchPrediction();
                         prediction.setUser(user);
                         prediction.setMatch(theMatch);
-                        prediction.setWhoWin(match.getWhoWin());
+                        prediction.setWhoWin(match.getValue());
                         repository.save(prediction);
                         user.getMatchPredictions().add(prediction);
                         theMatch.getMatchPredictions().add(prediction);
@@ -48,15 +49,15 @@ public class MatchPredictionService {
                     } catch (NoSuchElementException ex) {
                         String message = ex.getMessage() + "  --ERROR: Couldn't execute \"savePredictions\"-- ";
                         logDataService.saveLog(new LogData(null, "With matchID: " +
-                                match.getMatchId(), Code.COULD_NOT_EXECUTE_PREDICTION.getCode(), message));
+                                match.getKey(), Code.COULD_NOT_EXECUTE_PREDICTION.getCode(), message));
                         LOGGER.error(message, ex);
-                        return message;
+                        return new NotificationRespondDto(message, NotificationType.ERROR.getType());
                     }
                 }
             }
-            return Respond.PREDICTIONS_SAVE_OK.getRespond();
+            return new NotificationRespondDto(Respond.PREDICTIONS_SAVE_OK.getRespond(), NotificationType.SUCCESS.getType());
         } else {
-            return Respond.USER_ID_INCORRECT.getRespond();
+            return new NotificationRespondDto(Respond.USER_ID_INCORRECT.getRespond(), NotificationType.ERROR.getType());
         }
     }
 }

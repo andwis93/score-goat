@@ -9,7 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class MatchSelection {
-    private Long matchId;
-    private String whoWin;
+public class NotificationRespondDto {
+    private String message;
+    private String type;
 }

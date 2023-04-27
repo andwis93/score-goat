@@ -12,9 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -49,11 +47,9 @@ public class MatchPredictionServiceTests {
     @Test
     void testSavePredictions() {
         //Given
-		MatchSelection matchSelection1 = new MatchSelection(333L,"home");
-		MatchSelection matchSelection2 = new MatchSelection(327L,"away");
-		List<MatchSelection> list = new ArrayList<>();
-		list.add(matchSelection1);
-		list.add(matchSelection2);
+		Map<Long, String> list = new HashMap<>();
+        list.put(333L, Result.HOME.getResult());
+        list.put(327L, Result.AWAY.getResult());
 
 		PredictionDto predictionDto = new PredictionDto(202L, list);
 
@@ -64,7 +60,7 @@ public class MatchPredictionServiceTests {
                 "Not Started", "81:48", "Liverpool", "Liverpool.logo",
                 true, "Everton", "Everton.logo", false, 2, 1);
 
-        MatchPrediction prediction = new MatchPrediction(22L, matchSelection2.getWhoWin(), user,match2);
+        MatchPrediction prediction = new MatchPrediction(22L, list.get(327L), user,match2);
 
         when(userRepository.existsById(202L)).thenReturn(true);
         when(userRepository.findById(202L)).thenReturn(Optional.of(user));
@@ -77,9 +73,10 @@ public class MatchPredictionServiceTests {
         when(matchRepository.save(any(Match.class))).thenReturn(match2);
 
         //When
-        String respond = service.savePredictions(predictionDto);
+        NotificationRespondDto respondDto = service.savePredictions(predictionDto);
 
         //Then
-        assertEquals(Respond.PREDICTIONS_SAVE_OK.getRespond(), respond);
+        assertEquals(Respond.PREDICTIONS_SAVE_OK.getRespond(), respondDto.getMessage());
+        assertEquals(NotificationType.SUCCESS.getType(), respondDto.getType());
     }
 }
