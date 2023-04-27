@@ -74,7 +74,7 @@ public class MatchService {
     public List<Match> eliminateSelected(Long userId, int leagueId){
         List<Match> finalMatchList = new ArrayList<>();
         for (Match match: findByLeagueIdOrderByDate(leagueId)) {
-            if (!matchPredictionRepository.existsMatchPredictionByUserIdAndMatchId(userId, match.getId())) {
+            if (!matchPredictionRepository.existsMatchPredictionByUserIdAndFixtureId(userId, match.getFixtureId())) {
                 finalMatchList.add(match);
             }
         }

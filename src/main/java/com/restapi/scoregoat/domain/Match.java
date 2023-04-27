@@ -6,8 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @NoArgsConstructor
@@ -47,13 +45,6 @@ public class Match {
     private int homeGoals;
     @Column(name = "AWAY_GOALS")
     private int awayGoals;
-    @OneToMany(
-            targetEntity =  MatchPrediction.class,
-            mappedBy = "match",
-            cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER
-    )
-    private List<MatchPrediction> matchPredictions;
 
     public Match(@NotNull Long id, int leagueId, Long fixtureId, OffsetDateTime date, String status, String elapsed,
                  String homeTeam, String homeLogo, boolean homeWinner, String awayTeam, String awayLogo,
@@ -72,7 +63,6 @@ public class Match {
         this.awayWinner = awayWinner;
         this.homeGoals = homeGoals;
         this.awayGoals = awayGoals;
-        this.matchPredictions = new ArrayList<>();
     }
 
     @Override

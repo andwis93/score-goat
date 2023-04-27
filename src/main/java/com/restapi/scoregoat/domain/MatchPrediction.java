@@ -24,7 +24,8 @@ public class MatchPrediction {
     @ManyToOne
     @JoinColumn(name = "USER_ID")
     private User user;
-    @ManyToOne
-    @JoinColumn(name = "Match_ID")
-    private Match match;
+    @Column(name = "FIXTURES_ID")
+    private Long fixtureId;
+    @Column(name = "RESULTS")
+    private boolean result;
 }

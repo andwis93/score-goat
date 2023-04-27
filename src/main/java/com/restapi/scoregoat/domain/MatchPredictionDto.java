@@ -11,5 +11,6 @@ public class MatchPredictionDto {
     private Long id;
     private String whoWin;
     private Long userId;
-    private Long matchId;
+    private Long fixturesId;
+    private boolean result;
 }

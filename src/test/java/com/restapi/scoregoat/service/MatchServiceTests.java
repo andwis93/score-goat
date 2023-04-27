@@ -131,8 +131,8 @@ public class MatchServiceTests {
         matchList.add(match2);
 
         when(service.findByLeagueIdOrderByDate(SeasonConfig.DEFAULT_LEAGUE.getId())).thenReturn(matchList);
-        when(matchPredictionRepository.existsMatchPredictionByUserIdAndMatchId(1L,67L)).thenReturn(false);
-        when(matchPredictionRepository.existsMatchPredictionByUserIdAndMatchId(1L,25L)).thenReturn(true);
+        when(matchPredictionRepository.existsMatchPredictionByUserIdAndFixtureId(1L,365L)).thenReturn(false);
+        when(matchPredictionRepository.existsMatchPredictionByUserIdAndFixtureId(1L,367L)).thenReturn(true);
 
         //When
         List<Match> theMatchList = service.eliminateSelected(1L, 39);
@@ -158,7 +158,6 @@ public class MatchServiceTests {
         matchList.add(match2);
 
         when(service.eliminateSelected(1L, SeasonConfig.DEFAULT_LEAGUE.getId())).thenReturn(matchList);
-
 
         //When
         List<Match> theMatchList = service.eliminateStarted(1L, SeasonConfig.DEFAULT_LEAGUE.getId());

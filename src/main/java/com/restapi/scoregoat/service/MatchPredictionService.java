@@ -22,9 +22,9 @@ public class MatchPredictionService {
     private MatchRepository matchRepository;
     private LogDataService logDataService;
 
-    public Match findMatch(Long matchId) {
-        if (matchRepository.existsById(matchId)) {
-            return matchRepository.findById(matchId).orElseThrow(NoSuchElementException::new);
+    public Match findMatch(Long fixtureId) {
+        if (matchRepository.existsByFixtureId(fixtureId)) {
+            return matchRepository.findByFixtureId(fixtureId).orElseThrow(NoSuchElementException::new);
         } else {
             return null;
         }
@@ -34,18 +34,16 @@ public class MatchPredictionService {
         if (userRepository.existsById(predictionDto.getUserId())) {
             User user = userRepository.findById(predictionDto.getUserId()).orElseThrow(NoSuchElementException::new);
             for (Map.Entry<Long, String> match : predictionDto.getMatchSelections().entrySet()) {
-                if (!repository.existsMatchPredictionByUserIdAndMatchId(user.getId(), match.getKey())) {
+                if (!repository.existsMatchPredictionByUserIdAndFixtureId(user.getId(), match.getKey())) {
                     try {
                         Match theMatch = findMatch(match.getKey());
                         MatchPrediction prediction = new MatchPrediction();
                         prediction.setUser(user);
-                        prediction.setMatch(theMatch);
+                        prediction.setFixtureId(theMatch.getFixtureId());
                         prediction.setWhoWin(match.getValue());
                         repository.save(prediction);
                         user.getMatchPredictions().add(prediction);
-                        theMatch.getMatchPredictions().add(prediction);
                         userRepository.save(user);
-                        matchRepository.save(theMatch);
                     } catch (NoSuchElementException ex) {
                         String message = ex.getMessage() + "  --ERROR: Couldn't execute \"savePredictions\"-- ";
                         logDataService.saveLog(new LogData(null, "With matchID: " +

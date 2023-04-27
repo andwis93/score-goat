@@ -28,12 +28,9 @@ public class MatchControllerTests {
     @Test
     void shouldGetMatches() throws Exception {
         //Given
-        MatchPredictionDto matchPredictionDto1 = new MatchPredictionDto(11L, Result.HOME.getResult(), 1L, 2L );
-        List<MatchPredictionDto> matchPredictionsDto = new ArrayList<>();
-        matchPredictionsDto.add(matchPredictionDto1);
         MatchDto matchDto = new MatchDto(1L, 39, 365L, "2023-04-01", "00:00",
                 "Not Started", "81:48", "Liverpool", "Liverpool.logo",
-                true, "Everton", "Everton.logo", false, 2, 1, matchPredictionsDto);
+                true, "Everton", "Everton.logo", false, 2, 1);
         List<MatchDto> matchDtoList = new ArrayList<>();
         matchDtoList.add(matchDto);
         when(facade.findByLeagueIdOrderByDate(any(Long.class), any(Integer.class))).thenReturn(matchDtoList);
@@ -60,11 +57,7 @@ public class MatchControllerTests {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].awayLogo", Matchers.is("Everton.logo")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].awayWinner", Matchers.is(false)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].homeGoals", Matchers.is(2)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].awayGoals", Matchers.is(1)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].matchPredictionsDto[0].id", Matchers.is(11)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].matchPredictionsDto[0].whoWin", Matchers.is(Result.HOME.getResult())))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].matchPredictionsDto[0].userId", Matchers.is(1)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].matchPredictionsDto[0].matchId", Matchers.is(2)));
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].awayGoals", Matchers.is(1)));
     }
 
     @Test

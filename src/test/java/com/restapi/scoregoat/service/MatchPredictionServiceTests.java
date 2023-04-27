@@ -34,11 +34,11 @@ public class MatchPredictionServiceTests {
         Match match = new Match(1L, SeasonConfig.DEFAULT_LEAGUE.getId(), 365L, OffsetDateTime.parse("2023-04-01T14:00:00+00:00"),
                 "Not Started", "81:48", "Liverpool", "Liverpool.logo",
                 true, "Everton", "Everton.logo", false, 2, 1);
-        when(matchRepository.existsById(1L)).thenReturn(true);
-        when(matchRepository.findById(1L)).thenReturn(Optional.of(match));
+        when(matchRepository.existsByFixtureId(365L)).thenReturn(true);
+        when(matchRepository.findByFixtureId(365L)).thenReturn(Optional.of(match));
 
         //When
-        Match theMatch = service.findMatch(1L);
+        Match theMatch = service.findMatch(365L);
 
         //Then
         assertEquals(1L, theMatch.getId());
@@ -60,17 +60,16 @@ public class MatchPredictionServiceTests {
                 "Not Started", "81:48", "Liverpool", "Liverpool.logo",
                 true, "Everton", "Everton.logo", false, 2, 1);
 
-        MatchPrediction prediction = new MatchPrediction(22L, list.get(327L), user,match2);
+        MatchPrediction prediction = new MatchPrediction(22L, list.get(327L), user,match2.getFixtureId(),true);
 
         when(userRepository.existsById(202L)).thenReturn(true);
         when(userRepository.findById(202L)).thenReturn(Optional.of(user));
-        when(repository.existsMatchPredictionByUserIdAndMatchId(202L,333L)).thenReturn(true);
-        when(repository.existsMatchPredictionByUserIdAndMatchId(202L,327L)).thenReturn(false);
-        when(matchRepository.existsById(327L)).thenReturn(true);
-        when(matchRepository.findById(327L)).thenReturn(Optional.of(match2));
+        when(repository.existsMatchPredictionByUserIdAndFixtureId(202L,333L)).thenReturn(true);
+        when(repository.existsMatchPredictionByUserIdAndFixtureId(202L,327L)).thenReturn(false);
+        when(matchRepository.existsByFixtureId(327L)).thenReturn(true);
+        when(matchRepository.findByFixtureId(327L)).thenReturn(Optional.of(match2));
         when(repository.save(any(MatchPrediction.class))).thenReturn(prediction);
         when(userRepository.save(user)).thenReturn(user);
-        when(matchRepository.save(any(Match.class))).thenReturn(match2);
 
         //When
         NotificationRespondDto respondDto = service.savePredictions(predictionDto);

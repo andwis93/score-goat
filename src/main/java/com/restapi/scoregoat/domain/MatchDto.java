@@ -24,5 +24,4 @@ public class MatchDto {
     private boolean awayWinner;
     private int homeGoals;
     private int awayGoals;
-    private List<MatchPredictionDto> matchPredictionsDto;
 }

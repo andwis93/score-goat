@@ -21,14 +21,12 @@ public class MatchPredictionRepositoryTests {
 		MatchPrediction prediction = new MatchPrediction();
 		prediction.setWhoWin(Result.HOME.getResult());
 		prediction.setUser(user);
-		prediction.setMatch(new Match(67L, SeasonConfig.DEFAULT_LEAGUE.getId(), 365L, OffsetDateTime.now().plusDays(1),
-				"Not Started", "00:00", "Liverpool", "Liverpool.logo",
-				true, "Everton", "Everton.logo", false,
-				2, 1));
+		prediction.setFixtureId(111L);
+		prediction.setResult(true);
 		Long matchPredictionId = repository.save(prediction).getId();
 
 		//When
-		boolean exist = repository.existsMatchPredictionByUserIdAndMatchId(12L, 67L);
+		boolean exist = repository.existsMatchPredictionByUserIdAndFixtureId(12L, 111L);
 
 		//Then
 		assertTrue(exist);

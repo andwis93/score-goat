@@ -2,14 +2,10 @@ package com.restapi.scoregoat.mapper;
 
 import com.restapi.scoregoat.domain.Match;
 import com.restapi.scoregoat.domain.MatchDto;
-import com.restapi.scoregoat.domain.MatchPrediction;
-import com.restapi.scoregoat.domain.MatchPredictionDto;
 import com.restapi.scoregoat.domain.client.mapJSON.FixtureRespond;
 import org.springframework.stereotype.Service;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import static java.util.stream.Collectors.toList;
 
 @Service
@@ -31,17 +27,7 @@ public class MatchMapper {
                 match.getAwayLogo(),
                 match.isAwayWinner(),
                 match.getHomeGoals(),
-                match.getAwayGoals(),
-                mapMatchPredictionToMatchPredictionDtoList(match.getMatchPredictions()));
-    }
-
-    public MatchPredictionDto mapMatchPredictionToMatchPredictionDto(final MatchPrediction matchPrediction) {
-        return new MatchPredictionDto(
-                matchPrediction.getId(),
-                matchPrediction.getWhoWin(),
-                matchPrediction.getUser().getId(),
-                matchPrediction.getMatch().getId()
-        );
+                match.getAwayGoals());
     }
 
     public Match mapFixtureToMatch(final FixtureRespond fixtureRespond) {
@@ -71,11 +57,4 @@ public class MatchMapper {
         return matchList.stream().map(this::mapMatchToMatchDto).collect(toList());
     }
 
-    public List<MatchPredictionDto> mapMatchPredictionToMatchPredictionDtoList(final List<MatchPrediction> matchPredictionList) {
-        if (Optional.ofNullable(matchPredictionList).isPresent()) {
-         return matchPredictionList.stream().map(this::mapMatchPredictionToMatchPredictionDto).collect(toList());
-        } else {
-            return new ArrayList<>();
-        }
-    }
 }

@@ -8,5 +8,5 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Repository
 public interface MatchPredictionRepository extends JpaRepository<MatchPrediction, Long> {
-    boolean existsMatchPredictionByUserIdAndMatchId(Long userId, Long machId);
+    boolean existsMatchPredictionByUserIdAndFixtureId(Long userId, Long fixtureId);
 }
