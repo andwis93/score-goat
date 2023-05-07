@@ -28,6 +28,7 @@ public class MatchService {
     private final FootballClient client;
     private final SeasonService seasonService;
     private final LogDataService logDataService;
+
     public void deleteFixtures(){
         repository.deleteAll();
     }

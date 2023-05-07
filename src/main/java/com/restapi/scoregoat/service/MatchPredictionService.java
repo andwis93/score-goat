@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -38,9 +40,11 @@ public class MatchPredictionService {
                     try {
                         Match theMatch = findMatch(match.getKey());
                         MatchPrediction prediction = new MatchPrediction();
+                        prediction.setLeagueId(theMatch.getLeagueId());
                         prediction.setUser(user);
                         prediction.setFixtureId(theMatch.getFixtureId());
-                        prediction.setWhoWin(match.getValue());
+                        prediction.setPrediction(match.getValue());
+
                         repository.save(prediction);
                         user.getMatchPredictions().add(prediction);
                         userRepository.save(user);
@@ -57,5 +61,19 @@ public class MatchPredictionService {
         } else {
             return new NotificationRespondDto(Respond.USER_ID_INCORRECT.getRespond(), NotificationType.ERROR.getType());
         }
+    }
+
+    public List<UserPredictionDto> getMatchPredictions(Long userId, int leagueId) {
+        List<MatchPrediction> predictions = repository.findAllByUserIdAndLeagueId(userId, leagueId);
+        List<UserPredictionDto> userPredictionsDto = new ArrayList<>();
+        for (MatchPrediction prediction: predictions) {
+              Match match = findMatch(prediction.getFixtureId());
+              if (match != null) {
+                  userPredictionsDto.add(new UserPredictionDto(match.getHomeLogo(), match.getHomeTeam(), match.getHomeGoals(),
+                          match.getDate().toLocalDate().toString(), match.getDate().toLocalTime().toString(), match.getAwayGoals(),
+                          match.getAwayTeam(), match.getAwayLogo(), prediction.getPrediction(), prediction.getResult()));
+              }
+        }
+        return userPredictionsDto;
     }
 }

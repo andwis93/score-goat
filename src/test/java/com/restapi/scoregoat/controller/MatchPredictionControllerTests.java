@@ -1,6 +1,7 @@
 package com.restapi.scoregoat.controller;
 
 import com.google.gson.Gson;
+import com.restapi.scoregoat.config.SeasonConfig;
 import com.restapi.scoregoat.domain.*;
 import com.restapi.scoregoat.facade.ScoreGoatFacade;
 import org.hamcrest.Matchers;
@@ -31,7 +32,7 @@ public class MatchPredictionControllerTests {
         //Given
         Map<Long, String> matchesSelectedList = new HashMap<>();
         matchesSelectedList.put(1430L, Result.HOME.getResult());
-        PredictionDto predictionDto = new PredictionDto(202L,matchesSelectedList);
+        PredictionDto predictionDto = new PredictionDto(202L, SeasonConfig.DEFAULT_LEAGUE.getId(), matchesSelectedList);
         NotificationRespondDto notificationRespondDto = new NotificationRespondDto(
                 Respond.PREDICTIONS_SAVE_OK.getRespond(), NotificationType.SUCCESS.getType());
         when(facade.saveUserPredictions(any())).thenReturn(notificationRespondDto);

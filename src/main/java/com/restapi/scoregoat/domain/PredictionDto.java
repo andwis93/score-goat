@@ -12,5 +12,6 @@ import java.util.Map;
 @Setter
 public class PredictionDto {
     private Long userId;
+    private int leagueId;
     private Map<Long, String> matchSelections;
 }

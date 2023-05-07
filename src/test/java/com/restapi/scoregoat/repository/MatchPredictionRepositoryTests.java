@@ -1,11 +1,10 @@
 package com.restapi.scoregoat.repository;
 
-import com.restapi.scoregoat.config.SeasonConfig;
 import com.restapi.scoregoat.domain.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import java.time.OffsetDateTime;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
@@ -19,10 +18,9 @@ public class MatchPredictionRepositoryTests {
 		User user = new User("Name1","Email1@test.com", "Password1");
 		user.setId(12L);
 		MatchPrediction prediction = new MatchPrediction();
-		prediction.setWhoWin(Result.HOME.getResult());
+		prediction.setPrediction(Result.HOME.getResult());
 		prediction.setUser(user);
 		prediction.setFixtureId(111L);
-		prediction.setResult(true);
 		Long matchPredictionId = repository.save(prediction).getId();
 
 		//When

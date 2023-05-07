@@ -52,4 +52,8 @@ public class ScoreGoatFacade {
     public NotificationRespondDto saveUserPredictions(PredictionDto predictionDto) {
         return predictionService.savePredictions(predictionDto);
     }
+
+    public List<UserPredictionDto> getUserMatchPredictions(Long userId, int leagueId) {
+        return predictionService.getMatchPredictions(userId, leagueId);
+    }
 }

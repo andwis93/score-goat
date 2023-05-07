@@ -19,13 +19,15 @@ public class MatchPrediction {
     @NotNull
     @Column(name = "ID", unique = true)
     private Long id;
-    @Column (name = "WHO_WIN")
-    private String whoWin;
+    @Column(name = "LEAGUE_ID")
+    private int leagueId;
+    @Column (name = "PREDICTIONS")
+    private String prediction;
     @ManyToOne
     @JoinColumn(name = "USER_ID")
     private User user;
     @Column(name = "FIXTURES_ID")
     private Long fixtureId;
     @Column(name = "RESULTS")
-    private boolean result;
+    private int result;
 }

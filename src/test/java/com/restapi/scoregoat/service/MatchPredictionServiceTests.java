@@ -51,7 +51,7 @@ public class MatchPredictionServiceTests {
         list.put(333L, Result.HOME.getResult());
         list.put(327L, Result.AWAY.getResult());
 
-		PredictionDto predictionDto = new PredictionDto(202L, list);
+		PredictionDto predictionDto = new PredictionDto(202L, SeasonConfig.DEFAULT_LEAGUE.getId(), list);
 
         User user = new User("Name1","Email1@test.com", "Password1");
         user.setId(202L);
@@ -60,7 +60,7 @@ public class MatchPredictionServiceTests {
                 "Not Started", "81:48", "Liverpool", "Liverpool.logo",
                 true, "Everton", "Everton.logo", false, 2, 1);
 
-        MatchPrediction prediction = new MatchPrediction(22L, list.get(327L), user,match2.getFixtureId(),true);
+        MatchPrediction prediction = new MatchPrediction(22L, SeasonConfig.DEFAULT_LEAGUE.getId(), list.get(327L), user,match2.getFixtureId(),-1);
 
         when(userRepository.existsById(202L)).thenReturn(true);
         when(userRepository.findById(202L)).thenReturn(Optional.of(user));
