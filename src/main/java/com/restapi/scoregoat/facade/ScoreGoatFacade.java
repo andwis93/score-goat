@@ -46,6 +46,7 @@ public class ScoreGoatFacade {
     }
 
     public List<MatchDto> findByLeagueIdOrderByDate(long userId, int leagueId) {
+
         return mapper.mapMatchToMatchDtoList(matchService.eliminateStarted(userId, leagueId));
     }
 

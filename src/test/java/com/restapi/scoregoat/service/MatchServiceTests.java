@@ -3,7 +3,6 @@ package com.restapi.scoregoat.service;
 import com.restapi.scoregoat.client.FootballClient;
 import com.restapi.scoregoat.config.SeasonConfig;
 import com.restapi.scoregoat.domain.*;
-import com.restapi.scoregoat.domain.client.TimeFrame.TimeFrame;
 import com.restapi.scoregoat.domain.client.mapJSON.*;
 import com.restapi.scoregoat.mapper.MatchMapper;
 import com.restapi.scoregoat.repository.MatchPredictionRepository;
@@ -52,7 +51,7 @@ public class MatchServiceTests {
         FixturesList fixturesList = new FixturesList();
         fixturesList.getFixtureList().add(fixtureRespond);
 
-        LocalDate toDate = LocalDate.now().plusDays(TimeFrame.DAYS_AFTER.getTimeFrame());
+     //   LocalDate toDate = LocalDate.now().plusDays(TimeFrame.DAYS_AFTER.getTimeFrame());
 
         FixtureParam param = new FixtureParam(SeasonConfig.DEFAULT_LEAGUE.getId(),
                 season.getYear());
@@ -73,8 +72,7 @@ public class MatchServiceTests {
         MatchRespondDto theRespond = service.uploadMatches(param);
 
         //Then
-        assertEquals(Respond.MATCH_UPLOAD_OK_LEAGUE.getRespond() + "39" +
-                Respond.MATCH_UPLOAD_OK_DATE.getRespond() + toDate
+        assertEquals(Respond.MATCH_UPLOAD_OK_LEAGUE.getRespond() + "39"
                 + Respond.MATCH_UPLOAD_OK_SEASON.getRespond() + "2023", theRespond.getRespond());
     }
 

@@ -1,6 +1,7 @@
 package com.restapi.scoregoat.service;
 
 import com.restapi.scoregoat.client.FootballClient;
+import com.restapi.scoregoat.config.DateConfig;
 import com.restapi.scoregoat.config.LeaguesListConfig;
 import com.restapi.scoregoat.domain.*;
 import com.restapi.scoregoat.domain.client.mapJSON.FixturesList;
@@ -13,15 +14,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
 @EnableAspectJAutoProxy
 public class MatchService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MatchService.class);
+    private DateConfig dateConfig;
     private final MatchRepository repository;
     private MatchPredictionRepository matchPredictionRepository;
     private final MatchMapper mapper;
@@ -38,7 +39,7 @@ public class MatchService {
             FixturesList fixturesList = client.getFixtures(param);
             repository.saveAll(mapper.mapFixtureRespondToMatchList(fixturesList.getFixtureList()));
             return new MatchRespondDto(param.getId(),Respond.MATCH_UPLOAD_OK_LEAGUE.getRespond() + param.getId()
-                    + Respond.MATCH_UPLOAD_OK_DATE.getRespond() + param.getToDate()
+                //    + Respond.MATCH_UPLOAD_OK_DATE.getRespond() + param.getToDate()
                     + Respond.MATCH_UPLOAD_OK_SEASON.getRespond() + param.getSeason());
         }catch (Exception ex) {
             String message = ex.getMessage() + " --ERROR: Couldn't upload Matches to DataBase-- ";
@@ -72,9 +73,15 @@ public class MatchService {
         return repository.findByLeagueIdOrderByDate(leagueId);
     }
 
+    public List<Match> matchesWithDateRange(int leagueId) {
+        List<Match> finalMatchList = repository.findByLeagueIdOrderByDate(leagueId);
+       return finalMatchList.stream().filter(match -> match.getDate().isAfter(dateConfig.getFrom())
+               && match.getDate().isBefore(dateConfig.getTo())).collect(Collectors.toList());
+    }
+
     public List<Match> eliminateSelected(Long userId, int leagueId){
         List<Match> finalMatchList = new ArrayList<>();
-        for (Match match: findByLeagueIdOrderByDate(leagueId)) {
+        for (Match match: matchesWithDateRange(leagueId)) {
             if (!matchPredictionRepository.existsMatchPredictionByUserIdAndFixtureId(userId, match.getFixtureId())) {
                 finalMatchList.add(match);
             }

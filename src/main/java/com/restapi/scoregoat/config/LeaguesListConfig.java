@@ -13,4 +13,5 @@ public class LeaguesListConfig {
         leagueList.put(2, "UEFA Champions League");
         return leagueList;
     }
+
 }

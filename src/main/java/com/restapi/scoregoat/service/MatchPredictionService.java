@@ -9,10 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @AllArgsConstructor
 @Service
@@ -64,7 +61,7 @@ public class MatchPredictionService {
     }
 
     public List<UserPredictionDto> getMatchPredictions(Long userId, int leagueId) {
-        List<MatchPrediction> predictions = repository.findAllByUserIdAndLeagueId(userId, leagueId);
+        List<MatchPrediction> predictions = repository.findByUserIdAndLeagueId(userId, leagueId);
         List<UserPredictionDto> userPredictionsDto = new ArrayList<>();
         for (MatchPrediction prediction: predictions) {
               Match match = findMatch(prediction.getFixtureId());
@@ -74,6 +71,11 @@ public class MatchPredictionService {
                           match.getAwayTeam(), match.getAwayLogo(), prediction.getPrediction(), prediction.getResult()));
               }
         }
-        return userPredictionsDto;
+        return sortList(userPredictionsDto);
+    }
+
+    private List<UserPredictionDto> sortList(List<UserPredictionDto> list) {
+        list.sort(Comparator.comparing(UserPredictionDto::getDate).reversed());
+        return list;
     }
 }

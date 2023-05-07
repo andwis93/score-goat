@@ -3,7 +3,6 @@ package com.restapi.scoregoat.client;
 import com.restapi.scoregoat.config.FootballConfig;
 import com.restapi.scoregoat.config.SeasonConfig;
 import com.restapi.scoregoat.domain.FixtureParam;
-import com.restapi.scoregoat.domain.client.TimeFrame.TimeFrame;
 import com.restapi.scoregoat.domain.client.mapJSON.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -66,12 +65,12 @@ public class FootballClientTests {
         when(config.getFootballAppHeader()).thenReturn("AppHeaderTest");
         when(config.getFootballAppKey()).thenReturn("ApiKeyTest");
 
-        LocalDate dateTo = LocalDate.now().plusDays(TimeFrame.DAYS_AFTER.getTimeFrame());
+     //   LocalDate dateTo = LocalDate.now().plusDays(TimeFrame.DAYS_AFTER.getTimeFrame());
 
         FixtureParam param = new FixtureParam(SeasonConfig.DEFAULT_LEAGUE.getId() ,"2023");
-        LocalDate dateFrom = LocalDate.now().minusDays(TimeFrame.DAYS_BEFORE.getTimeFrame());
+      //  LocalDate dateFrom = LocalDate.now().minusDays(TimeFrame.DAYS_BEFORE.getTimeFrame());
 
-        URI uri = new URI("https://test.com/fixtures?league=" + param.getId() + "&season=2023&from=" + dateFrom + "&to=" + dateTo);
+        URI uri = new URI("https://test.com/fixtures?league=" + param.getId() + "&season=2023");
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("AppHeaderTest", "ApiKeyTest");

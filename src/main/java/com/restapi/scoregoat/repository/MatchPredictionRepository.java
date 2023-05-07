@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface MatchPredictionRepository extends JpaRepository<MatchPrediction, Long> {
     boolean existsMatchPredictionByUserIdAndFixtureId(Long userId, Long fixtureId);
-    List<MatchPrediction> findAllByUserIdAndLeagueId(Long userId, int leagueId);
+    List<MatchPrediction> findByUserIdAndLeagueId(Long userId, int leagueId);
   //  List<MatchPrediction> findAllByUserId(Long userId);
 }

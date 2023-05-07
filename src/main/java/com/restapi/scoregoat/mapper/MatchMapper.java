@@ -56,5 +56,4 @@ public class MatchMapper {
     public List<MatchDto> mapMatchToMatchDtoList(final List<Match> matchList) {
         return matchList.stream().map(this::mapMatchToMatchDto).collect(toList());
     }
-
 }
