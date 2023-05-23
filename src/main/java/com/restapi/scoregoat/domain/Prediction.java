@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum Result {
+public enum Prediction {
     HOME("home"),
     AWAY("away"),
     DRAW("draw");

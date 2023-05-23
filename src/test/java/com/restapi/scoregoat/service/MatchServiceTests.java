@@ -1,6 +1,7 @@
 package com.restapi.scoregoat.service;
 
 import com.restapi.scoregoat.client.FootballClient;
+import com.restapi.scoregoat.config.DateConfig;
 import com.restapi.scoregoat.config.SeasonConfig;
 import com.restapi.scoregoat.domain.*;
 import com.restapi.scoregoat.domain.client.mapJSON.*;
@@ -12,7 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +34,8 @@ public class MatchServiceTests {
     private MatchPredictionRepository matchPredictionRepository;
     @Mock
     private MatchMapper mapper;
+    @Mock
+    private DateConfig dateConfig;
 
     @Test
     void shouldUploadMatches() {
@@ -51,7 +53,7 @@ public class MatchServiceTests {
         FixturesList fixturesList = new FixturesList();
         fixturesList.getFixtureList().add(fixtureRespond);
 
-     //   LocalDate toDate = LocalDate.now().plusDays(TimeFrame.DAYS_AFTER.getTimeFrame());
+        //   LocalDate toDate = LocalDate.now().plusDays(TimeFrame.DAYS_AFTER.getTimeFrame());
 
         FixtureParam param = new FixtureParam(SeasonConfig.DEFAULT_LEAGUE.getId(),
                 season.getYear());
@@ -131,6 +133,8 @@ public class MatchServiceTests {
         when(service.findByLeagueIdOrderByDate(SeasonConfig.DEFAULT_LEAGUE.getId())).thenReturn(matchList);
         when(matchPredictionRepository.existsMatchPredictionByUserIdAndFixtureId(1L,365L)).thenReturn(false);
         when(matchPredictionRepository.existsMatchPredictionByUserIdAndFixtureId(1L,367L)).thenReturn(true);
+        when(dateConfig.getFrom()).thenReturn(OffsetDateTime.parse("2023-03-01T14:00:00+00:00"));
+        when(dateConfig.getTo()).thenReturn(OffsetDateTime.parse("2023-04-11T14:00:00+00:00"));
 
         //When
         List<Match> theMatchList = service.eliminateSelected(1L, 39);
@@ -156,6 +160,8 @@ public class MatchServiceTests {
         matchList.add(match2);
 
         when(service.eliminateSelected(1L, SeasonConfig.DEFAULT_LEAGUE.getId())).thenReturn(matchList);
+        when(dateConfig.getFrom()).thenReturn(OffsetDateTime.now());
+        when(dateConfig.getTo()).thenReturn(OffsetDateTime.now().plusDays(10));
 
         //When
         List<Match> theMatchList = service.eliminateStarted(1L, SeasonConfig.DEFAULT_LEAGUE.getId());

@@ -5,9 +5,9 @@ import lombok.*;
 import org.jetbrains.annotations.NotNull;
 import java.time.LocalDateTime;
 
-@NoArgsConstructor
 @RequiredArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor(force = true)
 @Getter
 @Setter
 @Entity

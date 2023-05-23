@@ -39,7 +39,7 @@ public class MatchService {
             FixturesList fixturesList = client.getFixtures(param);
             repository.saveAll(mapper.mapFixtureRespondToMatchList(fixturesList.getFixtureList()));
             return new MatchRespondDto(param.getId(),Respond.MATCH_UPLOAD_OK_LEAGUE.getRespond() + param.getId()
-                //    + Respond.MATCH_UPLOAD_OK_DATE.getRespond() + param.getToDate()
+                    //    + Respond.MATCH_UPLOAD_OK_DATE.getRespond() + param.getToDate()
                     + Respond.MATCH_UPLOAD_OK_SEASON.getRespond() + param.getSeason());
         }catch (Exception ex) {
             String message = ex.getMessage() + " --ERROR: Couldn't upload Matches to DataBase-- ";
@@ -75,8 +75,8 @@ public class MatchService {
 
     public List<Match> matchesWithDateRange(int leagueId) {
         List<Match> finalMatchList = repository.findByLeagueIdOrderByDate(leagueId);
-       return finalMatchList.stream().filter(match -> match.getDate().isAfter(dateConfig.getFrom())
-               && match.getDate().isBefore(dateConfig.getTo())).collect(Collectors.toList());
+        return finalMatchList.stream().filter(match -> match.getDate().isAfter(dateConfig.getFrom())
+                && match.getDate().isBefore(dateConfig.getTo())).collect(Collectors.toList());
     }
 
     public List<Match> eliminateSelected(Long userId, int leagueId){

@@ -64,12 +64,12 @@ public class MatchPredictionService {
         List<MatchPrediction> predictions = repository.findByUserIdAndLeagueId(userId, leagueId);
         List<UserPredictionDto> userPredictionsDto = new ArrayList<>();
         for (MatchPrediction prediction: predictions) {
-              Match match = findMatch(prediction.getFixtureId());
-              if (match != null) {
-                  userPredictionsDto.add(new UserPredictionDto(match.getHomeLogo(), match.getHomeTeam(), match.getHomeGoals(),
-                          match.getDate().toLocalDate().toString(), match.getDate().toLocalTime().toString(), match.getAwayGoals(),
-                          match.getAwayTeam(), match.getAwayLogo(), prediction.getPrediction(), prediction.getResult()));
-              }
+            Match match = findMatch(prediction.getFixtureId());
+            if (match != null) {
+                userPredictionsDto.add(new UserPredictionDto(match.getHomeLogo(), match.getHomeTeam(), match.getHomeGoals(),
+                        match.getDate().toLocalDate().toString(), match.getDate().toLocalTime().toString(), match.getAwayGoals(),
+                        match.getAwayTeam(), match.getAwayLogo(), prediction.getPrediction(), prediction.getPoints(), prediction.getResult()));
+            }
         }
         return sortList(userPredictionsDto);
     }

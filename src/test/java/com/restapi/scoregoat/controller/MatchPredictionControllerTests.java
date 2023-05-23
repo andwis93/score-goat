@@ -31,7 +31,7 @@ public class MatchPredictionControllerTests {
     void shouldSavePrediction() throws Exception {
         //Given
         Map<Long, String> matchesSelectedList = new HashMap<>();
-        matchesSelectedList.put(1430L, Result.HOME.getResult());
+        matchesSelectedList.put(1430L, Prediction.HOME.getResult());
         PredictionDto predictionDto = new PredictionDto(202L, SeasonConfig.DEFAULT_LEAGUE.getId(), matchesSelectedList);
         NotificationRespondDto notificationRespondDto = new NotificationRespondDto(
                 Respond.PREDICTIONS_SAVE_OK.getRespond(), NotificationType.SUCCESS.getType());

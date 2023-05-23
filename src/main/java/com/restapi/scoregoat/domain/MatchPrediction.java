@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 @AllArgsConstructor
 @Getter
 @Setter
@@ -28,6 +28,8 @@ public class MatchPrediction {
     private User user;
     @Column(name = "FIXTURES_ID")
     private Long fixtureId;
+    @Column(name = "POINTS")
+    private int points;
     @Column(name = "RESULTS")
     private int result;
 }

@@ -11,7 +11,7 @@ public class LeaguesListConfig {
         leagueList.put(39, "Premier League");
         leagueList.put(140, "La Liga");
         leagueList.put(2, "UEFA Champions League");
+        leagueList.put(253, "Major League Soccer");
         return leagueList;
     }
-
 }

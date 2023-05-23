@@ -18,7 +18,7 @@ public class MatchPredictionRepositoryTests {
 		User user = new User("Name1","Email1@test.com", "Password1");
 		user.setId(12L);
 		MatchPrediction prediction = new MatchPrediction();
-		prediction.setPrediction(Result.HOME.getResult());
+		prediction.setPrediction(Prediction.HOME.getResult());
 		prediction.setUser(user);
 		prediction.setFixtureId(111L);
 		Long matchPredictionId = repository.save(prediction).getId();
