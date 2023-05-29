@@ -31,4 +31,10 @@ public class UserController {
     public ResponseEntity<UserRespondDto> accountChange(@RequestBody AccountDto accountDto) {
         return ResponseEntity.ok(facade.accountChange(accountDto));
     }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteUser(@RequestParam Long userId) {
+        facade.deleteUser(userId);
+        return ResponseEntity.ok().build();
+    }
 }

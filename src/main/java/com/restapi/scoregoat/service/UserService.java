@@ -145,4 +145,8 @@ public class UserService {
                 user -> !user.getId().equals(userId)).toList();
         return usersWithEmail.size() == 0;
     }
+
+    public void deleteUser(Long userId) {
+      repository.deleteById(userId);
+    }
 }

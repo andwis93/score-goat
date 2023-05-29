@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
@@ -19,9 +21,8 @@ public class UserRepositoryTests {
 
         //When
         User savedUser =  repository.save(user);
-        Long id = savedUser.getId();
 
-        Optional<User> optionalUser = repository.findById(id);
+        Optional<User> optionalUser = repository.findById(savedUser.getId());
 
         //Then
         assertTrue(optionalUser.isPresent());
@@ -29,7 +30,7 @@ public class UserRepositoryTests {
 
         //CleanUp
         try{
-            repository.deleteById(id);
+            repository.deleteById(savedUser.getId());
         } catch (Exception ex) {
             //do Nothing
         }
@@ -40,7 +41,6 @@ public class UserRepositoryTests {
         //Given
         User user = new User("UserName", "UserEmail", "UserPassword");
         User savedUser =  repository.save(user);
-        Long id = savedUser.getId();
         //When
         Optional<User> optionalUserName = repository.findByName("UserName");
         Optional<User> optionalUserEmail = repository.findByEmail("UserEmail");
@@ -52,9 +52,26 @@ public class UserRepositoryTests {
 
         //CleanUp
         try{
-            repository.deleteById(id);
+            repository.deleteById(savedUser.getId());
         } catch (Exception ex) {
             //do nothing
         }
+    }
+
+    @Test
+    void testDeleteUserById() {
+        //Given
+        User user = new User("UserName", "UserEmail", "UserPassword");
+        Long originalSize = repository.count();
+        User savedUser =  repository.save(user);
+        Long sizeAfterSave = repository.count();
+
+        //When
+        repository.deleteById(savedUser.getId());
+        Long sizeAfterDelete = repository.count();
+
+        //Then
+        assertEquals(originalSize, sizeAfterSave - 1);
+        assertEquals(originalSize, sizeAfterDelete);
     }
 }
