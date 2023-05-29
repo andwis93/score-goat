@@ -1,6 +1,5 @@
 package com.restapi.scoregoat.controller;
 
-import com.google.gson.Gson;
 import com.restapi.scoregoat.domain.UserParamDto;
 import com.restapi.scoregoat.domain.UserRespondDto;
 import com.restapi.scoregoat.facade.ScoreGoatFacade;
@@ -32,16 +31,14 @@ public class LogInControllerTests {
         UserRespondDto respond = new UserRespondDto("Create Name1");
         respond.setLogIn(true);
         when(facade.tryLogIn(any())). thenReturn(respond);
-        Gson gson = new Gson();
-        String jsonContent = gson.toJson(userParamDto);
 
         //When & Then
         mockMvc
                 .perform(MockMvcRequestBuilders
-                        .post("/v1/scoregoat/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding("UTF-8")
-                        .content(jsonContent))
+                        .get("/v1/scoregoat/login")
+                        .param("name", userParamDto.getName())
+                        .param("password", userParamDto.getPassword())
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.respond", Matchers.is("Create Name1")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.logIn", Matchers.is(true)));

@@ -59,7 +59,7 @@ public class UserControllerTests {
         //When & Then
         mockMvc
                 .perform(MockMvcRequestBuilders
-                        .post("/v1/scoregoat/users/passwordchange")
+                        .put("/v1/scoregoat/users/passwordchange")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .content(jsonContent))
@@ -79,7 +79,7 @@ public class UserControllerTests {
         //When & Then
         mockMvc
                 .perform(MockMvcRequestBuilders
-                        .post("/v1/scoregoat/users/accountchange")
+                        .put("/v1/scoregoat/users/accountchange")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .content(jsonContent))

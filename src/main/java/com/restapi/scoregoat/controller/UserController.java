@@ -22,12 +22,12 @@ public class UserController {
         return ResponseEntity.ok(facade.createUser(userDto));
     }
 
-    @PostMapping(value = "/passwordchange" ,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/passwordchange" ,consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserRespondDto> changePassword(@RequestBody PasswordDto passwordDto){
-       return ResponseEntity.ok(facade.changePassword(passwordDto));
+        return ResponseEntity.ok(facade.changePassword(passwordDto));
     }
 
-    @PostMapping(value = "/accountchange", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/accountchange", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserRespondDto> accountChange(@RequestBody AccountDto accountDto) {
         return ResponseEntity.ok(facade.accountChange(accountDto));
     }

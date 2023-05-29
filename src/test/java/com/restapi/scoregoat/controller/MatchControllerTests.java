@@ -36,7 +36,7 @@ public class MatchControllerTests {
         when(facade.findByLeagueIdOrderByDate(any(Long.class), any(Integer.class))).thenReturn(matchDtoList);
         mockMvc
                 .perform(MockMvcRequestBuilders
-                        .post("/v1/scoregoat/match")
+                        .get("/v1/scoregoat/match")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("userId", "1")
                         .param("leagueId","39")
@@ -58,20 +58,5 @@ public class MatchControllerTests {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].awayWinner", Matchers.is(false)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].homeGoals", Matchers.is(2)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].awayGoals", Matchers.is(1)));
-    }
-
-    @Test
-    void shouldUploadMatches() throws Exception {
-        //Given
-        MatchRespondDto respondDto = new MatchRespondDto("TestRespond");
-        when(facade.uploadMatchesFromLeagueConfigList()).thenReturn(respondDto);
-
-        //When & Then
-        mockMvc
-                .perform(MockMvcRequestBuilders
-                        .put("/v1/scoregoat/match")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.respond", Matchers.is("TestRespond")));
     }
 }

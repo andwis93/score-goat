@@ -52,8 +52,6 @@ public class FootballClient {
         return UriComponentsBuilder.fromHttpUrl(uriBuild() + "/fixtures")
                 .queryParam("league", param.getId())
                 .queryParam("season", param.getSeason())
-          //      .queryParam("from", param.getFromDate())
-         //       .queryParam("to", param.getToDate())
                 .build().encode().toUri();
     }
 
