@@ -41,12 +41,12 @@ public class ScoreGoatFacadeTests {
     @Test
     void shouldTryLogIn() {
         //When
-        UserParamDto userParam = new UserParamDto("Name1", "Password1");
+        UserDto userDto = new UserDto("Name1", "Password1");
         UserRespondDto respond = new UserRespondDto("Create Name1",  NotificationType.SUCCESS.getType());
-        when(logInService.logInAttempt(userParam)).thenReturn(respond);
+        when(logInService.logInAttempt(userDto)).thenReturn(respond);
 
         //When
-        UserRespondDto theRespond = facade.tryLogIn(userParam);
+        UserRespondDto theRespond = facade.tryLogIn(userDto);
 
         //Then
         assertEquals("Create Name1", theRespond.getRespond());

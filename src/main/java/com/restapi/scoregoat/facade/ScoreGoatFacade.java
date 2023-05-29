@@ -30,8 +30,8 @@ public class ScoreGoatFacade {
         return userService.signUpUser(userDto);
     }
 
-    public UserRespondDto tryLogIn(UserParamDto userParam) {
-        return logInService.logInAttempt(userParam);
+    public UserRespondDto tryLogIn(UserDto userDto) {
+        return logInService.logInAttempt(userDto);
     }
 
     public UserRespondDto changePassword(PasswordDto passwordDto) {

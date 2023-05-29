@@ -1,6 +1,6 @@
 package com.restapi.scoregoat.controller;
 
-import com.restapi.scoregoat.domain.UserParamDto;
+import com.restapi.scoregoat.domain.UserDto;
 import com.restapi.scoregoat.domain.UserRespondDto;
 import com.restapi.scoregoat.facade.ScoreGoatFacade;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +16,6 @@ public class LogInController {
 
     @GetMapping()
     public ResponseEntity<UserRespondDto> logUserIn(@RequestParam String name, @RequestParam String password) {
-        return ResponseEntity.ok(facade.tryLogIn(new UserParamDto(name, password)));
+        return ResponseEntity.ok(facade.tryLogIn(new UserDto(name, password)));
     }
 }

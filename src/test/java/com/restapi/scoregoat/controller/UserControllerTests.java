@@ -3,10 +3,8 @@ package com.restapi.scoregoat.controller;
 import com.google.gson.Gson;
 import com.restapi.scoregoat.domain.*;
 import com.restapi.scoregoat.facade.ScoreGoatFacade;
-import com.restapi.scoregoat.repository.UserRepository;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -15,11 +13,7 @@ import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import java.nio.file.attribute.UserPrincipalNotFoundException;
-
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @SpringJUnitWebConfig
@@ -29,8 +23,6 @@ public class UserControllerTests {
     private MockMvc mockMvc;
     @MockBean
     private ScoreGoatFacade facade;
-    @MockBean
-    private UserRepository repository;
 
     @Test
     void shouldCreateUser() throws Exception {

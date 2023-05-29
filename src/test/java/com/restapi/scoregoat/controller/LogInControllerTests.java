@@ -1,7 +1,7 @@
 package com.restapi.scoregoat.controller;
 
 import com.restapi.scoregoat.domain.NotificationType;
-import com.restapi.scoregoat.domain.UserParamDto;
+import com.restapi.scoregoat.domain.UserDto;
 import com.restapi.scoregoat.domain.UserRespondDto;
 import com.restapi.scoregoat.facade.ScoreGoatFacade;
 import org.hamcrest.Matchers;
@@ -28,7 +28,7 @@ public class LogInControllerTests {
     @Test
     void shouldLogUserIn() throws Exception {
         //Given
-        UserParamDto userParamDto = new UserParamDto("Name1", "Password1");
+        UserDto userDto = new UserDto("Name1", "Password1");
         UserRespondDto respond = new UserRespondDto("Create Name1", NotificationType.SUCCESS.getType());
         respond.setLogIn(true);
         when(facade.tryLogIn(any())). thenReturn(respond);
@@ -37,8 +37,8 @@ public class LogInControllerTests {
         mockMvc
                 .perform(MockMvcRequestBuilders
                         .get("/v1/scoregoat/login")
-                        .param("name", userParamDto.getName())
-                        .param("password", userParamDto.getPassword())
+                        .param("name", userDto.getName())
+                        .param("password", userDto.getPassword())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.respond", Matchers.is("Create Name1")))

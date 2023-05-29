@@ -33,15 +33,15 @@ public class LogInServiceTests {
         //Given
         User user = new User("Name1","Email1@test.com", "Password1");
         LogIn attempt = new LogIn(user);
-        UserParamDto userParam = new UserParamDto("Name1", "Password1");
+        UserDto userDto = new UserDto("Name1", "Password1");
         when(userRepository.findByName("Name1")).thenReturn(Optional.of(user));
         when(repository.findByUser(user)).thenReturn(Optional.of(attempt));
-        when(encryptor.checkPassword(userParam.getPassword(), user.getPassword())).thenReturn(true);
+        when(encryptor.checkPassword(userDto.getPassword(), user.getPassword())).thenReturn(true);
         when(sessionService.saveRefreshedSession(any())).thenReturn(true);
         when(repository.save(attempt)).thenReturn(attempt);
 
         //When
-        UserRespondDto respondDto = service.logInAttempt(userParam);
+        UserRespondDto respondDto = service.logInAttempt(userDto);
 
         //Then
         assertEquals("Name1", respondDto.getUserName());

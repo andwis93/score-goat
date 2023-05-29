@@ -24,12 +24,12 @@ public class LogInService {
     private LogDataService logDataService;
     private DurationManager manager;
 
-    public UserRespondDto logInAttempt(final UserParamDto userParam) {
-        User user = checkIfUserExist(userParam.getName());
+    public UserRespondDto logInAttempt(final UserDto userDto) {
+        User user = checkIfUserExist(userDto.getName());
         if (user != null) {
             LogIn attempt = repository.findByUser(user).orElse(new LogIn(user));
             if (attempt.getLocked() == null) {
-                if (encryptor.checkPassword(userParam.getPassword(), user.getPassword())) {
+                if (encryptor.checkPassword(userDto.getPassword(), user.getPassword())) {
                     sessionService.saveRefreshedSession(user);
                     resetAttempt(attempt);
                     return new UserRespondDto().setExtendResponse(
