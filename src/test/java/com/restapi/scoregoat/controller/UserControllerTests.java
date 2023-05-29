@@ -89,16 +89,21 @@ public class UserControllerTests {
     @Test
     void shouldDeleteUserByIdShouldReturn404NotFound() throws Exception {
         //Given
-        Long userId = 1L;
-        doNothing().when(facade).deleteUser(userId);
+        UserDto userDto = new UserDto(1L, "123");
+        UserRespondDto respondDto = new UserRespondDto("User deleted successfully", NotificationType.SUCCESS.getType());
+        when(facade.deleteUser(any())).thenReturn(respondDto);
+        Gson gson = new Gson();
+        String jsonContent = gson.toJson(userDto);
 
         //When & Then
         mockMvc
                 .perform(MockMvcRequestBuilders
-                        .delete("/v1/scoregoat/users?" )
-                        .param("userId", String.valueOf(userId))
+                        .delete("/v1/scoregoat/users" )
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                        .characterEncoding("UTF-8")
+                        .content(jsonContent))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.respond", Matchers.is("User deleted successfully")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.notificationType", Matchers.is("success")));
     }
 }

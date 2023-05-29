@@ -146,7 +146,22 @@ public class UserService {
         return usersWithEmail.size() == 0;
     }
 
-    public void deleteUser(Long userId) {
-      repository.deleteById(userId);
+    public UserRespondDto deleteUser(UserDto userDto) {
+        if (userDto.getId() != null && userDto.getPassword() != null ) {
+            User user = repository.findById(userDto.getId()).orElse(null);
+            if (user != null) {
+                if (encryptor.checkPassword(userDto.getPassword(), user.getPassword())) {
+                    repository.deleteById(user.getId());
+                    return new UserRespondDto().setExtendResponse(
+                            user, Respond.USER_DELETED_OK.getRespond(), NotificationType.SUCCESS.getType());
+                } else {
+                    return new UserRespondDto(Respond.WRONG_PASSWORD.getRespond(), NotificationType.ERROR.getType());
+                }
+            } else {
+                return new UserRespondDto(Respond.USER_NOT_EXIST.getRespond(), NotificationType.ERROR.getType());
+            }
+        } else {
+            return new UserRespondDto(Respond.FIELDS_EMPTY.getRespond(), NotificationType.ERROR.getType());
+        }
     }
 }

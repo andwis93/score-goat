@@ -26,6 +26,7 @@ public enum Respond {
     MATCH_UPLOAD_OK_DATE(" --Up to date: "),
     MATCH_UPLOAD_OK_SEASON(" --For Season: "),
     PREDICTIONS_SAVE_OK("Predictions were saved successfully"),
+    USER_DELETED_OK("User deleted successfully"),
     ALL_MATCH_UPLOAD_OK("All Matches were uploaded successfully.");
 
     private final String respond;

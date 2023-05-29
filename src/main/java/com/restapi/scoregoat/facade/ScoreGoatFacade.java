@@ -59,8 +59,8 @@ public class ScoreGoatFacade {
         return predictionService.getMatchPredictions(userId, leagueId);
     }
 
-    public void deleteUser(Long userId) {
-        userService.deleteUser(userId);
+    public UserRespondDto deleteUser(UserDto userDto) {
+        return userService.deleteUser(userDto);
     }
 
 }
