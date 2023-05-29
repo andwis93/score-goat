@@ -1,10 +1,7 @@
 package com.restapi.scoregoat.controller;
 
 import com.google.gson.Gson;
-import com.restapi.scoregoat.domain.AccountDto;
-import com.restapi.scoregoat.domain.PasswordDto;
-import com.restapi.scoregoat.domain.UserDto;
-import com.restapi.scoregoat.domain.UserRespondDto;
+import com.restapi.scoregoat.domain.*;
 import com.restapi.scoregoat.facade.ScoreGoatFacade;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -31,7 +28,7 @@ public class UserControllerTests {
     void shouldCreateUser() throws Exception {
         //Given
         UserDto userDto = new UserDto("NameDto1", "EmailDto1@test.com", "PasswordDto1");
-        UserRespondDto respondDto = new UserRespondDto("Create Name1");
+        UserRespondDto respondDto = new UserRespondDto("Create Name1", NotificationType.SUCCESS.getType());
         when(facade.createUser(any())).thenReturn(respondDto);
         Gson gson = new Gson();
         String jsonContent = gson.toJson(userDto);
@@ -50,8 +47,9 @@ public class UserControllerTests {
     @Test
     void shouldChangePassword() throws Exception {
         //Given
-        PasswordDto passwordDto = new PasswordDto(1L, "OldPassword", "MatchPassword", "MatchPassword");
-        UserRespondDto respondDto = new UserRespondDto("Password was changed");
+        PasswordDto passwordDto = new PasswordDto(1L, "OldPassword", "MatchPassword",
+                "MatchPassword");
+        UserRespondDto respondDto = new UserRespondDto("Password was changed", NotificationType.SUCCESS.getType());
         when(facade.changePassword(any())).thenReturn(respondDto);
         Gson gson = new Gson();
         String jsonContent = gson.toJson(passwordDto);
@@ -71,7 +69,7 @@ public class UserControllerTests {
     void shouldChangeAccountInformation() throws Exception {
         //Given
         AccountDto accountDto = new AccountDto(1L, "Test", "Test@test.com", "password");
-        UserRespondDto respondDto = new UserRespondDto("Account information were changed");
+        UserRespondDto respondDto = new UserRespondDto("Account information were changed", NotificationType.SUCCESS.getType());
         when(facade.accountChange(any())).thenReturn(respondDto);
         Gson gson = new Gson();
         String jsonContent = gson.toJson(accountDto);
@@ -84,6 +82,7 @@ public class UserControllerTests {
                         .characterEncoding("UTF-8")
                         .content(jsonContent))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.respond", Matchers.is("Account information were changed")));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.respond", Matchers.is("Account information were changed")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.notificationType", Matchers.is("success")));
     }
 }

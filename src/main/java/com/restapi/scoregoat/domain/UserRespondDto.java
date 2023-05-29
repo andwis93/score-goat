@@ -15,17 +15,21 @@ public class UserRespondDto {
     private String email;
     private boolean isLogIn = false;
     private String respond;
+    private String notificationType;
 
-    public UserRespondDto(String respond) {
+    public UserRespondDto(String respond, String notificationType) {
         this.respond = respond;
+        this.notificationType = notificationType;
     }
 
-    public UserRespondDto setExtendResponse(final User user, String respond) {
+    public UserRespondDto setExtendResponse(final User user, String respond, String notificationType) {
         return new UserRespondDto(
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
                 true,
-                respond);
+                respond,
+                notificationType
+                );
     }
 }

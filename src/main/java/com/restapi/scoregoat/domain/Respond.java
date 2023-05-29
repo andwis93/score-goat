@@ -10,7 +10,7 @@ public enum Respond {
     USER_CREATED_OK("User created successfully. Please try to log in."),
     EMAIL_INCORRECT("Wrong email address. Please enter valid email address and try again."),
     USERNAME_EXISTS("User name already exists. Please choose different user name."),
-    EMAIL_EXISTS("User with provided email address already exists. Please choose different email address."),
+    EMAIL_EXISTS("User with provided email address already exist. Please choose different email address."),
     FIELDS_EMPTY("Pleaser provide all necessary information and try again"),
     USER_LOGGED_IN("User logged in successfully"),
     USER_ID_INCORRECT("User id is incorrect"),

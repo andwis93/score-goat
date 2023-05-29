@@ -33,25 +33,25 @@ public class LogInService {
                     sessionService.saveRefreshedSession(user);
                     resetAttempt(attempt);
                     return new UserRespondDto().setExtendResponse(
-                            user, Respond.USER_LOGGED_IN.getRespond());
+                            user, Respond.USER_LOGGED_IN.getRespond(), NotificationType.SUCCESS.getType());
                 } else {
                     attempt.addAttempt();
                     if (attempt.getAttempt() > DurationValues.MAX_ATTEMPT.getValue()) {
                         attempt.setLocked(LocalDateTime.now().plusHours(DurationValues.ATTEMPT_BLOCKED.getValue()));
                     }
                     repository.save(attempt);
-                    return new UserRespondDto(Respond.WRONG_PASSWORD.getRespond());
+                    return new UserRespondDto(Respond.WRONG_PASSWORD.getRespond(), NotificationType.ERROR.getType());
                 }
             } else {
                 if (manager.checkIfLessThen1H(attempt.getLocked())) {
-                    return new UserRespondDto(Respond.TO_MANY_ATTEMPTS_LESS_THEN_1H.getRespond());
+                    return new UserRespondDto(Respond.TO_MANY_ATTEMPTS_LESS_THEN_1H.getRespond(), NotificationType.ERROR.getType());
                 } else {
                     return new UserRespondDto(Respond.TO_MANY_ATTEMPTS.getRespond()
-                            + manager.getDuration(attempt.getLocked()));
+                            + manager.getDuration(attempt.getLocked()), NotificationType.ERROR.getType());
                 }
             }
         } else {
-            return new UserRespondDto(Respond.USER_NOT_EXIST.getRespond());
+            return new UserRespondDto(Respond.USER_NOT_EXIST.getRespond(), NotificationType.ERROR.getType());
         }
     }
     private User checkIfUserExist(final String name) {

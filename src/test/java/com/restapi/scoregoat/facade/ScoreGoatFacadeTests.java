@@ -28,7 +28,7 @@ public class ScoreGoatFacadeTests {
     void shouldCreateUser() {
         //When
         UserDto userDto = new UserDto("Name1","Email1@test.com", "Password1");
-        UserRespondDto respond = new UserRespondDto("Create Name1");
+        UserRespondDto respond = new UserRespondDto("Create Name1",  NotificationType.SUCCESS.getType());
         when(userService.signUpUser(userDto)).thenReturn(respond);
 
         //When
@@ -42,7 +42,7 @@ public class ScoreGoatFacadeTests {
     void shouldTryLogIn() {
         //When
         UserParamDto userParam = new UserParamDto("Name1", "Password1");
-        UserRespondDto respond = new UserRespondDto("Create Name1");
+        UserRespondDto respond = new UserRespondDto("Create Name1",  NotificationType.SUCCESS.getType());
         when(logInService.logInAttempt(userParam)).thenReturn(respond);
 
         //When

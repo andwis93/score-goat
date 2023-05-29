@@ -41,8 +41,9 @@ public class ScoreGoatFacade {
     public UserRespondDto accountChange(AccountDto accountDto) {
         return userService.accountChange(accountDto);
     }
-    public MatchRespondDto uploadMatchesFromLeagueConfigList(){
-        return matchService.uploadMatchesFromLeagueConfigList();
+
+    public void uploadMatchesFromLeagueConfigList(){
+        matchService.uploadMatchesFromLeagueConfigList();
     }
 
     public List<MatchDto> findByLeagueIdOrderByDate(long userId, int leagueId) {

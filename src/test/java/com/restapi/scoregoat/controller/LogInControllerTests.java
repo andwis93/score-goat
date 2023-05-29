@@ -1,5 +1,6 @@
 package com.restapi.scoregoat.controller;
 
+import com.restapi.scoregoat.domain.NotificationType;
 import com.restapi.scoregoat.domain.UserParamDto;
 import com.restapi.scoregoat.domain.UserRespondDto;
 import com.restapi.scoregoat.facade.ScoreGoatFacade;
@@ -28,7 +29,7 @@ public class LogInControllerTests {
     void shouldLogUserIn() throws Exception {
         //Given
         UserParamDto userParamDto = new UserParamDto("Name1", "Password1");
-        UserRespondDto respond = new UserRespondDto("Create Name1");
+        UserRespondDto respond = new UserRespondDto("Create Name1", NotificationType.SUCCESS.getType());
         respond.setLogIn(true);
         when(facade.tryLogIn(any())). thenReturn(respond);
 
