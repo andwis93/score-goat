@@ -22,7 +22,7 @@ public class LogIn {
     private int attempt;
     @Column(name = "LOCKED_TILL")
     private LocalDateTime locked;
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(targetEntity=User.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "USER_ID")
     private User user;
 

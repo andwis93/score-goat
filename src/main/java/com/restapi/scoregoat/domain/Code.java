@@ -23,7 +23,8 @@ public enum Code {
     USER_PASSWORD_CHANGED("I007"),
     UPLOAD_MATCHES_OK("I008"),
     UPLOAD_ALL_MATCHES_OK("I009"),
-    SAVE_ALL_PREDICTIONS("I010");
+    SAVE_ALL_PREDICTIONS("I010"),
+    USER_DELETE("I011");
 
     private final String code;
 }

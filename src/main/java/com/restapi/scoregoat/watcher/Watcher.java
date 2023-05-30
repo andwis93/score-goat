@@ -78,6 +78,15 @@ public class Watcher {
         LOGGER.info(message);
     }
 
+    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.UserService.deleteUser(..))"
+            + "&&target(object)" , returning = "respond", argNames = "respond,object")
+    public void logDeleteUser(UserRespondDto respond, Object object) {
+        String message = "Attempt to delete user for user with ID: " + respond.getId() + " with respond: "
+                + respond.getRespond() + " -- Class: " + object;
+        logDataService.saveLog(new LogData(respond.getId(), null, Code.USER_DELETE.getCode(), message));
+        LOGGER.info(message);
+    }
+
     @AfterReturning(value = "execution(* com.restapi.scoregoat.service.MatchService.uploadMatches(..))"
             + "&&target(object)" , returning = "respond", argNames = "respond,object")
     public void logUploadMatches(MatchRespondDto respond, Object object) {

@@ -41,6 +41,10 @@ public class User {
             fetch = FetchType.EAGER
     )
     private List<MatchPrediction> matchPredictions = new ArrayList<>();
+    @OneToOne(mappedBy = "user", orphanRemoval=true)
+    private LogIn logIn;
+    @OneToOne(mappedBy = "user", orphanRemoval=true)
+    private Session session;
 
     public User(String name, String email, String password) {
         this.name = name;

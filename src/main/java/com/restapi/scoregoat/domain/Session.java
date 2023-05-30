@@ -20,8 +20,7 @@ public class Session {
     private Long id;
     @Column(name = "SESSION_ENDS")
     private LocalDateTime end;
-
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(targetEntity=User.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "USER_ID")
     private User user;
 
