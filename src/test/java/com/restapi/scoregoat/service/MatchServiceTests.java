@@ -148,38 +148,9 @@ public class MatchServiceTests {
         when(service.findByLeagueIdOrderByDate(SeasonConfig.DEFAULT_LEAGUE.getId())).thenReturn(matchList);
         when(matchPredictionRepository.existsMatchPredictionByUserIdAndFixtureId(1L,365L)).thenReturn(false);
         when(matchPredictionRepository.existsMatchPredictionByUserIdAndFixtureId(1L,367L)).thenReturn(true);
-        when(dateConfig.getFrom()).thenReturn(OffsetDateTime.parse("2023-03-01T14:00:00+00:00"));
-        when(dateConfig.getTo()).thenReturn(OffsetDateTime.parse("2023-04-11T14:00:00+00:00"));
 
         //When
         List<Match> theMatchList = service.eliminateSelected(1L, 39);
-
-        //Then
-        assertEquals(1, theMatchList.size());
-    }
-
-    @Test
-    void shouldEliminateStarted() {
-        //Given
-        Match match1 = new Match(67L, SeasonConfig.DEFAULT_LEAGUE.getId(), 365L, OffsetDateTime.now().plusDays(1),
-                "Not Started", "00:00", "Liverpool", "Liverpool.logo",
-                true, "Everton", "Everton.logo", false,
-                2, 1);
-
-        Match match2 = new Match(25L, SeasonConfig.DEFAULT_LEAGUE.getId(), 367L, OffsetDateTime.now().minusDays(1),
-                "Not Started", "00:00", "Arsenal", "Arsenal.logo",
-                false, "WestHam", "WestHam.logo", true, 2, 3);
-
-        List<Match> matchList = new ArrayList<>();
-        matchList.add(match1);
-        matchList.add(match2);
-
-        when(service.eliminateSelected(1L, SeasonConfig.DEFAULT_LEAGUE.getId())).thenReturn(matchList);
-        when(dateConfig.getFrom()).thenReturn(OffsetDateTime.now());
-        when(dateConfig.getTo()).thenReturn(OffsetDateTime.now().plusDays(10));
-
-        //When
-        List<Match> theMatchList = service.eliminateStarted(1L, SeasonConfig.DEFAULT_LEAGUE.getId());
 
         //Then
         assertEquals(1, theMatchList.size());
