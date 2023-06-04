@@ -1,7 +1,7 @@
 package com.restapi.scoregoat.service;
 
 import com.restapi.scoregoat.domain.*;
-import com.restapi.scoregoat.repository.MatchRepository;
+import com.restapi.scoregoat.manager.MatchManager;
 import com.restapi.scoregoat.repository.MatchPredictionRepository;
 import com.restapi.scoregoat.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -18,15 +18,21 @@ public class MatchPredictionService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MatchPredictionService.class);
     private MatchPredictionRepository repository;
     private UserRepository userRepository;
-    private MatchRepository matchRepository;
+    private MatchManager manager;
+   // private MatchRepository matchRepository;
+    private MatchService matchService;
     private LogDataService logDataService;
 
-    public Match findMatch(Long fixtureId) {
-        if (matchRepository.existsByFixtureId(fixtureId)) {
-            return matchRepository.findByFixtureId(fixtureId).orElseThrow(NoSuchElementException::new);
-        } else {
-            return null;
-        }
+//    public Match findMatchByFixture(Long fixtureId) {
+//        if (matchRepository.existsByFixtureId(fixtureId)) {
+//            return matchRepository.findByFixtureId(fixtureId).orElseThrow(NoSuchElementException::new);
+//        } else {
+//            return null;
+//        }
+//    }
+
+    public List<MatchPrediction> findPredictionsByResult(int result) {
+        return repository.findAllByResult(result);
     }
 
     public NotificationRespondDto savePredictions(PredictionDto predictionDto) {
@@ -35,7 +41,7 @@ public class MatchPredictionService {
             for (Map.Entry<Long, String> match : predictionDto.getMatchSelections().entrySet()) {
                 if (!repository.existsMatchPredictionByUserIdAndFixtureId(user.getId(), match.getKey())) {
                     try {
-                        Match theMatch = findMatch(match.getKey());
+                        Match theMatch = matchService.findMatchByFixture(match.getKey());
                         MatchPrediction prediction = new MatchPrediction();
                         prediction.setLeagueId(theMatch.getLeagueId());
                         prediction.setUser(user);
@@ -64,7 +70,7 @@ public class MatchPredictionService {
         List<MatchPrediction> predictions = repository.findByUserIdAndLeagueId(userId, leagueId);
         List<UserPredictionDto> userPredictionsDto = new ArrayList<>();
         for (MatchPrediction prediction: predictions) {
-            Match match = findMatch(prediction.getFixtureId());
+            Match match = matchService.findMatchByFixture(prediction.getFixtureId());
             if (match != null) {
                 userPredictionsDto.add(new UserPredictionDto(match.getHomeLogo(), match.getHomeTeam(), match.getHomeGoals(),
                         match.getDate().toLocalDate().toString(), match.getDate().toLocalTime().toString(), match.getAwayGoals(),
@@ -77,5 +83,15 @@ public class MatchPredictionService {
     private List<UserPredictionDto> sortList(List<UserPredictionDto> list) {
         list.sort(Comparator.comparing(UserPredictionDto::getDate).reversed());
         return list;
+    }
+
+    public void graduatePredictions() {
+    findPredictionsByResult(MatchResultType.UNSET.getResult()).forEach(unset -> {
+            Match match = matchService.findMatchByFixture(unset.getFixtureId());
+            if (match.getStatus().equals(MatchStatusType.FINISHED.getType())) {
+                unset.setResult(manager.matchResultAssign(match));
+                repository.save(unset);
+            }
+        });
     }
 }

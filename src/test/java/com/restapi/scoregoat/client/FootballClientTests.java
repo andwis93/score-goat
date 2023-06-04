@@ -13,7 +13,6 @@ import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
@@ -65,10 +64,7 @@ public class FootballClientTests {
         when(config.getFootballAppHeader()).thenReturn("AppHeaderTest");
         when(config.getFootballAppKey()).thenReturn("ApiKeyTest");
 
-     //   LocalDate dateTo = LocalDate.now().plusDays(TimeFrame.DAYS_AFTER.getTimeFrame());
-
         FixtureParam param = new FixtureParam(SeasonConfig.DEFAULT_LEAGUE.getId() ,"2023");
-      //  LocalDate dateFrom = LocalDate.now().minusDays(TimeFrame.DAYS_BEFORE.getTimeFrame());
 
         URI uri = new URI("https://test.com/fixtures?league=" + param.getId() + "&season=2023");
 

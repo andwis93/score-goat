@@ -21,7 +21,6 @@ public class DataScheduler {
     @Autowired
     private ScoreGoatFacade facade;
 
-
     @Scheduled(cron = "0 58 3 1 * ?", zone="Europe/Warsaw")
     public void reloadData() {
         seasonService.setSeason();
@@ -37,7 +36,7 @@ public class DataScheduler {
         sessionService.removeExpiredSession();
     }
 
-    @Scheduled(cron = "0 */45 * * * ?", zone="Europe/Warsaw")
+    @Scheduled(cron = "0 0 */1 * * ?", zone="Europe/Warsaw")
     public void updateMatches() {
         facade.uploadMatchesFromLeagueConfigList();
     }

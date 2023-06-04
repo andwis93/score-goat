@@ -30,10 +30,6 @@ public class User {
     private String password;
     @Column(name = "CREATED")
     private LocalDate created;
-    @Column(name = "POINTS")
-    private int points;
-    @Column(name = "PLACE")
-    private Long place;
     @OneToMany(
             targetEntity =  MatchPrediction.class,
             mappedBy = "user",
@@ -43,8 +39,10 @@ public class User {
     private List<MatchPrediction> matchPredictions = new ArrayList<>();
     @OneToOne(mappedBy = "user", orphanRemoval=true)
     private LogIn logIn;
-    @OneToOne(mappedBy = "user", orphanRemoval=true)
+    @OneToOne(mappedBy = "user")
     private Session session;
+    @OneToOne(mappedBy = "user", orphanRemoval=true)
+    private Graduation graduation;
 
     public User(String name, String email, String password) {
         this.name = name;

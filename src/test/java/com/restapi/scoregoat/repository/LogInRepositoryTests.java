@@ -24,7 +24,6 @@ public class LogInRepositoryTests {
         logInList.add(logIn);
 
         //When
-
         repository.saveAll(logInList);
         List<LogIn> logInListFound = repository.findAll().stream()
                 .filter(userList -> userList.getUser() != null)
@@ -53,7 +52,6 @@ public class LogInRepositoryTests {
         repository.saveAll(logInList);
 
         //When
-
         LogIn logInFoundByUser = Optional.of(repository.findByUser(user)).get().orElse(null);
         assert logInFoundByUser != null;
 

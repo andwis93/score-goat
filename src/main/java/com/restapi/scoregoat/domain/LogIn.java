@@ -3,6 +3,8 @@ package com.restapi.scoregoat.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import org.jetbrains.annotations.NotNull;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
@@ -22,6 +24,8 @@ public class LogIn {
     private int attempt;
     @Column(name = "LOCKED_TILL")
     private LocalDateTime locked;
+    @Column(name = "LAST_TIME_LOGGED_IN")
+    private LocalDate lastLoggedIn;
     @OneToOne(targetEntity=User.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "USER_ID")
     private User user;

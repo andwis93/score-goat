@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -41,6 +40,7 @@ public class UserRepositoryTests {
         //Given
         User user = new User("UserName", "UserEmail", "UserPassword");
         User savedUser =  repository.save(user);
+
         //When
         Optional<User> optionalUserName = repository.findByName("UserName");
         Optional<User> optionalUserEmail = repository.findByEmail("UserEmail");
@@ -64,7 +64,7 @@ public class UserRepositoryTests {
         User user = new User("UserName", "UserEmail", "UserPassword");
         Long originalSize = repository.count();
         User savedUser =  repository.save(user);
-        Long sizeAfterSave = repository.count();
+        long sizeAfterSave = repository.count();
 
         //When
         repository.deleteById(savedUser.getId());

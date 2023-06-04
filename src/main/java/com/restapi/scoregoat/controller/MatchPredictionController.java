@@ -1,6 +1,5 @@
 package com.restapi.scoregoat.controller;
 
-import com.restapi.scoregoat.domain.MatchPrediction;
 import com.restapi.scoregoat.domain.NotificationRespondDto;
 import com.restapi.scoregoat.domain.PredictionDto;
 import com.restapi.scoregoat.domain.UserPredictionDto;

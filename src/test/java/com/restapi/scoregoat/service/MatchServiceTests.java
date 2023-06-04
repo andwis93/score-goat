@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -38,6 +39,22 @@ public class MatchServiceTests {
     private DateConfig dateConfig;
 
     @Test
+    void testFindMatch() {
+        //Given
+        Match match = new Match(1L, SeasonConfig.DEFAULT_LEAGUE.getId(), 365L, OffsetDateTime.parse("2023-04-01T14:00:00+00:00"),
+                "Not Started", "81:48", "Liverpool", "Liverpool.logo",
+                true, "Everton", "Everton.logo", false, 2, 1);
+        when(repository.existsByFixtureId(365L)).thenReturn(true);
+        when(repository.findByFixtureId(365L)).thenReturn(Optional.of(match));
+
+        //When
+        Match theMatch = service.findMatchByFixture(365L);
+
+        //Then
+        assertEquals(1L, theMatch.getId());
+    }
+
+    @Test
     void shouldUploadMatches() {
         //Given
         Season season = new Season(1L, "2023");
@@ -52,8 +69,6 @@ public class MatchServiceTests {
         FixtureRespond fixtureRespond = new FixtureRespond(fixture, league, teams, goals);
         FixturesList fixturesList = new FixturesList();
         fixturesList.getFixtureList().add(fixtureRespond);
-
-        //   LocalDate toDate = LocalDate.now().plusDays(TimeFrame.DAYS_AFTER.getTimeFrame());
 
         FixtureParam param = new FixtureParam(SeasonConfig.DEFAULT_LEAGUE.getId(),
                 season.getYear());

@@ -30,6 +30,15 @@ public class MatchService {
     private final SeasonService seasonService;
     private final LogDataService logDataService;
 
+
+    public Match findMatchByFixture(Long fixtureId) {
+        if (repository.existsByFixtureId(fixtureId)) {
+            return repository.findByFixtureId(fixtureId).orElseThrow(NoSuchElementException::new);
+        } else {
+            return null;
+        }
+    }
+
     public void deleteFixtures(){
         repository.deleteAll();
     }

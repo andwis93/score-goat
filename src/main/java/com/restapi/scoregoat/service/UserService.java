@@ -3,6 +3,7 @@ package com.restapi.scoregoat.service;
 import com.restapi.scoregoat.domain.*;
 import com.restapi.scoregoat.manager.DurationManager;
 import com.restapi.scoregoat.mapper.UserMapper;
+import com.restapi.scoregoat.repository.GraduationRepository;
 import com.restapi.scoregoat.repository.LogInRepository;
 import com.restapi.scoregoat.repository.UserRepository;
 import com.restapi.scoregoat.validator.EmailValidator;
@@ -37,6 +38,7 @@ public class UserService {
                     if (repository.findByEmail(user.getEmail()).isEmpty()) {
                         user.setPassword(encryptor.encryptPassword(user.getPassword()));
                         user = repository.save(user);
+
                         return new UserRespondDto().setExtendResponse(user, Respond.USER_CREATED_OK.getRespond(),
                                 NotificationType.SUCCESS.getType());
                     } else {
@@ -140,11 +142,6 @@ public class UserService {
             return new UserRespondDto(Respond.FIELDS_EMPTY.getRespond(), NotificationType.ERROR.getType());
         }
     }
-    private boolean emailExistCheck(Long userId, String email) {
-        List<User> usersWithEmail = repository.findAllByEmail(email).stream().filter(
-                user -> !user.getId().equals(userId)).toList();
-        return usersWithEmail.size() == 0;
-    }
 
     public UserRespondDto deleteUser(UserDto userDto) {
         if (userDto.getId() != null && userDto.getPassword() != null ) {
@@ -163,5 +160,11 @@ public class UserService {
         } else {
             return new UserRespondDto(Respond.FIELDS_EMPTY.getRespond(), NotificationType.ERROR.getType());
         }
+    }
+
+    private boolean emailExistCheck(Long userId, String email) {
+        List<User> usersWithEmail = repository.findAllByEmail(email).stream().filter(
+                user -> !user.getId().equals(userId)).toList();
+        return usersWithEmail.size() == 0;
     }
 }
