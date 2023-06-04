@@ -48,7 +48,6 @@ public class MatchService {
             FixturesList fixturesList = client.getFixtures(param);
             repository.saveAll(mapper.mapFixtureRespondToMatchList(fixturesList.getFixtureList()));
             return new MatchRespondDto(param.getId(),Respond.MATCH_UPLOAD_OK_LEAGUE.getRespond() + param.getId()
-                    //    + Respond.MATCH_UPLOAD_OK_DATE.getRespond() + param.getToDate()
                     + Respond.MATCH_UPLOAD_OK_SEASON.getRespond() + param.getSeason());
         }catch (Exception ex) {
             String message = ex.getMessage() + " --ERROR: Couldn't upload Matches to DataBase-- ";
@@ -88,20 +87,16 @@ public class MatchService {
                 && match.getDate().isBefore(dateConfig.getTo())).collect(Collectors.toList());
     }
 
+//    public List<Match> matchesNotStarted(int leagueId) {
+//        return matchesWithDateRange(leagueId).stream().filter(match ->
+//                match.getStatus().equals(MatchStatusType.NOT_STARTED.getType())).toList();
+//    }
+
     public List<Match> eliminateSelected(Long userId, int leagueId){
         List<Match> finalMatchList = new ArrayList<>();
-        for (Match match: matchesWithDateRange(leagueId)) {
+      //  for (Match match: matchesNotStarted(leagueId)) {
+        for (Match match: findByLeagueIdOrderByDate(leagueId)) {
             if (!matchPredictionRepository.existsMatchPredictionByUserIdAndFixtureId(userId, match.getFixtureId())) {
-                finalMatchList.add(match);
-            }
-        }
-        return finalMatchList;
-    }
-
-    public List<Match> eliminateStarted(Long userId, int leagueId){
-        List<Match> finalMatchList = new ArrayList<>();
-        for (Match match: eliminateSelected(userId, leagueId)) {
-            if (match.getDate().isAfter(OffsetDateTime.now())) {
                 finalMatchList.add(match);
             }
         }

@@ -19,17 +19,8 @@ public class MatchPredictionService {
     private MatchPredictionRepository repository;
     private UserRepository userRepository;
     private MatchManager manager;
-   // private MatchRepository matchRepository;
     private MatchService matchService;
     private LogDataService logDataService;
-
-//    public Match findMatchByFixture(Long fixtureId) {
-//        if (matchRepository.existsByFixtureId(fixtureId)) {
-//            return matchRepository.findByFixtureId(fixtureId).orElseThrow(NoSuchElementException::new);
-//        } else {
-//            return null;
-//        }
-//    }
 
     public List<MatchPrediction> findPredictionsByResult(int result) {
         return repository.findAllByResult(result);
@@ -86,7 +77,7 @@ public class MatchPredictionService {
     }
 
     public void graduatePredictions() {
-    findPredictionsByResult(MatchResultType.UNSET.getResult()).forEach(unset -> {
+        findPredictionsByResult(MatchResultType.UNSET.getResult()).forEach(unset -> {
             Match match = matchService.findMatchByFixture(unset.getFixtureId());
             if (match.getStatus().equals(MatchStatusType.FINISHED.getType())) {
                 unset.setResult(manager.matchResultAssign(match));

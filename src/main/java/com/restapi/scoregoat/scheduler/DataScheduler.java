@@ -36,8 +36,8 @@ public class DataScheduler {
         sessionService.removeExpiredSession();
     }
 
-    @Scheduled(cron = "0 0 */1 * * ?", zone="Europe/Warsaw")
-    public void updateMatches() {
-        facade.uploadMatchesFromLeagueConfigList();
-    }
+ //   @Scheduled(cron = "0 0 */1 * * ?", zone="Europe/Warsaw")
+ //   public void updateMatches() {
+  //      facade.uploadMatchesFromLeagueConfigList();
+  //  }
 }
