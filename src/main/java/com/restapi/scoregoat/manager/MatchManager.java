@@ -1,7 +1,7 @@
 package com.restapi.scoregoat.manager;
 
 import com.restapi.scoregoat.domain.Match;
-import com.restapi.scoregoat.domain.MatchResultType;
+import com.restapi.scoregoat.domain.Result;
 import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,14 +9,14 @@ import java.util.Map;
 @Service
 public class MatchManager {
 
-    public int matchResultAssign(Match match) {
+    public String matchResultAssign(Match match) {
         if (match.isHomeWinner() && !match.isAwayWinner()) {
-            return MatchResultType.HOME.getResult();
+            return Result.HOME.getResult();
         } else {
             if(!match.isHomeWinner() && match.isAwayWinner()) {
-                return MatchResultType.AWAY.getResult();
+                return Result.AWAY.getResult();
             } else {
-                return MatchResultType.DRAW.getResult();
+                return Result.DRAW.getResult();
             }
         }
     }

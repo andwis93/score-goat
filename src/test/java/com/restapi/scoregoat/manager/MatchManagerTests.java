@@ -8,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
@@ -24,10 +23,10 @@ public class MatchManagerTests {
                 true, "Everton", "Everton.logo", false, 2, 1);
 
         //When
-        int result = manager.matchResultAssign(match);
+        String result = manager.matchResultAssign(match);
 
         //Then
-        assertEquals(1, result);
+        assertEquals("home", result);
     }
 
     @Test

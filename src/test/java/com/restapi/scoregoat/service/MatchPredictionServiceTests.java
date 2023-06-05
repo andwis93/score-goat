@@ -35,8 +35,8 @@ public class MatchPredictionServiceTests {
     void testSavePredictions() {
         //Given
         Map<Long, String> list = new HashMap<>();
-        list.put(333L, Prediction.HOME.getResult());
-        list.put(327L, Prediction.AWAY.getResult());
+        list.put(333L, Result.HOME.getResult());
+        list.put(327L, Result.AWAY.getResult());
 
         PredictionDto predictionDto = new PredictionDto(202L, SeasonConfig.DEFAULT_LEAGUE.getId(), list);
 
@@ -47,7 +47,8 @@ public class MatchPredictionServiceTests {
                 "Not Started", "81:48", "Liverpool", "Liverpool.logo",
                 true, "Everton", "Everton.logo", false, 2, 1);
 
-        MatchPrediction prediction = new MatchPrediction(22L, SeasonConfig.DEFAULT_LEAGUE.getId(), list.get(327L), user,match2.getFixtureId(),-1, -1);
+        MatchPrediction prediction = new MatchPrediction(22L, SeasonConfig.DEFAULT_LEAGUE.getId(), list.get(327L),
+                user,match2.getFixtureId(),-1,Result.HOME.getResult());
 
         when(userRepository.existsById(202L)).thenReturn(true);
         when(userRepository.findById(202L)).thenReturn(Optional.of(user));
@@ -74,25 +75,25 @@ public class MatchPredictionServiceTests {
                 "Everton.logo", false, 2, 1);
 
         Map<Long, String> list = new HashMap<>();
-        list.put(333L, Prediction.HOME.getResult());
-        list.put(327L, Prediction.AWAY.getResult());
+        list.put(333L, Result.HOME.getResult());
+        list.put(327L, Result.AWAY.getResult());
 
         User user = new User("Name1","Email1@test.com", "Password1");
         user.setId(202L);
 
         MatchPrediction prediction = new MatchPrediction(22L, SeasonConfig.DEFAULT_LEAGUE.getId(), list.get(327L),
-                user,match.getFixtureId(),0, MatchResultType.UNSET.getResult());
+                user,match.getFixtureId(),0, Result.UNSET.getResult());
         List<MatchPrediction> predictionList = new ArrayList<>();
         predictionList.add(prediction);
 
-        when(repository.findAllByResult(0)).thenReturn(predictionList);
+        when(repository.findAllByResult(Result.UNSET.getResult())).thenReturn(predictionList);
         when(matchService.findMatchByFixture(365L)).thenReturn(match);
-        when(manager.matchResultAssign(match)).thenReturn(MatchResultType.HOME.getResult());
+        when(manager.matchResultAssign(match)).thenReturn(Result.HOME.getResult());
 
         //When
         service.graduatePredictions();
 
         //Then
-        assertEquals(1, predictionList.get(0).getResult());
+        assertEquals("home", predictionList.get(0).getResult());
     }
 }

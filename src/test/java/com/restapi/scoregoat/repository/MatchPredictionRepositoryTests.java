@@ -10,20 +10,23 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class MatchPredictionRepositoryTests {
     @Autowired
     private MatchPredictionRepository repository;
+	@Autowired
+	private UserRepository userRepository;
 
     @Test
     void testExistsMatchPredictionByUserIdAndMatchId() {
         //Given
 		User user = new User("Name1","Email1@test.com", "Password1");
-		user.setId(12L);
+		Long userId = userRepository.save(user).getId();
 		MatchPrediction prediction = new MatchPrediction();
-		prediction.setPrediction(Prediction.HOME.getResult());
+		prediction.setPrediction(Result.HOME.getResult());
+		prediction.setResult(Result.UNSET.getResult());
 		prediction.setUser(user);
-		prediction.setFixtureId(111L);
+		prediction.setFixtureId(17711L);
 		Long matchPredictionId = repository.save(prediction).getId();
 
 		//When
-		boolean exist = repository.existsMatchPredictionByUserIdAndFixtureId(12L, 111L);
+		boolean exist = repository.existsMatchPredictionByUserIdAndFixtureId(userId, 17711L);
 
 		//Then
 		assertTrue(exist);
@@ -31,6 +34,7 @@ public class MatchPredictionRepositoryTests {
 		//CleanUp
 		try {
 			repository.deleteById(matchPredictionId);
+			userRepository.deleteById(userId);
 		} catch (Exception ex) {
 			//do nothing
 		}

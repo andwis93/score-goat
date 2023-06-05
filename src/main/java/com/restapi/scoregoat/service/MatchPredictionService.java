@@ -22,7 +22,7 @@ public class MatchPredictionService {
     private MatchService matchService;
     private LogDataService logDataService;
 
-    public List<MatchPrediction> findPredictionsByResult(int result) {
+    public List<MatchPrediction> findPredictionsByResult(String result) {
         return repository.findAllByResult(result);
     }
 
@@ -38,6 +38,7 @@ public class MatchPredictionService {
                         prediction.setUser(user);
                         prediction.setFixtureId(theMatch.getFixtureId());
                         prediction.setPrediction(match.getValue());
+                        prediction.setResult(Result.UNSET.getResult());
 
                         repository.save(prediction);
                         user.getMatchPredictions().add(prediction);
@@ -77,7 +78,7 @@ public class MatchPredictionService {
     }
 
     public void graduatePredictions() {
-        findPredictionsByResult(MatchResultType.UNSET.getResult()).forEach(unset -> {
+        findPredictionsByResult(Result.UNSET.getResult()).forEach(unset -> {
             Match match = matchService.findMatchByFixture(unset.getFixtureId());
             if (match.getStatus().equals(MatchStatusType.FINISHED.getType())) {
                 unset.setResult(manager.matchResultAssign(match));

@@ -31,5 +31,5 @@ public class MatchPrediction {
     @Column(name = "POINTS")
     private int points;
     @Column(name = "RESULTS")
-    private int result;
+    private String result;
 }
