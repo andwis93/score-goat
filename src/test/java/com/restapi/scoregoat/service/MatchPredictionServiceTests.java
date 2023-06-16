@@ -65,6 +65,36 @@ public class MatchPredictionServiceTests {
     }
 
     @Test
+    void testGetMatchPrediction() {
+        //Given
+        Map<Long, String> list = new HashMap<>();
+        list.put(333L, Result.HOME.getResult());
+        list.put(327L, Result.AWAY.getResult());
+
+        User user = new User("Name1","Email1@test.com", "Password1");
+        user.setId(202L);
+
+        Match match = new Match(327L, SeasonConfig.DEFAULT_LEAGUE.getId(), 365L, OffsetDateTime.parse("2023-04-01T14:00:00+00:00"),
+                "Not Started", "81:48", "Liverpool", "Liverpool.logo",
+                true, "Everton", "Everton.logo", false, 2, 1);
+
+        MatchPrediction prediction = new MatchPrediction(22L, SeasonConfig.DEFAULT_LEAGUE.getId(), list.get(327L),
+                user,match.getFixtureId(),-1,Result.HOME.getResult());
+        List<MatchPrediction> predictions = new ArrayList<>();
+        predictions.add(prediction);
+
+        when(repository.findByUserIdAndLeagueId(202L, SeasonConfig.DEFAULT_LEAGUE.getId())).thenReturn(predictions);
+        when(matchService.findMatchByFixture(365L)).thenReturn(match);
+
+        //When
+        List<UserPredictionDto> userPredictionDtoList = service.getMatchPredictions(
+                202L, SeasonConfig.DEFAULT_LEAGUE.getId());
+
+        //Then
+        assertEquals(1,userPredictionDtoList.size());
+    }
+
+    @Test
     void testGraduatePredictions() {
         //Given
         Match match = new Match(327L, SeasonConfig.DEFAULT_LEAGUE.getId(), 365L,
@@ -113,7 +143,6 @@ public class MatchPredictionServiceTests {
 
         List<MatchPrediction> predictions = new ArrayList<>();
         predictions.add(prediction);
-
 
         when(repository.findAllByPoints(Points.NEUTRAL.getPoints())).thenReturn(predictions);
 
