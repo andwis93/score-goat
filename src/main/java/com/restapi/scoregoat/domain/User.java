@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
@@ -36,18 +36,28 @@ public class User {
             cascade = CascadeType.ALL,
             fetch = FetchType.EAGER
     )
-    private List<MatchPrediction> matchPredictions = new ArrayList<>();
+    private Set<MatchPrediction> predictions = new HashSet<>();
     @OneToOne(mappedBy = "user", orphanRemoval=true)
     private LogIn logIn;
     @OneToOne(mappedBy = "user")
     private Session session;
-    @OneToOne(mappedBy = "user", orphanRemoval=true)
-    private Graduation graduation;
+    @OneToMany(
+            targetEntity = Graduation.class,
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER
+    )
+    private Set<Graduation> graduation = new HashSet<>();
+
 
     public User(String name, String email, String password) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.created = LocalDate.now();
+    }
+
+    public void addPrediction(MatchPrediction prediction) {
+        this.predictions.add(prediction);
     }
 }

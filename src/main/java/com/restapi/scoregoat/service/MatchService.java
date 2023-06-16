@@ -13,9 +13,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
-import java.time.OffsetDateTime;
+
 import java.util.*;
 import java.util.stream.Collectors;
+
 
 @AllArgsConstructor
 @Service
@@ -24,13 +25,11 @@ public class MatchService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MatchService.class);
     private DateConfig dateConfig;
     private final MatchRepository repository;
-    private MatchPredictionRepository matchPredictionRepository;
+    private final MatchPredictionRepository predictionRepository;
     private final MatchMapper mapper;
     private final FootballClient client;
     private final SeasonService seasonService;
     private final LogDataService logDataService;
-
-
     public Match findMatchByFixture(Long fixtureId) {
         if (repository.existsByFixtureId(fixtureId)) {
             return repository.findByFixtureId(fixtureId).orElseThrow(NoSuchElementException::new);
@@ -52,7 +51,7 @@ public class MatchService {
         }catch (Exception ex) {
             String message = ex.getMessage() + " --ERROR: Couldn't upload Matches to DataBase-- ";
             logDataService.saveLog(new LogData(null,"League ID: "
-                    + param.getId(), Code.MATCH_UPLOAD.getCode(), message));
+                    + param.getId(), Code.MATCH_UPLOAD_ERROR.getCode(), message));
             LOGGER.error(message,ex);
             return null;
         }
@@ -71,7 +70,7 @@ public class MatchService {
         } catch (Exception ex) {
             String message = ex.getMessage() + " --ERROR: Couldn't upload all Matches to DataBase-- ";
             logDataService.saveLog(new LogData(null, "LeagueConfigList"
-                    , Code.MATCH_UPLOAD_ALL.getCode(), message));
+                    , Code.MATCH_UPLOAD_ALL_ERROR.getCode(), message));
             LOGGER.error(message,ex);
             return null;
         }
@@ -96,7 +95,7 @@ public class MatchService {
         List<Match> finalMatchList = new ArrayList<>();
       //  for (Match match: matchesNotStarted(leagueId)) {
         for (Match match: findByLeagueIdOrderByDate(leagueId)) {
-            if (!matchPredictionRepository.existsMatchPredictionByUserIdAndFixtureId(userId, match.getFixtureId())) {
+            if (!predictionRepository.existsMatchPredictionByUserIdAndFixtureId(userId, match.getFixtureId())) {
                 finalMatchList.add(match);
             }
         }

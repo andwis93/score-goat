@@ -9,8 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
-@Service
 @RequiredArgsConstructor
+@Service
 public class ScoreGoatFacade {
     private final UserService userService;
     private final SeasonService seasonService;
@@ -63,6 +63,11 @@ public class ScoreGoatFacade {
 
     public UserRespondDto deleteUser(UserDto userDto) {
         return userService.deleteUser(userDto);
+    }
+
+    public void graduatePredictions() {
+      predictionService.graduatePredictions();
+      predictionService.assignPoints();
     }
 
 }

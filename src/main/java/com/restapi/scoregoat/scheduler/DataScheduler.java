@@ -1,28 +1,28 @@
 package com.restapi.scoregoat.scheduler;
 
 import com.restapi.scoregoat.facade.ScoreGoatFacade;
-import com.restapi.scoregoat.service.MatchPredictionService;
 import com.restapi.scoregoat.service.UpdateLogInService;
 import com.restapi.scoregoat.service.SeasonService;
 import com.restapi.scoregoat.service.SessionService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class DataScheduler {
-    @Autowired
     private SeasonService seasonService;
-    @Autowired
     private UpdateLogInService cleanLogInService;
-    @Autowired
     private SessionService sessionService;
-    @Autowired
     private ScoreGoatFacade facade;
-    @Autowired
-    MatchPredictionService predictionService;
+
+    public DataScheduler(SeasonService seasonService, UpdateLogInService cleanLogInService,
+                         SessionService sessionService, ScoreGoatFacade facade) {
+        this.seasonService = seasonService;
+        this.cleanLogInService = cleanLogInService;
+        this.sessionService = sessionService;
+        this.facade = facade;
+    }
 
     @Scheduled(cron = "0 58 3 1 * ?", zone="Europe/Warsaw")
     public void reloadData() {
@@ -44,8 +44,8 @@ public class DataScheduler {
         facade.uploadMatchesFromLeagueConfigList();
     }
 
-    @Scheduled(cron = "0 0 2 * *", zone="Europe/Warsaw")
+    @Scheduled(cron = "0 0 2 * * ?", zone="Europe/Warsaw")
     public void graduatePredictions() {
-        predictionService.graduatePredictions();
+        facade.graduatePredictions();
     }
 }

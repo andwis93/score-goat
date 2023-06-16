@@ -24,7 +24,18 @@ public class Graduation {
     private int rank;
     @Column(name = "LEAGUE_ID")
     private int league;
-    @OneToOne(targetEntity=User.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "USER_ID")
+    @ManyToOne
+    @JoinColumn(name = "USER_ID", nullable = false)
     private User user;
+
+    public Graduation(int league, User user) {
+        this.points = 0;
+        this.rank = 0;
+        this.league = league;
+        this.user = user;
+    }
+
+    public void addPoints(int points) {
+        this.points += points;
+    }
 }

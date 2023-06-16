@@ -9,12 +9,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class ScoreGoatApplicationTests {
 	@Autowired
-	private MatchPredictionService service;
-//	private ScoreGoatFacade facade;
+	private ScoreGoatFacade facade;
 
 	@Test
 	void contextLoads() {
-		service.graduatePredictions();
+		facade.graduatePredictions();
 	//	facade.uploadMatchesFromLeagueConfigList();
 	}
 }

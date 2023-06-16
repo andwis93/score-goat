@@ -18,8 +18,8 @@ import java.util.List;
 @EnableAspectJAutoProxy
 public class SessionService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SessionService.class);
-    private SessionRepository repository;
-    private LogDataService logDataService;
+    private final SessionRepository repository;
+    private final LogDataService logDataService;
 
     public long removeExpiredSession() {
         List<Session> expiredSession = repository.findAll().stream()

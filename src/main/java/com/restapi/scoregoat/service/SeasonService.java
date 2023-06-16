@@ -18,8 +18,8 @@ import java.util.List;
 @EnableAspectJAutoProxy
 public class SeasonService {
     private static final Logger LOGGER = LoggerFactory.getLogger(FootballClient.class);
-    private LogDataService logDataService;
-    private SeasonRepository repository;
+    private final SeasonRepository repository;
+    private final LogDataService logDataService;
     private final FootballClient footballClient;
 
     public Season setSeason() {
@@ -31,7 +31,7 @@ public class SeasonService {
         }catch (Exception ex) {
             String message = ex.getMessage() + " --ERROR: Couldn't replace season in DataBase-- ";
             logDataService.saveLog(new LogData(null,"Setting League ID: "
-                    + SeasonConfig.DEFAULT_LEAGUE.getId(), Code.SEASON_SET_DB.getCode(), message));
+                    + SeasonConfig.DEFAULT_LEAGUE.getId(), Code.SEASON_SET_DB_ERROR.getCode(), message));
             LOGGER.error(message,ex);
             return null;
         }

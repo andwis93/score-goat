@@ -73,7 +73,7 @@ public class LogInService {
         } catch (IllegalArgumentException ex) {
             String message = ex.getMessage() + "  --ERROR: Couldn't execute \"resetAttempt\"-- ";
             logDataService.saveLog(new LogData(
-                    null, "With UserID: " + attempt.getUser(), Code.LOGIN_RESET_ATTEMPT.getCode(), message));
+                    null, "With UserID: " + attempt.getUser(), Code.LOGIN_RESET_ATTEMPT_ERROR.getCode(), message));
             LOGGER.error(message, ex);
             return false;
         }

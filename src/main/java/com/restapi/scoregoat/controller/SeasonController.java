@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @CrossOrigin("*")
 public class SeasonController {
+
     private final ScoreGoatFacade facade;
     private final SeasonMapper mapper;
 

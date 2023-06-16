@@ -110,7 +110,16 @@ public class Watcher {
     public void saveUserPredictions(PredictionDto predictionDto, String respond, Object object) {
         String message = "Attempt to save all matches predictions by user: " + predictionDto.getUserId() + " with respond: "
                 + respond + " -- Class: " + object;
-        logDataService.saveLog(new LogData(null, "LeagueConfigList", Code.SAVE_ALL_PREDICTIONS.getCode(), message));
+        logDataService.saveLog(new LogData(null, null, Code.SAVE_ALL_PREDICTIONS.getCode(), message));
+        LOGGER.info(message);
+    }
+
+    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.MatchPredictionService.assignPoints(..))"
+            + "&&target(object)" ,returning = "counter", argNames = "counter, object")
+    public void assignPoints(long counter, Object object) {
+        String message = "Attempt to assign points. Assign points to: " + counter + " predictions"
+                + " -- Class: " + object;
+        logDataService.saveLog(new LogData(null, null, Code.SAVE_ALL_PREDICTIONS.getCode(), message));
         LOGGER.info(message);
     }
 }

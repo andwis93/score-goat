@@ -3,7 +3,6 @@ package com.restapi.scoregoat.service;
 import com.restapi.scoregoat.domain.*;
 import com.restapi.scoregoat.manager.DurationManager;
 import com.restapi.scoregoat.mapper.UserMapper;
-import com.restapi.scoregoat.repository.GraduationRepository;
 import com.restapi.scoregoat.repository.LogInRepository;
 import com.restapi.scoregoat.repository.UserRepository;
 import com.restapi.scoregoat.validator.EmailValidator;

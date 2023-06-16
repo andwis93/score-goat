@@ -24,7 +24,7 @@ public class MatchPrediction {
     @Column (name = "PREDICTIONS")
     private String prediction;
     @ManyToOne
-    @JoinColumn(name = "USER_ID")
+    @JoinColumn(name = "USER_ID", nullable = false)
     private User user;
     @Column(name = "FIXTURES_ID")
     private Long fixtureId;

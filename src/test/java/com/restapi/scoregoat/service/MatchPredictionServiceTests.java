@@ -25,11 +25,9 @@ public class MatchPredictionServiceTests {
     @Mock
     private MatchPredictionRepository repository;
     @Mock
-    private MatchManager manager;
-    @Mock
     private UserRepository userRepository;
-
-
+    @Mock
+    private MatchManager manager;
 
     @Test
     void testSavePredictions() {
@@ -43,18 +41,18 @@ public class MatchPredictionServiceTests {
         User user = new User("Name1","Email1@test.com", "Password1");
         user.setId(202L);
 
-        Match match2 = new Match(327L, SeasonConfig.DEFAULT_LEAGUE.getId(), 365L, OffsetDateTime.parse("2023-04-01T14:00:00+00:00"),
+        Match match = new Match(327L, SeasonConfig.DEFAULT_LEAGUE.getId(), 365L, OffsetDateTime.parse("2023-04-01T14:00:00+00:00"),
                 "Not Started", "81:48", "Liverpool", "Liverpool.logo",
                 true, "Everton", "Everton.logo", false, 2, 1);
 
         MatchPrediction prediction = new MatchPrediction(22L, SeasonConfig.DEFAULT_LEAGUE.getId(), list.get(327L),
-                user,match2.getFixtureId(),-1,Result.HOME.getResult());
+                user,match.getFixtureId(),-1,Result.HOME.getResult());
 
         when(userRepository.existsById(202L)).thenReturn(true);
         when(userRepository.findById(202L)).thenReturn(Optional.of(user));
         when(repository.existsMatchPredictionByUserIdAndFixtureId(202L,333L)).thenReturn(true);
         when(repository.existsMatchPredictionByUserIdAndFixtureId(202L,327L)).thenReturn(false);
-        when(matchService.findMatchByFixture(327L)).thenReturn(match2);
+        when(matchService.findMatchByFixture(327L)).thenReturn(match);
         when(repository.save(any(MatchPrediction.class))).thenReturn(prediction);
         when(userRepository.save(user)).thenReturn(user);
 
@@ -75,7 +73,6 @@ public class MatchPredictionServiceTests {
                 "Everton.logo", false, 2, 1);
 
         Map<Long, String> list = new HashMap<>();
-        list.put(333L, Result.HOME.getResult());
         list.put(327L, Result.AWAY.getResult());
 
         User user = new User("Name1","Email1@test.com", "Password1");
@@ -95,5 +92,35 @@ public class MatchPredictionServiceTests {
 
         //Then
         assertEquals("home", predictionList.get(0).getResult());
+    }
+
+    @Test
+    void testAssignPoints() {
+        //Given
+        Match match = new Match(327L, SeasonConfig.DEFAULT_LEAGUE.getId(), 365L,
+                OffsetDateTime.parse("2023-04-01T14:00:00+00:00"), MatchStatusType.FINISHED.getType(),
+                "81:48", "Liverpool", "Liverpool.logo", true, "Everton",
+                "Everton.logo", false, 2, 1);
+
+        Map<Long, String> list = new HashMap<>();
+        list.put(333L, Result.HOME.getResult());
+
+        User user = new User("Name1","Email1@test.com", "Password1");
+        user.setId(202L);
+
+        MatchPrediction prediction = new MatchPrediction(22L, SeasonConfig.DEFAULT_LEAGUE.getId(), list.get(333L),
+                user,match.getFixtureId(),Points.NEUTRAL.getPoints(), Result.HOME.getResult());
+
+        List<MatchPrediction> predictions = new ArrayList<>();
+        predictions.add(prediction);
+
+
+        when(repository.findAllByPoints(Points.NEUTRAL.getPoints())).thenReturn(predictions);
+
+        //When
+        long counter = service.assignPoints();
+
+        //Then
+        assertEquals(1, counter);
     }
 }

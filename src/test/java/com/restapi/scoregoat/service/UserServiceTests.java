@@ -52,6 +52,27 @@ public class UserServiceTests {
 
         //Then
         assertEquals(Respond.USER_CREATED_OK.getRespond(), respondDto.getRespond());
+        verify(repository, times(1)).save(user);
+    }
+
+    @Test
+    void testDeleteUser() {
+        //Given
+        User user = new User("Name1","Email1@test.com", "Password1");
+        UserDto userDto = new UserDto("Name1", "Email1@test.com", "Password1");
+        userDto.setId(1L);
+
+        when(repository.findById(1L)).thenReturn(Optional.of(user));
+        when(encryptor.checkPassword("Password1", "Password1")).thenReturn(true);
+
+        //When
+        UserRespondDto respond = service.deleteUser(userDto);
+
+        //Then
+        assertEquals("Name1", respond.getUserName());
+        assertEquals("Email1@test.com", respond.getEmail());
+        assertEquals(Respond.USER_DELETED_OK.getRespond(), respond.getRespond());
+        verify(repository, times(1)).deleteById(user.getId());
     }
 
     @Test
@@ -73,6 +94,7 @@ public class UserServiceTests {
         assertEquals("Name1", respondDto.getUserName());
         assertEquals("Email1@test.com", respondDto.getEmail());
         assertEquals(Respond.PASSWORD_CHANGED_OK.getRespond(), respondDto.getRespond());
+        verify(repository, times(1)).save(user);
     }
 
     @Test
@@ -94,5 +116,6 @@ public class UserServiceTests {
         assertEquals("Test", respondDto.getUserName());
         assertEquals("Test@test.com", respondDto.getEmail());
         assertEquals(Respond.ACCOUNT_CHANGED_OK.getRespond(), respondDto.getRespond());
+        verify(repository, times(1)).save(user);
     }
 }

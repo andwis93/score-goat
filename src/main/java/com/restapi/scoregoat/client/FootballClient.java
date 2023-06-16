@@ -72,7 +72,7 @@ public class FootballClient {
         } catch (RestClientException ex) {
             String message = ex.getMessage() + "  --ERROR: Couldn't get season from Api Client-- ";
             logDataService.saveLog(new LogData(
-                    null,"League ID: " + SeasonConfig.DEFAULT_LEAGUE.getId(), Code.SEASON_CLEAN.getCode(), message));
+                    null,"League ID: " + SeasonConfig.DEFAULT_LEAGUE.getId(), Code.SEASON_CLEAN_ERROR.getCode(), message));
             LOGGER.error(message,ex);
             return null;
         }
@@ -87,7 +87,7 @@ public class FootballClient {
         } catch (RestClientException ex) {
             String message = ex.getMessage() + "  --ERROR: Couldn't get fixtures from Api Client-- ";
             logDataService.saveLog(new LogData(
-                    null,"League ID: " + param.getId(), Code.FIXTURE_GET.getCode(), message));
+                    null,"League ID: " + param.getId(), Code.FIXTURE_GET_ERROR.getCode(), message));
             LOGGER.error(message,ex);
             return null;
         }

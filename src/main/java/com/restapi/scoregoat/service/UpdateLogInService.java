@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 @EnableAspectJAutoProxy
 public class UpdateLogInService {
-    private LogInRepository logInRepository;
+    private final LogInRepository logInRepository;
     public long updateLogInLockedDates(){
         List<LogIn> expiredLocks = logInRepository.findAll().stream()
                 .filter(empty -> empty.getLocked() != null)

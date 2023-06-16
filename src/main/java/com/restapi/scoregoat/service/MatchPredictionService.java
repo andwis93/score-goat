@@ -1,6 +1,7 @@
 package com.restapi.scoregoat.service;
 
 import com.restapi.scoregoat.domain.*;
+import com.restapi.scoregoat.manager.GraduationManager;
 import com.restapi.scoregoat.manager.MatchManager;
 import com.restapi.scoregoat.repository.MatchPredictionRepository;
 import com.restapi.scoregoat.repository.UserRepository;
@@ -16,15 +17,12 @@ import java.util.*;
 @EnableAspectJAutoProxy
 public class MatchPredictionService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MatchPredictionService.class);
-    private MatchPredictionRepository repository;
-    private UserRepository userRepository;
-    private MatchManager manager;
-    private MatchService matchService;
-    private LogDataService logDataService;
-
-    public List<MatchPrediction> findPredictionsByResult(String result) {
-        return repository.findAllByResult(result);
-    }
+    private final MatchPredictionRepository repository;
+    private final UserRepository userRepository;
+    private final MatchService matchService;
+    private final LogDataService logDataService;
+    private final MatchManager manager;
+    private GraduationManager graduationManager;
 
     public NotificationRespondDto savePredictions(PredictionDto predictionDto) {
         if (userRepository.existsById(predictionDto.getUserId())) {
@@ -41,12 +39,14 @@ public class MatchPredictionService {
                         prediction.setResult(Result.UNSET.getResult());
 
                         repository.save(prediction);
-                        user.getMatchPredictions().add(prediction);
+
+                        user.addPrediction(prediction);
                         userRepository.save(user);
+
                     } catch (NoSuchElementException ex) {
                         String message = ex.getMessage() + "  --ERROR: Couldn't execute \"savePredictions\"-- ";
                         logDataService.saveLog(new LogData(null, "With matchID: " +
-                                match.getKey(), Code.COULD_NOT_EXECUTE_PREDICTION.getCode(), message));
+                                match.getKey(), Code.EXECUTE_PREDICTION_ERROR.getCode(), message));
                         LOGGER.error(message, ex);
                         return new NotificationRespondDto(message, NotificationType.ERROR.getType());
                     }
@@ -78,12 +78,35 @@ public class MatchPredictionService {
     }
 
     public void graduatePredictions() {
-        findPredictionsByResult(Result.UNSET.getResult()).forEach(unset -> {
+        repository.findAllByResult(Result.UNSET.getResult()).forEach(unset -> {
             Match match = matchService.findMatchByFixture(unset.getFixtureId());
             if (match.getStatus().equals(MatchStatusType.FINISHED.getType())) {
                 unset.setResult(manager.matchResultAssign(match));
                 repository.save(unset);
             }
         });
+    }
+
+    public void graduationExecution(MatchPrediction prediction) {
+        try {
+            prediction.setPoints(manager.matchPointsAssign(prediction));
+            repository.save(prediction);
+            graduationManager.graduationUpdate(prediction);
+        } catch (Exception ex) {
+            String message = ex.getMessage() + " --ERROR: Couldn't execute graduation-- ";
+            logDataService.saveLog(new LogData(null,"Prediction ID: "
+                    + prediction.getId(), Code.EXECUTION_GRADUATION_ERROR.getCode(), message));
+            LOGGER.error(message,ex);
+        }
+    }
+
+    public long  assignPoints() {
+        List<MatchPrediction> predictions = repository.findAllByPoints(Points.NEUTRAL.getPoints());
+        long count = 0;
+        for(MatchPrediction thePrediction:predictions) {
+            graduationExecution(thePrediction);
+            count++;
+        }
+        return count;
     }
 }
