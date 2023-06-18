@@ -1,4 +1,4 @@
-package com.restapi.scoregoat.service;
+package com.restapi.scoregoat.service.DBService;
 
 import com.restapi.scoregoat.domain.Code;
 import com.restapi.scoregoat.domain.LogData;
@@ -11,9 +11,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class LogDataServiceTests {
+public class LogDataDBServiceTests {
     @InjectMocks
-    private LogDataService service;
+    private LogDataDBService service;
     @Mock
     private LogDataRepository repository;
 

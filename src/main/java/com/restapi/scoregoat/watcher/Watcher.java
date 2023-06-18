@@ -1,7 +1,7 @@
 package com.restapi.scoregoat.watcher;
 
 import com.restapi.scoregoat.domain.*;
-import com.restapi.scoregoat.service.LogDataService;
+import com.restapi.scoregoat.service.DBService.LogDataDBService;
 import lombok.AllArgsConstructor;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -14,9 +14,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class Watcher {
     private static final Logger LOGGER = LoggerFactory.getLogger(Watcher.class);
-    private final LogDataService logDataService;
+    private final LogDataDBService logDataService;
 
-    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.SeasonService.setSeason(..))"
+    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.ClientService.SeasonClientService.setSeason(..))"
             + "&& args(id) && target(object)", returning ="season", argNames = "id,object,season")
     public void logSetSeason(int id, Object object, Season season) {
         String message = "Set Season " + season.getYear() + " -- Class: " + object.getClass().getName();
@@ -24,7 +24,7 @@ public class Watcher {
         LOGGER.info(message);
     }
 
-    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.UserService.signUpUser(..))"
+    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.ClientService.UserClientService.signUpUser(..))"
             + "&&target(object)" , returning = "respond", argNames = "respond,object")
     public void logSetCreateUser(UserRespondDto respond, Object object) {
         String message = "Create User with ID: " + respond.getId() + " with respond: " + respond.getRespond()
@@ -33,7 +33,7 @@ public class Watcher {
         LOGGER.info(message);
     }
 
-    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.LogInService.logInAttempt(..))"
+    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.ClientService.LogInClientService.logInAttempt(..))"
             + "&&target(object)", returning = "respond", argNames = "respond,object")
     public void logLogIn(UserRespondDto respond, Object object) {
         String message = "Attempt to Log In User with ID: " + respond.getId() + " with respond: " + respond.getRespond()
@@ -42,7 +42,7 @@ public class Watcher {
         LOGGER.info(message);
     }
 
-    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.UpdateLogInService.updateLogInLockedDates(..))"
+    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.ClientService.LogInClientService.updateLogInLockedDates(..))"
             + "&&target(object)", returning = "respond", argNames = "respond,object")
     public void logUpdateLogInLockedDate(long respond, Object object) {
         String message = "Clean up locked LogIns in amount of: " + respond + " -- Class: " + object;
@@ -51,7 +51,7 @@ public class Watcher {
         LOGGER.info(message);
     }
 
-    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.SessionService.removeExpiredSession(..))"
+    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.ClientService.SessionClientService.removeExpiredSession(..))"
            + "&&target(object)", returning = "respond", argNames = "respond,object")
     public void logExpiredSessionRemove(long respond, Object object) {
         String message = "Expired Sessions were removed in amount of: " + respond + " -- Class: " + object;
@@ -60,7 +60,7 @@ public class Watcher {
         LOGGER.info(message);
     }
 
-    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.UserService.accountChange(..))"
+    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.ClientService.UserClientService.accountChange(..))"
             + "&&target(object)" , returning = "respond", argNames = "respond,object")
     public void accountChange(UserRespondDto respond, Object object) {
         String message = "Attempt to change account Information for user with ID: " + respond.getId() + " with respond: "
@@ -69,7 +69,7 @@ public class Watcher {
         LOGGER.info(message);
     }
 
-    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.UserService.changePassword(..))"
+    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.ClientService.UserClientService.changePassword(..))"
             + "&&target(object)" , returning = "respond", argNames = "respond,object")
     public void logChangingPassword(UserRespondDto respond, Object object) {
         String message = "Attempt to change password for user with ID: " + respond.getId() + " with respond: "
@@ -78,7 +78,7 @@ public class Watcher {
         LOGGER.info(message);
     }
 
-    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.UserService.deleteUser(..))"
+    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.ClientService.UserClientService.deleteUser(..))"
             + "&&target(object)" , returning = "respond", argNames = "respond,object")
     public void logDeleteUser(UserRespondDto respond, Object object) {
         String message = "Attempt to delete user for user with ID: " + respond.getId() + " with respond: "
@@ -87,7 +87,7 @@ public class Watcher {
         LOGGER.info(message);
     }
 
-    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.MatchService.uploadMatches(..))"
+    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.ClientService.MatchClientService.uploadMatches(..))"
             + "&&target(object)" , returning = "respond", argNames = "respond,object")
     public void logUploadMatches(MatchRespondDto respond, Object object) {
         String message = "Attempt to upload matches for League ID: " + respond.getLeagueId() + " with respond: "
@@ -96,7 +96,7 @@ public class Watcher {
         LOGGER.info(message);
     }
 
-    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.MatchService.uploadMatchesFromLeagueConfigList(..))"
+    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.ClientService.MatchClientService.uploadMatchesFromLeagueConfigList(..))"
             + "&&target(object)" , returning = "respond", argNames = "respond,object")
     public void logUploadAllMatches(MatchRespondDto respond, Object object) {
         String message = "Attempt to upload all matches with respond: "
@@ -105,7 +105,7 @@ public class Watcher {
         LOGGER.info(message);
     }
 
-    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.MatchPredictionService.savePredictions(..))"
+    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.ClientService.MatchPredictionClientService.savePredictions(..))"
             + "&&args(predictionDto) &&target(object)" ,returning = "respond", argNames = "predictionDto, respond, object")
     public void saveUserPredictions(PredictionDto predictionDto, String respond, Object object) {
         String message = "Attempt to save all matches predictions by user: " + predictionDto.getUserId() + " with respond: "
@@ -114,7 +114,7 @@ public class Watcher {
         LOGGER.info(message);
     }
 
-    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.MatchPredictionService.assignPoints(..))"
+    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.ClientService.MatchPredictionClientService.assignPoints(..))"
             + "&&target(object)" ,returning = "counter", argNames = "counter, object")
     public void assignPoints(long counter, Object object) {
         String message = "Attempt to assign points. Assign points to: " + counter + " predictions"

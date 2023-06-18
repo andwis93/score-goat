@@ -9,5 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface GraduationRepository extends JpaRepository<Graduation, Long> {
     Graduation findByLeagueAndUserId(int leagueId, Long userid);
+  //  List<Graduation> findByLeagueId(int leagueId);
     boolean existsGraduationByLeagueAndUserId(int leagueId, Long userId);
 }

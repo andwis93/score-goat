@@ -1,10 +1,12 @@
-package com.restapi.scoregoat.service;
+package com.restapi.scoregoat.service.ClientService;
 
 import com.restapi.scoregoat.config.SeasonConfig;
 import com.restapi.scoregoat.domain.*;
+import com.restapi.scoregoat.manager.GraduationManager;
 import com.restapi.scoregoat.manager.MatchManager;
-import com.restapi.scoregoat.repository.MatchPredictionRepository;
-import com.restapi.scoregoat.repository.UserRepository;
+import com.restapi.scoregoat.service.DBService.MatchDBService;
+import com.restapi.scoregoat.service.DBService.MatchPredictionDBService;
+import com.restapi.scoregoat.service.DBService.UserDBService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,21 +15,22 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.time.OffsetDateTime;
 import java.util.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class MatchPredictionServiceTests {
+public class MatchPredictionClientServiceTests {
     @InjectMocks
-    private MatchPredictionService service;
+    private MatchPredictionClientService service;
     @Mock
-    private MatchService matchService;
+    private MatchDBService matchService;
     @Mock
-    private MatchPredictionRepository repository;
+    private MatchPredictionDBService predictionDBService;
     @Mock
-    private UserRepository userRepository;
+    private UserDBService userDBService;
     @Mock
     private MatchManager manager;
+    @Mock
+    private GraduationManager graduationManager;
 
     @Test
     void testSavePredictions() {
@@ -45,16 +48,13 @@ public class MatchPredictionServiceTests {
                 "Not Started", "81:48", "Liverpool", "Liverpool.logo",
                 true, "Everton", "Everton.logo", false, 2, 1);
 
-        MatchPrediction prediction = new MatchPrediction(22L, SeasonConfig.DEFAULT_LEAGUE.getId(), list.get(327L),
-                user,match.getFixtureId(),-1,Result.HOME.getResult());
 
-        when(userRepository.existsById(202L)).thenReturn(true);
-        when(userRepository.findById(202L)).thenReturn(Optional.of(user));
-        when(repository.existsMatchPredictionByUserIdAndFixtureId(202L,333L)).thenReturn(true);
-        when(repository.existsMatchPredictionByUserIdAndFixtureId(202L,327L)).thenReturn(false);
+        when(userDBService.existsById(202L)).thenReturn(true);
+        when(userDBService.findById(202L)).thenReturn(user);
+        when(predictionDBService.existsMatchPredictionByUserIdAndFixtureId(202L,333L)).thenReturn(true);
+        when(predictionDBService.existsMatchPredictionByUserIdAndFixtureId(202L,327L)).thenReturn(false);
         when(matchService.findMatchByFixture(327L)).thenReturn(match);
-        when(repository.save(any(MatchPrediction.class))).thenReturn(prediction);
-        when(userRepository.save(user)).thenReturn(user);
+        when(userDBService.save(user)).thenReturn(user);
 
         //When
         NotificationRespondDto respondDto = service.savePredictions(predictionDto);
@@ -83,7 +83,7 @@ public class MatchPredictionServiceTests {
         List<MatchPrediction> predictions = new ArrayList<>();
         predictions.add(prediction);
 
-        when(repository.findByUserIdAndLeagueId(202L, SeasonConfig.DEFAULT_LEAGUE.getId())).thenReturn(predictions);
+        when(predictionDBService.findByUserIdAndLeagueId(202L, SeasonConfig.DEFAULT_LEAGUE.getId())).thenReturn(predictions);
         when(matchService.findMatchByFixture(365L)).thenReturn(match);
 
         //When
@@ -113,7 +113,7 @@ public class MatchPredictionServiceTests {
         List<MatchPrediction> predictionList = new ArrayList<>();
         predictionList.add(prediction);
 
-        when(repository.findAllByResult(Result.UNSET.getResult())).thenReturn(predictionList);
+        when(predictionDBService.findAllByResult(Result.UNSET.getResult())).thenReturn(predictionList);
         when(matchService.findMatchByFixture(365L)).thenReturn(match);
         when(manager.matchResultAssign(match)).thenReturn(Result.HOME.getResult());
 
@@ -144,7 +144,7 @@ public class MatchPredictionServiceTests {
         List<MatchPrediction> predictions = new ArrayList<>();
         predictions.add(prediction);
 
-        when(repository.findAllByPoints(Points.NEUTRAL.getPoints())).thenReturn(predictions);
+        when(predictionDBService.findAllByPoints(Points.NEUTRAL.getPoints())).thenReturn(predictions);
 
         //When
         long counter = service.assignPoints();

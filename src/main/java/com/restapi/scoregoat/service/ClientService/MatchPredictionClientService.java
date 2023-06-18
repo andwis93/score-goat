@@ -1,10 +1,12 @@
-package com.restapi.scoregoat.service;
+package com.restapi.scoregoat.service.ClientService;
 
 import com.restapi.scoregoat.domain.*;
 import com.restapi.scoregoat.manager.GraduationManager;
 import com.restapi.scoregoat.manager.MatchManager;
-import com.restapi.scoregoat.repository.MatchPredictionRepository;
-import com.restapi.scoregoat.repository.UserRepository;
+import com.restapi.scoregoat.service.DBService.LogDataDBService;
+import com.restapi.scoregoat.service.DBService.MatchDBService;
+import com.restapi.scoregoat.service.DBService.MatchPredictionDBService;
+import com.restapi.scoregoat.service.DBService.UserDBService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,20 +17,20 @@ import java.util.*;
 @AllArgsConstructor
 @Service
 @EnableAspectJAutoProxy
-public class MatchPredictionService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(MatchPredictionService.class);
-    private final MatchPredictionRepository repository;
-    private final UserRepository userRepository;
-    private final MatchService matchService;
-    private final LogDataService logDataService;
+public class MatchPredictionClientService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MatchPredictionClientService.class);
+    private final MatchPredictionDBService service;
+    private final UserDBService userService;
+    private final MatchDBService matchService;
+    private final LogDataDBService logDataService;
     private final MatchManager manager;
     private GraduationManager graduationManager;
 
     public NotificationRespondDto savePredictions(PredictionDto predictionDto) {
-        if (userRepository.existsById(predictionDto.getUserId())) {
-            User user = userRepository.findById(predictionDto.getUserId()).orElseThrow(NoSuchElementException::new);
+        if (userService.existsById(predictionDto.getUserId())) {
+            User user = userService.findById(predictionDto.getUserId());
             for (Map.Entry<Long, String> match : predictionDto.getMatchSelections().entrySet()) {
-                if (!repository.existsMatchPredictionByUserIdAndFixtureId(user.getId(), match.getKey())) {
+                if (!service.existsMatchPredictionByUserIdAndFixtureId(user.getId(), match.getKey())) {
                     try {
                         Match theMatch = matchService.findMatchByFixture(match.getKey());
                         MatchPrediction prediction = new MatchPrediction();
@@ -38,10 +40,10 @@ public class MatchPredictionService {
                         prediction.setPrediction(match.getValue());
                         prediction.setResult(Result.UNSET.getResult());
 
-                        repository.save(prediction);
+                        service.save(prediction);
 
                         user.addPrediction(prediction);
-                        userRepository.save(user);
+                        userService.save(user);
 
                     } catch (NoSuchElementException ex) {
                         String message = ex.getMessage() + "  --ERROR: Couldn't execute \"savePredictions\"-- ";
@@ -59,7 +61,7 @@ public class MatchPredictionService {
     }
 
     public List<UserPredictionDto> getMatchPredictions(Long userId, int leagueId) {
-        List<MatchPrediction> predictions = repository.findByUserIdAndLeagueId(userId, leagueId);
+        List<MatchPrediction> predictions = service.findByUserIdAndLeagueId(userId, leagueId);
         List<UserPredictionDto> userPredictionsDto = new ArrayList<>();
         for (MatchPrediction prediction: predictions) {
             Match match = matchService.findMatchByFixture(prediction.getFixtureId());
@@ -78,11 +80,11 @@ public class MatchPredictionService {
     }
 
     public void graduatePredictions() {
-        repository.findAllByResult(Result.UNSET.getResult()).forEach(unset -> {
+        service.findAllByResult(Result.UNSET.getResult()).forEach(unset -> {
             Match match = matchService.findMatchByFixture(unset.getFixtureId());
             if (match.getStatus().equals(MatchStatusType.FINISHED.getType())) {
                 unset.setResult(manager.matchResultAssign(match));
-                repository.save(unset);
+                service.save(unset);
             }
         });
     }
@@ -90,7 +92,7 @@ public class MatchPredictionService {
     public void graduationExecution(MatchPrediction prediction) {
         try {
             prediction.setPoints(manager.matchPointsAssign(prediction));
-            repository.save(prediction);
+            service.save(prediction);
             graduationManager.graduationUpdate(prediction);
         } catch (Exception ex) {
             String message = ex.getMessage() + " --ERROR: Couldn't execute graduation-- ";
@@ -101,7 +103,7 @@ public class MatchPredictionService {
     }
 
     public long  assignPoints() {
-        List<MatchPrediction> predictions = repository.findAllByPoints(Points.NEUTRAL.getPoints());
+        List<MatchPrediction> predictions = service.findAllByPoints(Points.NEUTRAL.getPoints());
         long count = 0;
         for(MatchPrediction thePrediction:predictions) {
             graduationExecution(thePrediction);

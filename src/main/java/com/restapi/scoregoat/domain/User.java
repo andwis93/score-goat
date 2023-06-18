@@ -37,9 +37,11 @@ public class User {
             fetch = FetchType.EAGER
     )
     private Set<MatchPrediction> predictions = new HashSet<>();
-    @OneToOne(mappedBy = "user", orphanRemoval=true)
+
+    @OneToOne(mappedBy = "user", orphanRemoval = true)
     private LogIn logIn;
-    @OneToOne(mappedBy = "user")
+
+    @OneToOne(mappedBy = "user", orphanRemoval = true)
     private Session session;
     @OneToMany(
             targetEntity = Graduation.class,
@@ -59,5 +61,9 @@ public class User {
 
     public void addPrediction(MatchPrediction prediction) {
         this.predictions.add(prediction);
+    }
+
+    public void addLogIn(LogIn logIn) {
+        this.logIn = logIn;
     }
 }

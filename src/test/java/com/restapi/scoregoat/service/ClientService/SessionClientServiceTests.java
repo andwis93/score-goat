@@ -1,8 +1,8 @@
-package com.restapi.scoregoat.service;
+package com.restapi.scoregoat.service.ClientService;
 
 import com.restapi.scoregoat.domain.DurationValues;
 import com.restapi.scoregoat.domain.Session;
-import com.restapi.scoregoat.repository.SessionRepository;
+import com.restapi.scoregoat.service.DBService.SessionDBService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,12 +15,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class SessionServiceTests {
+public class SessionClientServiceTests {
 
     @InjectMocks
-    private SessionService service;
+    private SessionClientService service;
     @Mock
-    private SessionRepository repository;
+    private SessionDBService dbService;
 
     @Test
     void shouldRemoveExpiredSessions() {
@@ -35,7 +35,7 @@ public class SessionServiceTests {
         sessionList.add(session1);
         sessionList.add(session2);
 
-        when(repository.findAll()).thenReturn(sessionList);
+        when(dbService.findAll()).thenReturn(sessionList);
 
         //When
         Long size = service.removeExpiredSession();

@@ -3,26 +3,26 @@ package com.restapi.scoregoat.manager;
 import com.restapi.scoregoat.config.SeasonConfig;
 import com.restapi.scoregoat.domain.*;
 import com.restapi.scoregoat.repository.GraduationRepository;
-import com.restapi.scoregoat.repository.UserRepository;
+import com.restapi.scoregoat.service.DBService.UserDBService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class GraduationUpdateTests {
     @InjectMocks
     private GraduationManager manager;
     @Mock
     private GraduationRepository repository;
     @Mock
-    private UserRepository userRepository;
+    private UserDBService service;
 
     @Test
     void testGraduateUpdate() {
@@ -43,7 +43,7 @@ public class GraduationUpdateTests {
 
         Graduation graduation = new Graduation(prediction.getLeagueId(), user);
 
-        when(userRepository.findById(202L)).thenReturn(Optional.of(user));
+        when(service.findById(202L)).thenReturn(user);
         when(repository.existsGraduationByLeagueAndUserId(prediction.getLeagueId(), 202L)).thenReturn(true);
         when(repository.findByLeagueAndUserId(prediction.getLeagueId(), 202L)).thenReturn(graduation);
 

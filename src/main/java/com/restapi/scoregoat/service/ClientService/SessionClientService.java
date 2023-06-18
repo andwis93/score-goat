@@ -1,10 +1,11 @@
-package com.restapi.scoregoat.service;
+package com.restapi.scoregoat.service.ClientService;
 
 import com.restapi.scoregoat.domain.Code;
 import com.restapi.scoregoat.domain.LogData;
 import com.restapi.scoregoat.domain.Session;
 import com.restapi.scoregoat.domain.User;
-import com.restapi.scoregoat.repository.SessionRepository;
+import com.restapi.scoregoat.service.DBService.LogDataDBService;
+import com.restapi.scoregoat.service.DBService.SessionDBService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,16 +17,16 @@ import java.util.List;
 @AllArgsConstructor
 @Service
 @EnableAspectJAutoProxy
-public class SessionService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SessionService.class);
-    private final SessionRepository repository;
-    private final LogDataService logDataService;
+public class SessionClientService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SessionClientService.class);
+    private final SessionDBService service;
+    private final LogDataDBService logDataService;
 
     public long removeExpiredSession() {
-        List<Session> expiredSession = repository.findAll().stream()
+        List<Session> expiredSession = service.findAll().stream()
                 .filter(sessionEnd -> sessionEnd.getEnd().isBefore(LocalDateTime.now()))
                 .toList();
-        repository.deleteAll(expiredSession);
+        service.deleteAll(expiredSession);
         return expiredSession.size();
     }
 
@@ -35,10 +36,10 @@ public class SessionService {
 
     public boolean saveRefreshedSession(final User user) {
         try{
-            Session session = repository.findByUserId(user.getId()).orElse(new Session());
+            Session session = service.findByUserId(user.getId());
             session.setUser(user);
             refreshSession(session);
-            repository.save(session);
+            service.save(session);
             return true;
 
         } catch (IllegalArgumentException ex) {

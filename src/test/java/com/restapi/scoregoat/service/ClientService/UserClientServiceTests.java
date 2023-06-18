@@ -1,9 +1,9 @@
-package com.restapi.scoregoat.service;
+package com.restapi.scoregoat.service.ClientService;
 
 import com.restapi.scoregoat.domain.*;
 import com.restapi.scoregoat.mapper.UserMapper;
-import com.restapi.scoregoat.repository.LogInRepository;
-import com.restapi.scoregoat.repository.UserRepository;
+import com.restapi.scoregoat.service.DBService.LogInDBService;
+import com.restapi.scoregoat.service.DBService.UserDBService;
 import com.restapi.scoregoat.validator.EmailValidator;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.junit.jupiter.api.Test;
@@ -11,22 +11,21 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import java.util.Optional;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-public class UserServiceTests {
+public class UserClientServiceTests {
     @InjectMocks
-    private UserService service;
+    private UserClientService service;
     @Mock
-    private UserRepository repository;
+    private UserDBService dbService;
     @Mock
-    private LogInRepository logInRepository;
+    private LogInDBService logInService;
     @Mock
-    private LogInService logInService;
-    @Mock
-    private SessionService sessionService;
+    private SessionClientService sessionService;
     @Mock
     private UserMapper mapper;
     @Mock
@@ -35,34 +34,36 @@ public class UserServiceTests {
     private StrongPasswordEncryptor encryptor;
 
     @Test
-    void testCreateUser() {
+    void testSignUpUser() {
         //Given
         User user = new User("Name1","Email1@test.com", "Password1");
         UserDto userDto = new UserDto("NameDto1", "EmailDto1@test.com", "PasswordDto1");
 
         when(mapper.mapUserDtoToUser(userDto)).thenReturn(user);
         when(validator.emailValidator(user.getEmail())).thenReturn(true);
-        when(repository.findByName(user.getName())).thenReturn(Optional.empty());
-        when(repository.findByEmail(user.getEmail())).thenReturn(Optional.empty());
+        when(dbService.existsByName(user.getName())).thenReturn(false);
+        when(dbService.existsByEmail(user.getEmail())).thenReturn(false);
         when(encryptor.encryptPassword(user.getPassword())).thenReturn("Encrypted password");
-        when(repository.save(user)).thenReturn(user);
+        when(dbService.save(user)).thenReturn(user);
 
         //When
         UserRespondDto respondDto = service.signUpUser(userDto);
 
         //Then
         assertEquals(Respond.USER_CREATED_OK.getRespond(), respondDto.getRespond());
-        verify(repository, times(1)).save(user);
+        verify(dbService, times(1)).save(user);
     }
 
     @Test
     void testDeleteUser() {
         //Given
         User user = new User("Name1","Email1@test.com", "Password1");
+        user.setId(1L);
         UserDto userDto = new UserDto("Name1", "Email1@test.com", "Password1");
         userDto.setId(1L);
 
-        when(repository.findById(1L)).thenReturn(Optional.of(user));
+        when(dbService.findById(userDto.getId())).thenReturn(user);
+        when(dbService.deleteById(user.getId())).thenReturn(true);
         when(encryptor.checkPassword("Password1", "Password1")).thenReturn(true);
 
         //When
@@ -72,7 +73,7 @@ public class UserServiceTests {
         assertEquals("Name1", respond.getUserName());
         assertEquals("Email1@test.com", respond.getEmail());
         assertEquals(Respond.USER_DELETED_OK.getRespond(), respond.getRespond());
-        verify(repository, times(1)).deleteById(user.getId());
+        verify(dbService, times(1)).deleteById(user.getId());
     }
 
     @Test
@@ -81,8 +82,8 @@ public class UserServiceTests {
         User user = new User("Name1","Email1@test.com", "OldPassword");
         LogIn attempt = new LogIn(user);
         PasswordDto passwordDto = new PasswordDto(1L, "OldPassword", "MatchPassword", "MatchPassword");
-        when(repository.findById(1L)).thenReturn(Optional.of(user));
-        when(logInRepository.findByUser(user)).thenReturn(Optional.of(attempt));
+        when(dbService.findById(1L)).thenReturn(user);
+        when(logInService.findByUser(user)).thenReturn(attempt);
         when(encryptor.checkPassword(passwordDto.getOldPassword(), user.getPassword())).thenReturn(true);
         when(sessionService.saveRefreshedSession(any())).thenReturn(true);
         when(logInService.resetAttempt(attempt)).thenReturn(true);
@@ -94,17 +95,20 @@ public class UserServiceTests {
         assertEquals("Name1", respondDto.getUserName());
         assertEquals("Email1@test.com", respondDto.getEmail());
         assertEquals(Respond.PASSWORD_CHANGED_OK.getRespond(), respondDto.getRespond());
-        verify(repository, times(1)).save(user);
+        verify(dbService, times(1)).save(user);
     }
 
     @Test
     void testChangeAccountInformation() {
         //Given
         User user = new User("Name1","Email1@test.com", "password");
+        user.setId(1L);
         LogIn attempt = new LogIn(user);
-        AccountDto accountDto = new AccountDto(1L, "Test", "Test@test.com", "password");
-        when(repository.findById(anyLong())).thenReturn(Optional.of(user));
-        when(logInRepository.findByUser(user)).thenReturn(Optional.of(attempt));
+        AccountDto accountDto = new AccountDto(1L, "Name1", "Email1@test.com", "password");
+        when(dbService.findById(1L)).thenReturn(user);
+        when(dbService.nameExistCheck(accountDto.getUserId(), accountDto.getUserName())).thenReturn(true);
+        when(dbService.emailExistCheck(accountDto.getUserId(), accountDto.getEmail())).thenReturn(true);
+        when(logInService.findByUser(user)).thenReturn(attempt);
         when(encryptor.checkPassword(accountDto.getPassword(), user.getPassword())).thenReturn(true);
         when(sessionService.saveRefreshedSession(any())).thenReturn(true);
         when(logInService.resetAttempt(attempt)).thenReturn(true);
@@ -113,9 +117,9 @@ public class UserServiceTests {
         UserRespondDto respondDto = service.accountChange(accountDto);
 
         //Then
-        assertEquals("Test", respondDto.getUserName());
-        assertEquals("Test@test.com", respondDto.getEmail());
+        assertEquals("Name1", respondDto.getUserName());
+        assertEquals("Email1@test.com", respondDto.getEmail());
         assertEquals(Respond.ACCOUNT_CHANGED_OK.getRespond(), respondDto.getRespond());
-        verify(repository, times(1)).save(user);
+        verify(dbService, times(1)).save(user);
     }
 }

@@ -1,13 +1,12 @@
-package com.restapi.scoregoat.service;
+package com.restapi.scoregoat.service.ClientService;
 
 import com.restapi.scoregoat.client.FootballClient;
-import com.restapi.scoregoat.config.DateConfig;
 import com.restapi.scoregoat.config.SeasonConfig;
 import com.restapi.scoregoat.domain.*;
 import com.restapi.scoregoat.domain.client.mapJSON.*;
 import com.restapi.scoregoat.mapper.MatchMapper;
-import com.restapi.scoregoat.repository.MatchPredictionRepository;
-import com.restapi.scoregoat.repository.MatchRepository;
+import com.restapi.scoregoat.service.DBService.MatchDBService;
+import com.restapi.scoregoat.service.DBService.MatchPredictionDBService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,43 +15,24 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class MatchServiceTests {
+public class MatchClientServiceTests {
     @InjectMocks
-    private MatchService service;
+    private MatchClientService service;
     @Mock
-    private SeasonService seasonService;
+    private SeasonClientService seasonService;
     @Mock
     private FootballClient client;
     @Mock
-    private MatchRepository repository;
+    private MatchDBService dbService;
     @Mock
-    private MatchPredictionRepository matchPredictionRepository;
+    private MatchPredictionDBService predictionDBService;
     @Mock
     private MatchMapper mapper;
-    @Mock
-    private DateConfig dateConfig;
-
-    @Test
-    void testFindMatch() {
-        //Given
-        Match match = new Match(1L, SeasonConfig.DEFAULT_LEAGUE.getId(), 365L, OffsetDateTime.parse("2023-04-01T14:00:00+00:00"),
-                "Not Started", "81:48", "Liverpool", "Liverpool.logo",
-                true, "Everton", "Everton.logo", false, 2, 1);
-        when(repository.existsByFixtureId(365L)).thenReturn(true);
-        when(repository.findByFixtureId(365L)).thenReturn(Optional.of(match));
-
-        //When
-        Match theMatch = service.findMatchByFixture(365L);
-
-        //Then
-        assertEquals(1L, theMatch.getId());
-    }
 
     @Test
     void shouldUploadMatches() {
@@ -83,7 +63,6 @@ public class MatchServiceTests {
         matchList.add(match);
 
         when(mapper.mapFixtureRespondToMatchList(fixturesList.getFixtureList())).thenReturn(matchList);
-        when(repository.saveAll(matchList)).thenReturn(matchList);
 
         //When
         MatchRespondDto theRespond = service.uploadMatches(param);
@@ -120,7 +99,6 @@ public class MatchServiceTests {
         matchList.add(match);
 
         when(mapper.mapFixtureRespondToMatchList(any())).thenReturn(matchList);
-        when(repository.saveAll(any())).thenReturn(matchList);
 
         //When
         MatchRespondDto theRespond = service.uploadMatchesFromLeagueConfigList();
@@ -145,9 +123,9 @@ public class MatchServiceTests {
         matchList.add(match1);
         matchList.add(match2);
 
-        when(service.findByLeagueIdOrderByDate(SeasonConfig.DEFAULT_LEAGUE.getId())).thenReturn(matchList);
-        when(matchPredictionRepository.existsMatchPredictionByUserIdAndFixtureId(1L,365L)).thenReturn(false);
-        when(matchPredictionRepository.existsMatchPredictionByUserIdAndFixtureId(1L,367L)).thenReturn(true);
+        when(dbService.findByLeagueIdOrderByDate(SeasonConfig.DEFAULT_LEAGUE.getId())).thenReturn(matchList);
+        when(predictionDBService.existsMatchPredictionByUserIdAndFixtureId(1L,365L)).thenReturn(false);
+        when(predictionDBService.existsMatchPredictionByUserIdAndFixtureId(1L,367L)).thenReturn(true);
 
         //When
         List<Match> theMatchList = service.eliminateSelected(1L, 39);

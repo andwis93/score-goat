@@ -1,10 +1,10 @@
-package com.restapi.scoregoat.service;
+package com.restapi.scoregoat.service.ClientService;
 
 import com.restapi.scoregoat.domain.*;
 import com.restapi.scoregoat.manager.DurationManager;
 import com.restapi.scoregoat.mapper.UserMapper;
-import com.restapi.scoregoat.repository.LogInRepository;
-import com.restapi.scoregoat.repository.UserRepository;
+import com.restapi.scoregoat.service.DBService.LogInDBService;
+import com.restapi.scoregoat.service.DBService.UserDBService;
 import com.restapi.scoregoat.validator.EmailValidator;
 import lombok.AllArgsConstructor;
 import org.jasypt.util.password.StrongPasswordEncryptor;
@@ -12,16 +12,14 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @AllArgsConstructor
 @Service
 @EnableAspectJAutoProxy
-public class UserService {
-    private final UserRepository repository;
-    private final LogInRepository logInRepository;
-    private final LogInService logInService;
-    private final SessionService sessionService;
+public class UserClientService {
+    private final UserDBService userService;
+    private final LogInDBService logInDBService;
+    private final SessionClientService sessionService;
     private final UserMapper mapper;
     private final EmailValidator validator;
     private final StrongPasswordEncryptor encryptor;
@@ -33,11 +31,10 @@ public class UserService {
                 && userDto.getPassword().matches(".*\\w.*")) {
             User user = mapper.mapUserDtoToUser(userDto);
             if (validator.emailValidator(user.getEmail())) {
-                if (repository.findByName(user.getName()).isEmpty()) {
-                    if (repository.findByEmail(user.getEmail()).isEmpty()) {
+                if (!userService.existsByName(user.getName())) {
+                    if (!userService.existsByEmail(user.getEmail())) {
                         user.setPassword(encryptor.encryptPassword(user.getPassword()));
-                        user = repository.save(user);
-
+                        user = userService.save(user);
                         return new UserRespondDto().setExtendResponse(user, Respond.USER_CREATED_OK.getRespond(),
                                 NotificationType.SUCCESS.getType());
                     } else {
@@ -59,19 +56,18 @@ public class UserService {
                 && passwordDto.getRepeatPassword()!= null && passwordDto.getOldPassword().matches(".*\\w.*")
                 && passwordDto.getNewPassword().matches(".*\\w.*")
                 && passwordDto.getRepeatPassword().matches(".*\\w.*")) {
-            User user = repository.findById(passwordDto.getUserId()).orElse(null);
+            User user = userService.findById(passwordDto.getUserId());
             if (user != null) {
-                LogIn attempt = logInRepository.findByUser(user).orElse(new LogIn(user));
+                LogIn attempt = logInDBService.findByUser(user);
                 if (attempt.getLocked() == null) {
                     if (encryptor.checkPassword(passwordDto.getOldPassword(), user.getPassword())) {
                         if (passwordDto.getNewPassword().equals(passwordDto.getRepeatPassword())) {
                             user.setPassword(encryptor.encryptPassword(passwordDto.getNewPassword()));
-                            repository.save(user);
+                            userService.save(user);
                             sessionService.saveRefreshedSession(user);
-                            logInService.resetAttempt(attempt);
+                            logInDBService.resetAttempt(attempt);
                             return new UserRespondDto().setExtendResponse(
                                     user, Respond.PASSWORD_CHANGED_OK.getRespond(), NotificationType.SUCCESS.getType());
-
                         } else {
                             return new UserRespondDto(Respond.NEW_REPEAT_PASSWORD_DIFFERENT.getRespond(), NotificationType.ERROR.getType());
                         }
@@ -80,7 +76,7 @@ public class UserService {
                         if (attempt.getAttempt() > DurationValues.MAX_ATTEMPT.getValue()) {
                             attempt.setLocked(LocalDateTime.now().plusHours(DurationValues.ATTEMPT_BLOCKED.getValue()));
                         }
-                        logInRepository.save(attempt);
+                        logInDBService.save(attempt);
                         return new UserRespondDto(Respond.WRONG_OLD_PASSWORD.getRespond(), NotificationType.ERROR.getType());
                     }
                 } else {
@@ -102,37 +98,41 @@ public class UserService {
     public UserRespondDto accountChange(@NotNull AccountDto accountDto){
         if (accountDto.getUserId() != null && accountDto.getPassword() != null &&
                 accountDto.getPassword().matches(".*\\w.*")){
-            User user = repository.findById(accountDto.getUserId()).orElse(null);
+            User user = userService.findById(accountDto.getUserId());
             if (user != null) {
-                if (emailExistCheck(accountDto.getUserId(), accountDto.getEmail())) {
-                    LogIn attempt = logInRepository.findByUser(user).orElse(new LogIn(user));
-                    if (attempt.getLocked() == null) {
-                        if (encryptor.checkPassword(accountDto.getPassword(), user.getPassword())) {
-                            user.setName(accountDto.getUserName());
-                            user.setEmail(accountDto.getEmail());
-                            repository.save(user);
-                            sessionService.saveRefreshedSession(user);
-                            logInService.resetAttempt(attempt);
-                            return new UserRespondDto().setExtendResponse(
-                                    user, Respond.ACCOUNT_CHANGED_OK.getRespond(), NotificationType.SUCCESS.getType());
-                        } else {
-                            attempt.addAttempt();
-                            if (attempt.getAttempt() > DurationValues.MAX_ATTEMPT.getValue()) {
-                                attempt.setLocked(LocalDateTime.now().plusHours(DurationValues.ATTEMPT_BLOCKED.getValue()));
+                if (userService.nameExistCheck(accountDto.getUserId(), accountDto.getUserName())) {
+                    if (userService.emailExistCheck(accountDto.getUserId(), accountDto.getEmail())) {
+                        LogIn attempt = logInDBService.findByUser(user);
+                        if (attempt.getLocked() == null) {
+                            if (encryptor.checkPassword(accountDto.getPassword(), user.getPassword())) {
+                                user.setName(accountDto.getUserName());
+                                user.setEmail(accountDto.getEmail());
+                                userService.save(user);
+                                sessionService.saveRefreshedSession(user);
+                                logInDBService.resetAttempt(attempt);
+                                return new UserRespondDto().setExtendResponse(
+                                        user, Respond.ACCOUNT_CHANGED_OK.getRespond(), NotificationType.SUCCESS.getType());
+                            } else {
+                                attempt.addAttempt();
+                                if (attempt.getAttempt() > DurationValues.MAX_ATTEMPT.getValue()) {
+                                    attempt.setLocked(LocalDateTime.now().plusHours(DurationValues.ATTEMPT_BLOCKED.getValue()));
+                                }
+                                logInDBService.save(attempt);
+                                return new UserRespondDto(Respond.WRONG_OLD_PASSWORD.getRespond(), NotificationType.ERROR.getType());
                             }
-                            logInRepository.save(attempt);
-                            return new UserRespondDto(Respond.WRONG_OLD_PASSWORD.getRespond(), NotificationType.ERROR.getType());
+                        } else {
+                            if (manager.checkIfLessThen1H(attempt.getLocked())) {
+                                return new UserRespondDto(Respond.TO_MANY_ATTEMPTS_LESS_THEN_1H.getRespond(), NotificationType.ERROR.getType());
+                            } else {
+                                return new UserRespondDto(Respond.TO_MANY_ATTEMPTS.getRespond()
+                                        + manager.getDuration(attempt.getLocked()), NotificationType.ERROR.getType());
+                            }
                         }
                     } else {
-                        if (manager.checkIfLessThen1H(attempt.getLocked())) {
-                            return new UserRespondDto(Respond.TO_MANY_ATTEMPTS_LESS_THEN_1H.getRespond(), NotificationType.ERROR.getType());
-                        } else {
-                            return new UserRespondDto(Respond.TO_MANY_ATTEMPTS.getRespond()
-                                    + manager.getDuration(attempt.getLocked()), NotificationType.ERROR.getType());
-                        }
+                        return new UserRespondDto(Respond.EMAIL_EXISTS.getRespond(), NotificationType.ERROR.getType());
                     }
                 } else {
-                    return new UserRespondDto(Respond.EMAIL_EXISTS.getRespond(), NotificationType.ERROR.getType());
+                    return new UserRespondDto(Respond.USERNAME_EXISTS.getRespond(), NotificationType.ERROR.getType());
                 }
             } else {
                 return new UserRespondDto(Respond.USER_NOT_EXIST.getRespond(), NotificationType.ERROR.getType());
@@ -144,10 +144,11 @@ public class UserService {
 
     public UserRespondDto deleteUser(UserDto userDto) {
         if (userDto.getId() != null && userDto.getPassword() != null ) {
-            User user = repository.findById(userDto.getId()).orElse(null);
+            User user = userService.findById(userDto.getId());
             if (user != null) {
                 if (encryptor.checkPassword(userDto.getPassword(), user.getPassword())) {
-                    repository.deleteById(user.getId());
+                    logInDBService.delete(user.getLogIn());
+                    userService.deleteById(user.getId());
                     return new UserRespondDto().setExtendResponse(
                             user, Respond.USER_DELETED_OK.getRespond(), NotificationType.SUCCESS.getType());
                 } else {
@@ -159,11 +160,5 @@ public class UserService {
         } else {
             return new UserRespondDto(Respond.FIELDS_EMPTY.getRespond(), NotificationType.ERROR.getType());
         }
-    }
-
-    private boolean emailExistCheck(Long userId, String email) {
-        List<User> usersWithEmail = repository.findAllByEmail(email).stream().filter(
-                user -> !user.getId().equals(userId)).toList();
-        return usersWithEmail.size() == 0;
     }
 }

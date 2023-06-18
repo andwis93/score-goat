@@ -9,7 +9,7 @@ import com.restapi.scoregoat.domain.client.mapJSON.FixturesList;
 import com.restapi.scoregoat.domain.client.mapJSON.Seasons;
 import com.restapi.scoregoat.domain.client.mapJSON.SeasonsList;
 import com.restapi.scoregoat.domain.client.mapJSON.Year;
-import com.restapi.scoregoat.service.LogDataService;
+import com.restapi.scoregoat.service.DBService.LogDataDBService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +28,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class FootballClient {
     private static final Logger LOGGER = LoggerFactory.getLogger(FootballClient.class);
-    private final LogDataService logDataService;
+    private final LogDataDBService logDataService;
     private final RestTemplate restTemplate;
     private final FootballConfig config;
 

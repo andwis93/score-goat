@@ -2,9 +2,9 @@ package com.restapi.scoregoat.facade;
 
 import com.restapi.scoregoat.domain.*;
 import com.restapi.scoregoat.domain.Season;
-import com.restapi.scoregoat.service.LogInService;
-import com.restapi.scoregoat.service.SeasonService;
-import com.restapi.scoregoat.service.UserService;
+import com.restapi.scoregoat.service.ClientService.LogInClientService;
+import com.restapi.scoregoat.service.ClientService.UserClientService;
+import com.restapi.scoregoat.service.ClientService.SeasonClientService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,18 +18,18 @@ public class ScoreGoatFacadeTests {
     @InjectMocks
     private ScoreGoatFacade facade;
     @Mock
-    private UserService userService;
+    private UserClientService userClientService;
     @Mock
-    private SeasonService seasonService;
+    private SeasonClientService seasonService;
     @Mock
-    private LogInService logInService;
+    private LogInClientService logInService;
 
     @Test
     void shouldCreateUser() {
         //When
         UserDto userDto = new UserDto("Name1","Email1@test.com", "Password1");
         UserRespondDto respond = new UserRespondDto("Create Name1",  NotificationType.SUCCESS.getType());
-        when(userService.signUpUser(userDto)).thenReturn(respond);
+        when(userClientService.signUpUser(userDto)).thenReturn(respond);
 
         //When
         UserRespondDto theRespond = facade.createUser(userDto);

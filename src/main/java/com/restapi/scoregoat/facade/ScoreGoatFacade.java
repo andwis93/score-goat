@@ -4,7 +4,7 @@ import com.restapi.scoregoat.domain.*;
 import com.restapi.scoregoat.domain.Season;
 import com.restapi.scoregoat.manager.MatchManager;
 import com.restapi.scoregoat.mapper.MatchMapper;
-import com.restapi.scoregoat.service.*;
+import com.restapi.scoregoat.service.ClientService.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -12,11 +12,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class ScoreGoatFacade {
-    private final UserService userService;
-    private final SeasonService seasonService;
-    private final MatchService matchService;
-    private final LogInService logInService;
-    private final MatchPredictionService predictionService;
+    private final UserClientService userService;
+    private final SeasonClientService seasonService;
+    private final MatchClientService matchService;
+    private final LogInClientService logInService;
+    private final MatchPredictionClientService predictionService;
     private final MatchMapper mapper;
     private final MatchManager manager;
 

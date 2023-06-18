@@ -1,8 +1,12 @@
 package com.restapi.scoregoat.config;
 
+import lombok.Getter;
+import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.Map;
 
+@Getter
+@Component
 public class LeaguesListConfig {
     Map<Integer, String> leagueList;
 

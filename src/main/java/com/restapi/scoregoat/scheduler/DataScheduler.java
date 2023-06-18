@@ -1,28 +1,20 @@
 package com.restapi.scoregoat.scheduler;
 
 import com.restapi.scoregoat.facade.ScoreGoatFacade;
-import com.restapi.scoregoat.service.UpdateLogInService;
-import com.restapi.scoregoat.service.SeasonService;
-import com.restapi.scoregoat.service.SessionService;
-import lombok.RequiredArgsConstructor;
+import com.restapi.scoregoat.service.ClientService.LogInClientService;
+import com.restapi.scoregoat.service.ClientService.SeasonClientService;
+import com.restapi.scoregoat.service.ClientService.SessionClientService;
+import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+@AllArgsConstructor
 @Component
-@RequiredArgsConstructor
 public class DataScheduler {
-    private SeasonService seasonService;
-    private UpdateLogInService cleanLogInService;
-    private SessionService sessionService;
+    private SeasonClientService seasonService;
+    private LogInClientService logInService;
+    private SessionClientService sessionService;
     private ScoreGoatFacade facade;
-
-    public DataScheduler(SeasonService seasonService, UpdateLogInService cleanLogInService,
-                         SessionService sessionService, ScoreGoatFacade facade) {
-        this.seasonService = seasonService;
-        this.cleanLogInService = cleanLogInService;
-        this.sessionService = sessionService;
-        this.facade = facade;
-    }
 
     @Scheduled(cron = "0 58 3 1 * ?", zone="Europe/Warsaw")
     public void reloadData() {
@@ -31,7 +23,7 @@ public class DataScheduler {
 
     @Scheduled(cron = "0 59 * * * ?", zone="Europe/Warsaw")
     public void updateLogIn() {
-        cleanLogInService.updateLogInLockedDates();
+        logInService.updateLogInLockedDates();
     }
 
     @Scheduled(cron = "0 */5 * * * ?", zone="Europe/Warsaw")

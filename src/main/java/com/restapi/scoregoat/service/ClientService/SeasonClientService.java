@@ -1,11 +1,12 @@
-package com.restapi.scoregoat.service;
+package com.restapi.scoregoat.service.ClientService;
 
 import com.restapi.scoregoat.client.FootballClient;
 import com.restapi.scoregoat.domain.Code;
 import com.restapi.scoregoat.config.SeasonConfig;
 import com.restapi.scoregoat.domain.LogData;
 import com.restapi.scoregoat.domain.Season;
-import com.restapi.scoregoat.repository.SeasonRepository;
+import com.restapi.scoregoat.service.DBService.LogDataDBService;
+import com.restapi.scoregoat.service.DBService.SeasonDBService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,17 +17,17 @@ import java.util.List;
 @AllArgsConstructor
 @Service
 @EnableAspectJAutoProxy
-public class SeasonService {
+public class SeasonClientService {
     private static final Logger LOGGER = LoggerFactory.getLogger(FootballClient.class);
-    private final SeasonRepository repository;
-    private final LogDataService logDataService;
+    private final SeasonDBService service;
+    private final LogDataDBService logDataService;
     private final FootballClient footballClient;
 
     public Season setSeason() {
         try {
             Season season = new Season(footballClient.getFootballSeason());
-            repository.deleteAll();
-            repository.save(season);
+            service.deleteAll();
+            service.save(season);
             return season;
         }catch (Exception ex) {
             String message = ex.getMessage() + " --ERROR: Couldn't replace season in DataBase-- ";
@@ -38,14 +39,14 @@ public class SeasonService {
     }
 
     public Season fetchSeason() {
-        List<Season> list = repository.findAll();
+        List<Season> list = service.findAll();
         if (list.size() == 0) {
             setSeason();
-            list = repository.findAll();
+            list = service.findAll();
         } else {
             if (list.get(0).getYear().equals("")) {
                 setSeason();
-                list = repository.findAll();
+                list = service.findAll();
             }
         }
         return list.get(0);
