@@ -17,6 +17,7 @@ public class ScoreGoatFacade {
     private final MatchClientService matchService;
     private final LogInClientService logInService;
     private final MatchPredictionClientService predictionService;
+    private final GraduationClientService graduationService;
     private final MatchMapper mapper;
     private final MatchManager manager;
 
@@ -66,8 +67,11 @@ public class ScoreGoatFacade {
     }
 
     public void graduatePredictions() {
-      predictionService.graduatePredictions();
-      predictionService.assignPoints();
+        predictionService.graduatePredictions();
+        predictionService.assignPoints();
     }
 
+    public void assignRanks() {
+       graduationService.executeRankAssign();
+    }
 }

@@ -25,7 +25,7 @@ public class GraduationRepositoryTests {
         Long graduationId = repository.save(graduation).getId();
 
         //When
-        Graduation theGraduation = repository.findByLeagueAndUserId(SeasonConfig.DEFAULT_LEAGUE.getId(), userId);
+        Graduation theGraduation = repository.findByLeagueIdAndUserId(SeasonConfig.DEFAULT_LEAGUE.getId(), userId);
 
         //Then
         assertEquals(userId, theGraduation.getUser().getId());
@@ -48,7 +48,7 @@ public class GraduationRepositoryTests {
         Long graduationId = repository.save(graduation).getId();
 
         //When
-        boolean isExists = repository.existsGraduationByLeagueAndUserId(SeasonConfig.DEFAULT_LEAGUE.getId(), userId);
+        boolean isExists = repository.existsGraduationByLeagueIdAndUserId(SeasonConfig.DEFAULT_LEAGUE.getId(), userId);
 
         //Then
         assertTrue(isExists);

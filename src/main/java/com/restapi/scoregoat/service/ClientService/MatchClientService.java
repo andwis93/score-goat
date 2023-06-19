@@ -51,7 +51,7 @@ public class MatchClientService {
             LeaguesListConfig leaguesList = new LeaguesListConfig();
             String season = seasonService.fetchSeason().getYear();
             service.deleteFixtures();
-            for (Map.Entry<Integer, String> league : leaguesList.createList().entrySet()) {
+            for (Map.Entry<Integer, String> league : leaguesList.getLeagueList().entrySet()) {
                 FixtureParam param = new FixtureParam(
                         league.getKey(), season);
                 uploadMatches(param);
@@ -83,7 +83,7 @@ public class MatchClientService {
 
     public List<Match> eliminateSelected(Long userId, int leagueId){
         List<Match> finalMatchList = new ArrayList<>();
-      //  for (Match match: matchesNotStarted(leagueId)) {
+        //  for (Match match: matchesNotStarted(leagueId)) {
         for (Match match: findByLeagueIdOrderByDate(leagueId)) {
             if (!predictionDBService.existsMatchPredictionByUserIdAndFixtureId(userId, match.getFixtureId())) {
                 finalMatchList.add(match);

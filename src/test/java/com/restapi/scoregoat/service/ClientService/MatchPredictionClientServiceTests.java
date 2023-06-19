@@ -2,7 +2,6 @@ package com.restapi.scoregoat.service.ClientService;
 
 import com.restapi.scoregoat.config.SeasonConfig;
 import com.restapi.scoregoat.domain.*;
-import com.restapi.scoregoat.manager.GraduationManager;
 import com.restapi.scoregoat.manager.MatchManager;
 import com.restapi.scoregoat.service.DBService.MatchDBService;
 import com.restapi.scoregoat.service.DBService.MatchPredictionDBService;
@@ -30,7 +29,7 @@ public class MatchPredictionClientServiceTests {
     @Mock
     private MatchManager manager;
     @Mock
-    private GraduationManager graduationManager;
+    private GraduationClientService graduationService;
 
     @Test
     void testSavePredictions() {

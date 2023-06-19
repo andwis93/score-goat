@@ -23,7 +23,7 @@ public class Graduation {
     @Column(name = "RANKS")
     private int rank;
     @Column(name = "LEAGUE_ID")
-    private int league;
+    private int leagueId;
     @ManyToOne
     @JoinColumn(name = "USER_ID", nullable = false)
     private User user;
@@ -31,7 +31,7 @@ public class Graduation {
     public Graduation(int league, User user) {
         this.points = 0;
         this.rank = 0;
-        this.league = league;
+        this.leagueId = league;
         this.user = user;
     }
 

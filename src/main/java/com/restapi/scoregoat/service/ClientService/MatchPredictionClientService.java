@@ -1,7 +1,6 @@
 package com.restapi.scoregoat.service.ClientService;
 
 import com.restapi.scoregoat.domain.*;
-import com.restapi.scoregoat.manager.GraduationManager;
 import com.restapi.scoregoat.manager.MatchManager;
 import com.restapi.scoregoat.service.DBService.LogDataDBService;
 import com.restapi.scoregoat.service.DBService.MatchDBService;
@@ -23,8 +22,8 @@ public class MatchPredictionClientService {
     private final UserDBService userService;
     private final MatchDBService matchService;
     private final LogDataDBService logDataService;
+    private final GraduationClientService graduationService;
     private final MatchManager manager;
-    private GraduationManager graduationManager;
 
     public NotificationRespondDto savePredictions(PredictionDto predictionDto) {
         if (userService.existsById(predictionDto.getUserId())) {
@@ -93,7 +92,7 @@ public class MatchPredictionClientService {
         try {
             prediction.setPoints(manager.matchPointsAssign(prediction));
             service.save(prediction);
-            graduationManager.graduationUpdate(prediction);
+            graduationService.graduationUpdate(prediction);
         } catch (Exception ex) {
             String message = ex.getMessage() + " --ERROR: Couldn't execute graduation-- ";
             logDataService.saveLog(new LogData(null,"Prediction ID: "

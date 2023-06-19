@@ -10,6 +10,10 @@ import java.util.Map;
 public class LeaguesListConfig {
     Map<Integer, String> leagueList;
 
+    public LeaguesListConfig() {
+        this.leagueList = createList();
+    }
+
     public Map<Integer, String> createList() {
         leagueList = new HashMap<>();
         leagueList.put(39, "Premier League");

@@ -52,7 +52,7 @@ public class Watcher {
     }
 
     @AfterReturning(value = "execution(* com.restapi.scoregoat.service.ClientService.SessionClientService.removeExpiredSession(..))"
-           + "&&target(object)", returning = "respond", argNames = "respond,object")
+            + "&&target(object)", returning = "respond", argNames = "respond,object")
     public void logExpiredSessionRemove(long respond, Object object) {
         String message = "Expired Sessions were removed in amount of: " + respond + " -- Class: " + object;
         logDataService.saveLog(new LogData(null, "Qty removed: " + respond,
@@ -120,6 +120,14 @@ public class Watcher {
         String message = "Attempt to assign points. Assign points to: " + counter + " predictions"
                 + " -- Class: " + object;
         logDataService.saveLog(new LogData(null, null, Code.SAVE_ALL_PREDICTIONS.getCode(), message));
+        LOGGER.info(message);
+    }
+
+    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.ClientService.GraduationClientService." +
+            "executeRankAssign(..))" + "&& target(object)" , argNames = "object")
+    public void executeRankAssign(Object object) {
+        String message = "Attempt to assign ranks." + " -- Class: " + object;
+        logDataService.saveLog(new LogData(null, null, Code.ASSIGN_RANKS.getCode(), message));
         LOGGER.info(message);
     }
 }

@@ -7,12 +7,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class ScoreGoatApplicationTests {
-//	@Autowired
-//	private ScoreGoatFacade facade;
+	@Autowired
+	private ScoreGoatFacade facade;
 
 	@Test
 	void contextLoads() {
-	//	facade.graduatePredictions();
-	//	facade.uploadMatchesFromLeagueConfigList();
+			facade.graduatePredictions();
+			facade.assignRanks();
+	//		facade.uploadMatchesFromLeagueConfigList();
 	}
 }

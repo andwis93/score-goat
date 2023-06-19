@@ -18,6 +18,7 @@ public class SeasonRepositoryTests {
         Season season = new Season("2023");
 
         //When
+        repository.deleteAll();
         repository.save(season);
         List<Season> list = repository.findAll().stream().filter(s -> s.getYear().equals("2023")).toList();
 
