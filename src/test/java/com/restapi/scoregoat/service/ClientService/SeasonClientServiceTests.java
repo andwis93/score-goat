@@ -9,6 +9,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import java.util.ArrayList;
+import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -23,6 +25,7 @@ public class SeasonClientServiceTests {
     @Mock
     private FootballClient client;
 
+
     @Test
     public void shouldSetSeasonYear() {
         //Given
@@ -34,6 +37,21 @@ public class SeasonClientServiceTests {
         //Then
         verify(dbService, times(1)).deleteAll();
         verify(dbService, times(1)).save(any(Season.class));
+        assertEquals("2023", theSeason.getYear());
+    }
+
+    @Test
+    public void shouldFetchSeason() {
+        //Given
+        List<Season> list = new ArrayList<>();
+        Season season = new Season("2023");
+        list.add(season);
+        when(dbService.findAll()).thenReturn(list);
+
+        //When
+        Season theSeason = service.fetchSeason();
+
+        //Then
         assertEquals("2023", theSeason.getYear());
     }
 }

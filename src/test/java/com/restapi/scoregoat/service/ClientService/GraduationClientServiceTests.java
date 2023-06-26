@@ -61,7 +61,7 @@ public class GraduationClientServiceTests {
     }
 
     @Test
-    void testAssignRank() {
+    void testExecuteRankAssign() {
         //Give
         User user1 = new User("Name1","Email1@test.com", "Password1");
         user1.setId(1L);
@@ -96,5 +96,40 @@ public class GraduationClientServiceTests {
 
         //Then
         assertEquals(2, graduations.get(1).getRank());
+    }
+
+    @Test
+    void testFetchGraduationListByLeagueId() {
+        //Give
+        User user1 = new User("Name1","Email1@test.com", "Password1");
+        user1.setId(1L);
+        Graduation graduation1 = new Graduation(200L, -2, 3, 39, user1);
+
+        User user2 = new User("Name2","Email2@test.com", "Password2");
+        user2.setId(1L);
+        Graduation graduation2 = new Graduation(100L, 14, 1, 39, user2);
+
+        User user3 = new User("Name3","Email3@test.com", "Password3");
+        user3.setId(1L);
+        Graduation graduation3 = new Graduation(300L, -2, 3, 39, user3);
+
+        User user4 = new User("Name4","Email4@test.com", "Password4");
+        user4.setId(1L);
+        Graduation graduation4 = new Graduation(400L, 8, 2, 39, user4);
+
+        List<Graduation> graduations = new ArrayList<>();
+        graduations.add(graduation1);
+        graduations.add(graduation2);
+        graduations.add(graduation3);
+        graduations.add(graduation4);
+
+        when(dbService.findByLeagueId(39)).thenReturn(graduations);
+
+        //When
+        List<Graduation> graduationList = service.fetchGraduationListByLeagueId(SeasonConfig.DEFAULT_LEAGUE.getId());
+
+        //Then
+        assertEquals(4, graduationList.size());
+        assertEquals(3, graduationList.get(2).getRank());
     }
 }

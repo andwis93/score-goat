@@ -40,14 +40,23 @@ public class GraduationClientService {
     public void executeRankAssign() {
         Map<Integer, String> leagueList = config.getLeagueList();
         leagueList.keySet().forEach(leagueId -> {
-            List<Graduation> graduationList = sortList(service.findByLeagueId(leagueId));
+            List<Graduation> graduationList = sortListByPoints(service.findByLeagueId(leagueId));
             rankAssign(graduationList);
             service.saveAll(graduationList);
         });
     }
 
-    private List<Graduation> sortList(List<Graduation> list) {
+    public List<Graduation> fetchGraduationListByLeagueId(int leagueId) {
+         return sortListByRank(service.findByLeagueId(leagueId));
+    }
+
+    private List<Graduation> sortListByPoints(List<Graduation> list) {
         list.sort(Comparator.comparing(Graduation::getPoints).reversed());
+        return list;
+    }
+
+    private List<Graduation> sortListByRank(List<Graduation> list) {
+        list.sort(Comparator.comparing(Graduation::getRank));
         return list;
     }
 

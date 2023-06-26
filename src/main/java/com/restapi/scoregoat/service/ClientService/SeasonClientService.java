@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @Service
 @EnableAspectJAutoProxy
-public class SeasonClientService {
+public class  SeasonClientService {
     private static final Logger LOGGER = LoggerFactory.getLogger(FootballClient.class);
     private final SeasonDBService service;
     private final LogDataDBService logDataService;

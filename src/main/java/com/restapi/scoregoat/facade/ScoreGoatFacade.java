@@ -3,7 +3,6 @@ package com.restapi.scoregoat.facade;
 import com.restapi.scoregoat.domain.*;
 import com.restapi.scoregoat.domain.Season;
 import com.restapi.scoregoat.manager.MatchManager;
-import com.restapi.scoregoat.mapper.MatchMapper;
 import com.restapi.scoregoat.service.ClientService.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +17,6 @@ public class ScoreGoatFacade {
     private final LogInClientService logInService;
     private final MatchPredictionClientService predictionService;
     private final GraduationClientService graduationService;
-    private final MatchMapper mapper;
     private final MatchManager manager;
 
     public Season fetchSeason(){
@@ -49,8 +47,8 @@ public class ScoreGoatFacade {
         matchService.uploadMatchesFromLeagueConfigList();
     }
 
-    public List<MatchDto> findByLeagueIdOrderByDate(long userId, int leagueId) {
-        return mapper.mapMatchToMatchDtoList(matchService.eliminateSelected(userId, leagueId));
+    public List<Match> findByLeagueIdOrderByDate(long userId, int leagueId) {
+        return matchService.eliminateSelected(userId, leagueId);
     }
 
     public NotificationRespondDto saveUserPredictions(PredictionDto predictionDto) {
@@ -73,5 +71,9 @@ public class ScoreGoatFacade {
 
     public void assignRanks() {
        graduationService.executeRankAssign();
+    }
+
+    public List<Graduation> fetchGraduationDtoListByLeagueId(int leagueId) {
+      return graduationService.fetchGraduationListByLeagueId(leagueId);
     }
 }

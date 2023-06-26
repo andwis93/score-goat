@@ -1,6 +1,7 @@
 package com.restapi.scoregoat.service.ClientService;
 
 import com.restapi.scoregoat.client.FootballClient;
+import com.restapi.scoregoat.config.DateConfig;
 import com.restapi.scoregoat.config.SeasonConfig;
 import com.restapi.scoregoat.domain.*;
 import com.restapi.scoregoat.domain.client.mapJSON.*;
@@ -33,6 +34,8 @@ public class MatchClientServiceTests {
     private MatchPredictionDBService predictionDBService;
     @Mock
     private MatchMapper mapper;
+    @Mock
+    private DateConfig config;
 
     @Test
     void shouldUploadMatches() {
@@ -129,6 +132,33 @@ public class MatchClientServiceTests {
 
         //When
         List<Match> theMatchList = service.eliminateSelected(1L, 39);
+
+        //Then
+        assertEquals(1, theMatchList.size());
+    }
+
+    @Test
+    void shouldMatchesWithDateRange() {
+        //Given
+        Match match1 = new Match(67L, SeasonConfig.DEFAULT_LEAGUE.getId(), 365L, OffsetDateTime.now(),
+                "Not Started", "00:00", "Liverpool", "Liverpool.logo",
+                true, "Everton", "Everton.logo", false,
+                2, 1);
+
+        Match match2 = new Match(25L, SeasonConfig.DEFAULT_LEAGUE.getId(), 367L, OffsetDateTime.now().minusDays(200),
+                "Not Started", "00:00", "Arsenal", "Arsenal.logo",
+                false, "WestHam", "WestHam.logo", true, 2, 3);
+
+        List<Match> matchList = new ArrayList<>();
+        matchList.add(match1);
+        matchList.add(match2);
+
+        when(dbService.findByLeagueIdOrderByDate(SeasonConfig.DEFAULT_LEAGUE.getId())).thenReturn(matchList);
+        when(config.getFrom()).thenReturn(OffsetDateTime.now().minusDays(10));
+        when(config.getTo()).thenReturn(OffsetDateTime.now().plusDays(10));
+
+        //When
+        List<Match> theMatchList = service.matchesWithDateRange(39);
 
         //Then
         assertEquals(1, theMatchList.size());
