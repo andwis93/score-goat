@@ -9,7 +9,7 @@ import static java.util.stream.Collectors.toList;
 @Service
 public class RankingMapper {
 
-    public RankingDto mapRankingToRankingDto(Ranking ranking) {
+    public RankingDto mapRankingToRankingDto(final Ranking ranking) {
     return new RankingDto(
             Integer.toString(ranking.getRank()),
             ranking.getUser().getName(),
