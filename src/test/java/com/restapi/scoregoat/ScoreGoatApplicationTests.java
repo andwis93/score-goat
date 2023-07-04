@@ -13,7 +13,7 @@ class ScoreGoatApplicationTests {
 	@Test
 	void contextLoads() {
 	//		facade.rankPredictions();
-	//		facade.assignRanks();
-	//		facade.uploadMatchesFromLeagueConfigList();
+	///		facade.assignRanks();
+			facade.uploadMatchesFromLeagueConfigList();
 	}
 }

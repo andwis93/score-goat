@@ -9,9 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class RankingDto {
-    String rank;
-    String userName;
-    String points;
-    int status;
+public class UserRankDto {
+    private RankingDto rankingDto;
+    private int rankingSize;
 }

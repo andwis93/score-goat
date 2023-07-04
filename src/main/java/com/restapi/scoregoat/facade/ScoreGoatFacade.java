@@ -73,11 +73,11 @@ public class ScoreGoatFacade {
        rankingService.executeRankAssign();
     }
 
-    public List<Ranking> fetchRankingDtoListByLeagueId(int leagueId) {
+    public List<RankingDto> fetchRankingDtoListByLeagueId(int leagueId) {
       return rankingService.fetchRankingListByLeagueId(leagueId);
     }
 
-    public Ranking fetchRankingDtoByUserIdAndLeagueId(Long userId, int leagueId) {
+    public UserRankDto fetchRankingDtoByUserIdAndLeagueId(Long userId, int leagueId) {
         return rankingService.fetchRankingByUserIdAndLeagueId(userId, leagueId);
     }
 }

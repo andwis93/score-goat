@@ -11,9 +11,9 @@ public class RankingMapper {
 
     public RankingDto mapRankingToRankingDto(Ranking ranking) {
     return new RankingDto(
-            ranking.getRank(),
+            Integer.toString(ranking.getRank()),
             ranking.getUser().getName(),
-            ranking.getPoints(),
+            Integer.toString(ranking.getPoints()),
             ranking.getStatus()
     );}
 

@@ -4,6 +4,7 @@ import com.restapi.scoregoat.config.LeaguesListConfig;
 import com.restapi.scoregoat.domain.*;
 import com.restapi.scoregoat.manager.RankManager;
 import com.restapi.scoregoat.manager.SortManager;
+import com.restapi.scoregoat.mapper.RankingMapper;
 import com.restapi.scoregoat.service.DBService.RankingDBService;
 import com.restapi.scoregoat.service.DBService.UserDBService;
 import lombok.AllArgsConstructor;
@@ -21,6 +22,7 @@ public class RankingClientService {
     private final UserDBService userService;
     private final SortManager manager;
     private final RankManager rankManager;
+    private final RankingMapper mapper;
 
     public void rankingUpdate(MatchPrediction prediction) {
         Ranking ranking;
@@ -47,8 +49,9 @@ public class RankingClientService {
         });
     }
 
-    public List<Ranking> fetchRankingListByLeagueId(int leagueId) {
-        return manager.sortListByRank(service.findByLeagueId(leagueId));
+    public List<RankingDto> fetchRankingListByLeagueId(int leagueId) {
+        List<Ranking> rankings = manager.sortListByRank(service.findByLeagueId(leagueId));
+        return mapper.mapRankingToRankingDtoList(rankings);
     }
 
     private void rankAssign(List<Ranking> rankingList) {
@@ -70,7 +73,9 @@ public class RankingClientService {
         });
     }
 
-    public Ranking fetchRankingByUserIdAndLeagueId(Long userId, int leagueId) {
-        return service.findByUserIdAndLeagueId(userId, leagueId);
+    public UserRankDto fetchRankingByUserIdAndLeagueId(Long userId, int leagueId) {
+        RankingDto rankingDto = mapper.mapRankingToRankingDto(service.findByUserIdAndLeagueId(userId, leagueId));
+        int rankingSize = service.getRankingSizeByLeagueId(leagueId);
+        return new UserRankDto(rankingDto, rankingSize) ;
     }
 }

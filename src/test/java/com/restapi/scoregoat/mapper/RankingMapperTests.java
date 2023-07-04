@@ -29,9 +29,9 @@ public class RankingMapperTests {
         RankingDto rankingDto = mapper.mapRankingToRankingDto(ranking);
 
         //Then
-        assertEquals(7, rankingDto.getRank());
+        assertEquals("7", rankingDto.getRank());
         assertEquals("Name1", rankingDto.getUserName());
-        assertEquals(45, rankingDto.getPoints());
+        assertEquals("45", rankingDto.getPoints());
         assertEquals(2, rankingDto.getStatus());
     }
 

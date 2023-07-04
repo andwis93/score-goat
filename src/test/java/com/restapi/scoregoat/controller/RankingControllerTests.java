@@ -38,7 +38,8 @@ public class RankingControllerTests {
         ranking.setRank(1);
         ranking.setPoints(7);
 
-        RankingDto rankingDto = new RankingDto(ranking.getRank(), user.getName(), ranking.getPoints(), RankStatus.ABOVE.getStatus());
+        RankingDto rankingDto = new RankingDto(Integer.toString(ranking.getRank()), user.getName(),
+                Integer.toString(ranking.getPoints()), RankStatus.ABOVE.getStatus());
 
         List<Ranking> rankings = new ArrayList<>();
         rankings.add(ranking);
@@ -47,7 +48,7 @@ public class RankingControllerTests {
         rankingsDto.add(rankingDto);
 
         when(mapper.mapRankingToRankingDtoList(rankings)).thenReturn(rankingsDto);
-        when(facade.fetchRankingDtoListByLeagueId(SeasonConfig.DEFAULT_LEAGUE.getId())).thenReturn(rankings);
+        when(facade.fetchRankingDtoListByLeagueId(SeasonConfig.DEFAULT_LEAGUE.getId())).thenReturn(rankingsDto);
         mockMvc
                 .perform(MockMvcRequestBuilders
                         .get("/v1/scoregoat/ranking")
@@ -55,9 +56,9 @@ public class RankingControllerTests {
                         .param("leagueId","39")
                         .characterEncoding("UTF-8"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].rank", Matchers.is(1)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].rank", Matchers.is("1")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].userName", Matchers.is("Name1")))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].points", Matchers.is(7)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].points", Matchers.is("7")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].status", Matchers.is(2)));
     }
 }

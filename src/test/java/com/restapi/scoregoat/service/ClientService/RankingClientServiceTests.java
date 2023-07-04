@@ -5,6 +5,7 @@ import com.restapi.scoregoat.config.SeasonConfig;
 import com.restapi.scoregoat.domain.*;
 import com.restapi.scoregoat.manager.RankManager;
 import com.restapi.scoregoat.manager.SortManager;
+import com.restapi.scoregoat.mapper.RankingMapper;
 import com.restapi.scoregoat.service.DBService.RankingDBService;
 import com.restapi.scoregoat.service.DBService.UserDBService;
 import org.junit.jupiter.api.Test;
@@ -35,6 +36,8 @@ public class RankingClientServiceTests {
     private SortManager sortManager;
     @Mock
     private RankManager rankManager;
+    @Mock
+    private RankingMapper mapper;
 
     @Test
     void testRankingUpdate() {
@@ -115,18 +118,22 @@ public class RankingClientServiceTests {
         User user1 = new User("Name1","Email1@test.com", "Password1");
         user1.setId(1L);
         Ranking ranking1 = new Ranking(200L, -2, 3, 39, user1,1);
+        RankingDto rankingDto1 = new RankingDto("3", "Name1", "-2", 5);
 
         User user2 = new User("Name2","Email2@test.com", "Password2");
         user2.setId(1L);
         Ranking ranking2 = new Ranking(100L, 14, 1, 39, user2, 2);
+        RankingDto rankingDto2 = new RankingDto("1", "Name2", "14", 1);
 
         User user3 = new User("Name3","Email3@test.com", "Password3");
         user3.setId(1L);
         Ranking ranking3 = new Ranking(300L, -2, 3, 39, user3, 4);
+        RankingDto rankingDto3 = new RankingDto("3", "Name3", "-2", 5);
 
         User user4 = new User("Name4","Email4@test.com", "Password4");
         user4.setId(1L);
         Ranking ranking4 = new Ranking(400L, 8, 2, 39, user4, 3);
+        RankingDto rankingDto4 = new RankingDto("2", "Name4", "8", 3);
 
         List<Ranking> rankings = new ArrayList<>();
         rankings.add(ranking1);
@@ -134,14 +141,21 @@ public class RankingClientServiceTests {
         rankings.add(ranking3);
         rankings.add(ranking4);
 
+        List<RankingDto> rankingDtoList = new ArrayList<>();
+        rankingDtoList.add(rankingDto2);
+        rankingDtoList.add(rankingDto4);
+        rankingDtoList.add(rankingDto1);
+        rankingDtoList.add(rankingDto3);
+
         when(dbService.findByLeagueId(39)).thenReturn(rankings);
         when(sortManager.sortListByRank(any())).thenCallRealMethod();
+        when(mapper.mapRankingToRankingDtoList(any())).thenReturn(rankingDtoList);
 
         //When
-        List<Ranking> rankingList = service.fetchRankingListByLeagueId(SeasonConfig.DEFAULT_LEAGUE.getId());
+        List<RankingDto> theRankingDtoList = service.fetchRankingListByLeagueId(SeasonConfig.DEFAULT_LEAGUE.getId());
 
         //Then
-        assertEquals(4, rankingList.size());
-        assertEquals(3, rankingList.get(2).getRank());
+        assertEquals(4, theRankingDtoList.size());
+        assertEquals("3", theRankingDtoList.get(2).getRank());
     }
 }

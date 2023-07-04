@@ -18,19 +18,19 @@ public class RankingDBService {
     public Ranking findByUserIdAndLeagueId(Long userId, int leagueId) {
         return repository.findByUserIdAndLeagueId(userId, leagueId);
     }
-
     public void save(Ranking ranking) {
         repository.save(ranking);
     }
     public void saveAll(List<Ranking> list) {
         repository.saveAll(list);
     }
-
     public boolean existsRankingByLeagueAndUserId(int leagueId, long userId) {
         return repository.existsRankingByLeagueIdAndUserId(leagueId, userId);
     }
-
     public Ranking findByLeagueAndUserId(int leagueId, long userId) {
         return repository.findByLeagueIdAndUserId(leagueId, userId);
+    }
+    public int getRankingSizeByLeagueId(int leagueId) {
+        return repository.countByLeagueId(leagueId);
     }
 }
