@@ -3,7 +3,7 @@ package com.restapi.scoregoat.controller;
 import com.restapi.scoregoat.config.SeasonConfig;
 import com.restapi.scoregoat.domain.*;
 import com.restapi.scoregoat.facade.ScoreGoatFacade;
-import com.restapi.scoregoat.mapper.GraduationMapper;
+import com.restapi.scoregoat.mapper.RankingMapper;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,48 +16,48 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.ArrayList;
 import java.util.List;
-
 import static org.mockito.Mockito.when;
 
 @SpringJUnitWebConfig
-@WebMvcTest(GraduationController.class)
-public class GraduationControllerTests {
+@WebMvcTest(RankingController.class)
+public class RankingControllerTests {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
     private ScoreGoatFacade facade;
     @MockBean
-    private GraduationMapper mapper;
+    private RankingMapper mapper;
 
     @Test
-    void shouldGetGraduations() throws Exception {
+    void shouldGetRankings() throws Exception {
         //Given
         User user = new User("Name1","Email1@test.com", "Password1");
         user.setId(202L);
 
-        Graduation graduation = new Graduation(SeasonConfig.DEFAULT_LEAGUE.getId(), user);
-        graduation.setRank(1);
-        graduation.setPoints(7);
+        Ranking ranking = new Ranking(SeasonConfig.DEFAULT_LEAGUE.getId(), user);
+        ranking.setRank(1);
+        ranking.setPoints(7);
 
-        GraduationDto graduationDto = new GraduationDto(graduation.getRank(), user.getName(), graduation.getPoints());
+        RankingDto rankingDto = new RankingDto(ranking.getRank(), user.getName(), ranking.getPoints(), RankStatus.ABOVE.getStatus());
 
-        List<Graduation> graduations = new ArrayList<>();
-        graduations.add(graduation);
+        List<Ranking> rankings = new ArrayList<>();
+        rankings.add(ranking);
 
-        List<GraduationDto> graduationDtos = new ArrayList<>();
-        graduationDtos.add(graduationDto);
+        List<RankingDto> rankingsDto = new ArrayList<>();
+        rankingsDto.add(rankingDto);
 
-        when(mapper.mapGraduationToGraduationDtoList(graduations)).thenReturn(graduationDtos);
-        when(facade.fetchGraduationDtoListByLeagueId(SeasonConfig.DEFAULT_LEAGUE.getId())).thenReturn(graduations);
+        when(mapper.mapRankingToRankingDtoList(rankings)).thenReturn(rankingsDto);
+        when(facade.fetchRankingDtoListByLeagueId(SeasonConfig.DEFAULT_LEAGUE.getId())).thenReturn(rankings);
         mockMvc
                 .perform(MockMvcRequestBuilders
-                        .get("/v1/scoregoat/graduation")
+                        .get("/v1/scoregoat/ranking")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("leagueId","39")
                         .characterEncoding("UTF-8"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].rank", Matchers.is(1)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].userName", Matchers.is("Name1")))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].points", Matchers.is(7)));
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].points", Matchers.is(7)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].status", Matchers.is(2)));
     }
 }

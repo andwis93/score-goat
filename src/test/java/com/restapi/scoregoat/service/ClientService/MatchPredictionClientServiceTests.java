@@ -3,6 +3,7 @@ package com.restapi.scoregoat.service.ClientService;
 import com.restapi.scoregoat.config.SeasonConfig;
 import com.restapi.scoregoat.domain.*;
 import com.restapi.scoregoat.manager.MatchManager;
+import com.restapi.scoregoat.manager.SortManager;
 import com.restapi.scoregoat.service.DBService.MatchDBService;
 import com.restapi.scoregoat.service.DBService.MatchPredictionDBService;
 import com.restapi.scoregoat.service.DBService.UserDBService;
@@ -14,6 +15,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.time.OffsetDateTime;
 import java.util.*;
+
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,7 +32,9 @@ public class MatchPredictionClientServiceTests {
     @Mock
     private MatchManager manager;
     @Mock
-    private GraduationClientService graduationService;
+    private SortManager sortManager;
+    @Mock
+    private RankingClientService rankingService;
 
     @Test
     void testSavePredictions() {
@@ -84,6 +89,7 @@ public class MatchPredictionClientServiceTests {
 
         when(predictionDBService.findByUserIdAndLeagueId(202L, SeasonConfig.DEFAULT_LEAGUE.getId())).thenReturn(predictions);
         when(matchService.findMatchByFixture(365L)).thenReturn(match);
+        when(sortManager.sortList(any())).thenCallRealMethod();
 
         //When
         List<UserPredictionDto> userPredictionDtoList = service.getMatchPredictions(
@@ -94,7 +100,7 @@ public class MatchPredictionClientServiceTests {
     }
 
     @Test
-    void testGraduatePredictions() {
+    void testRankPredictions() {
         //Given
         Match match = new Match(327L, SeasonConfig.DEFAULT_LEAGUE.getId(), 365L,
                 OffsetDateTime.parse("2023-04-01T14:00:00+00:00"), MatchStatusType.FINISHED.getType(),
@@ -117,7 +123,7 @@ public class MatchPredictionClientServiceTests {
         when(manager.matchResultAssign(match)).thenReturn(Result.HOME.getResult());
 
         //When
-        service.graduatePredictions();
+        service.rankPredictions();
 
         //Then
         assertEquals("home", predictionList.get(0).getResult());

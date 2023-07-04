@@ -123,7 +123,7 @@ public class Watcher {
         LOGGER.info(message);
     }
 
-    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.ClientService.GraduationClientService." +
+    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.ClientService.RankingClientService." +
             "executeRankAssign(..))" + "&& target(object)" , argNames = "object")
     public void executeRankAssign(Object object) {
         String message = "Attempt to assign ranks." + " -- Class: " + object;

@@ -38,7 +38,7 @@ public class DataScheduler {
 
     @Scheduled(cron = "0 0 2 * * ?", zone="Europe/Warsaw")
     public void graduatePredictions() {
-        facade.graduatePredictions();
+        facade.rankPredictions();
         facade.assignRanks();
     }
 }

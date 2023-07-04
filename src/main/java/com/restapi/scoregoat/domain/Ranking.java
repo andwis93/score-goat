@@ -10,8 +10,8 @@ import org.jetbrains.annotations.NotNull;
 @Getter
 @Setter
 @Entity
-@Table(name = "GRADUATIONS")
-public class Graduation {
+@Table(name = "RANKING")
+public class Ranking {
     @Id
     @GeneratedValue
     @NotNull
@@ -28,14 +28,18 @@ public class Graduation {
     @JoinColumn(name = "USER_ID", nullable = false)
     private User user;
 
-    public Graduation(int league, User user) {
+    public Ranking(int league, User user) {
         this.points = 0;
         this.rank = 0;
         this.leagueId = league;
         this.user = user;
     }
 
+    @Column(name = "STATUS")
+    private int status;
+
     public void addPoints(int points) {
         this.points += points;
     }
+
 }

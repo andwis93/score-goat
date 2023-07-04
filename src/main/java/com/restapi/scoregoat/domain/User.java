@@ -44,12 +44,12 @@ public class User {
     @OneToOne(mappedBy = "user", orphanRemoval = true)
     private Session session;
     @OneToMany(
-            targetEntity = Graduation.class,
+            targetEntity = Ranking.class,
             mappedBy = "user",
             cascade = CascadeType.ALL,
             fetch = FetchType.EAGER
     )
-    private Set<Graduation> graduation = new HashSet<>();
+    private Set<Ranking> ranking = new HashSet<>();
 
 
     public User(String name, String email, String password) {
@@ -63,7 +63,4 @@ public class User {
         this.predictions.add(prediction);
     }
 
-    public void addLogIn(LogIn logIn) {
-        this.logIn = logIn;
-    }
 }

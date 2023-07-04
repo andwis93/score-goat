@@ -1,7 +1,7 @@
 package com.restapi.scoregoat.repository;
 
 import com.restapi.scoregoat.config.SeasonConfig;
-import com.restapi.scoregoat.domain.Graduation;
+import com.restapi.scoregoat.domain.Ranking;
 import com.restapi.scoregoat.domain.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +10,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
-public class GraduationRepositoryTests {
+public class RankingRepositoryTests {
     @Autowired
-    private GraduationRepository repository;
+    private RankingRepository repository;
     @Autowired
     private UserRepository userRepository;
 
@@ -21,18 +21,18 @@ public class GraduationRepositoryTests {
         //Given
         User user = new User("Name1","Email1@test.com", "Password1");
         Long userId = userRepository.save(user).getId();
-        Graduation graduation = new Graduation(SeasonConfig.DEFAULT_LEAGUE.getId(), user);
-        Long graduationId = repository.save(graduation).getId();
+        Ranking ranking = new Ranking(SeasonConfig.DEFAULT_LEAGUE.getId(), user);
+        Long rankingId = repository.save(ranking).getId();
 
         //When
-        Graduation theGraduation = repository.findByLeagueIdAndUserId(SeasonConfig.DEFAULT_LEAGUE.getId(), userId);
+        Ranking theRanking = repository.findByLeagueIdAndUserId(SeasonConfig.DEFAULT_LEAGUE.getId(), userId);
 
         //Then
-        assertEquals(userId, theGraduation.getUser().getId());
+        assertEquals(userId, theRanking.getUser().getId());
 
         //CleanUp
         try{
-            repository.deleteById(graduationId);
+            repository.deleteById(rankingId);
             userRepository.deleteById(userId);
         } catch (Exception ex) {
             // do nothing
@@ -40,22 +40,22 @@ public class GraduationRepositoryTests {
     }
 
     @Test
-    void testExistsGraduationByLeagueAndUserId() {
+    void testExistsRankingByLeagueAndUserId() {
         //Given
         User user = new User("Name1","Email1@test.com", "Password1");
         Long userId = userRepository.save(user).getId();
-        Graduation graduation = new Graduation(SeasonConfig.DEFAULT_LEAGUE.getId(), user);
-        Long graduationId = repository.save(graduation).getId();
+        Ranking ranking = new Ranking(SeasonConfig.DEFAULT_LEAGUE.getId(), user);
+        Long rankingId = repository.save(ranking).getId();
 
         //When
-        boolean isExists = repository.existsGraduationByLeagueIdAndUserId(SeasonConfig.DEFAULT_LEAGUE.getId(), userId);
+        boolean isExists = repository.existsRankingByLeagueIdAndUserId(SeasonConfig.DEFAULT_LEAGUE.getId(), userId);
 
         //Then
         assertTrue(isExists);
 
         //CleanUp
         try{
-            repository.deleteById(graduationId);
+            repository.deleteById(rankingId);
             userRepository.deleteById(userId);
         } catch (Exception ex) {
             // do nothing

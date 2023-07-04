@@ -18,6 +18,9 @@ public class MatchPredictionDBService {
     public void save(MatchPrediction prediction) {
         repository.save(prediction);
     }
+    public void saveAll(List<MatchPrediction> predictions) {
+        repository.saveAll(predictions);
+    }
 
     public List<MatchPrediction> findByUserIdAndLeagueId(Long userId, int leagueId) {
         return repository.findByUserIdAndLeagueId(userId, leagueId);

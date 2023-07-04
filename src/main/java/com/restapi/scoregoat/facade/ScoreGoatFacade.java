@@ -16,7 +16,7 @@ public class ScoreGoatFacade {
     private final MatchClientService matchService;
     private final LogInClientService logInService;
     private final MatchPredictionClientService predictionService;
-    private final GraduationClientService graduationService;
+    private final RankingClientService rankingService;
     private final MatchManager manager;
 
     public Season fetchSeason(){
@@ -64,16 +64,20 @@ public class ScoreGoatFacade {
         return userService.deleteUser(userDto);
     }
 
-    public void graduatePredictions() {
-        predictionService.graduatePredictions();
+    public void rankPredictions() {
+        predictionService.rankPredictions();
         predictionService.assignPoints();
     }
 
     public void assignRanks() {
-       graduationService.executeRankAssign();
+       rankingService.executeRankAssign();
     }
 
-    public List<Graduation> fetchGraduationDtoListByLeagueId(int leagueId) {
-      return graduationService.fetchGraduationListByLeagueId(leagueId);
+    public List<Ranking> fetchRankingDtoListByLeagueId(int leagueId) {
+      return rankingService.fetchRankingListByLeagueId(leagueId);
+    }
+
+    public Ranking fetchRankingDtoByUserIdAndLeagueId(Long userId, int leagueId) {
+        return rankingService.fetchRankingByUserIdAndLeagueId(userId, leagueId);
     }
 }
