@@ -47,11 +47,11 @@ public class MatchPredictionClientService {
                         userService.save(user);
 
                     } catch (NoSuchElementException ex) {
-                        String message = ex.getMessage() + "  --ERROR: Couldn't execute \"savePredictions\"-- ";
+                        StringBuilder message = new StringBuilder(ex.getMessage() + "  --ERROR: Couldn't execute \"savePredictions\"-- ");
                         logDataService.saveLog(new LogData(null, "With matchID: " +
-                                match.getKey(), Code.EXECUTE_PREDICTION_ERROR.getCode(), message));
-                        LOGGER.error(message, ex);
-                        return new NotificationRespondDto(message, NotificationType.ERROR.getType());
+                                match.getKey(), Code.EXECUTE_PREDICTION_ERROR.getCode(), message.toString()));
+                        LOGGER.error(message.toString(), ex);
+                        return new NotificationRespondDto(message.toString(), NotificationType.ERROR.getType());
                     }
                 }
             }
@@ -75,11 +75,6 @@ public class MatchPredictionClientService {
         return sortManager.sortList(userPredictionsDto);
     }
 
-//    private List<UserPredictionDto> sortList(List<UserPredictionDto> list) {
-//        list.sort(Comparator.comparing(UserPredictionDto::getDate).reversed());
-//        return list;
-//    }
-
     public void rankPredictions() {
         service.findAllByResult(Result.UNSET.getResult()).forEach(unset -> {
             Match match = matchService.findMatchByFixture(unset.getFixtureId());
@@ -95,10 +90,10 @@ public class MatchPredictionClientService {
             prediction.setPoints(manager.matchPointsAssign(prediction));
             rankingService.rankingUpdate(prediction);
         } catch (Exception ex) {
-            String message = ex.getMessage() + " --ERROR: Couldn't execute rating-- ";
+            StringBuilder message = new StringBuilder(ex.getMessage() + " --ERROR: Couldn't execute rating-- ");
             logDataService.saveLog(new LogData(null,"Prediction ID: "
-                    + prediction.getId(), Code.EXECUTION_RANKING_ERROR.getCode(), message));
-            LOGGER.error(message,ex);
+                    + prediction.getId(), Code.EXECUTION_RANKING_ERROR.getCode(), message.toString()));
+            LOGGER.error(message.toString(),ex);
         }
     }
 

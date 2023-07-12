@@ -34,11 +34,11 @@ public class LogInDBService {
             repository.save(attempt);
             return true;
         } catch (IllegalArgumentException ex) {
-            String message = ex.getMessage() + "  --ERROR: Couldn't execute \"resetAttempt\"-- ";
+            StringBuilder message = new StringBuilder(ex.getMessage() + "  --ERROR: Couldn't execute \"resetAttempt\"-- ");
             logDataService.saveLog(new LogData(
                     null, "With UserID: " + attempt.getUser(),
-                    Code.LOGIN_RESET_ATTEMPT_ERROR.getCode(), message));
-            LOGGER.error(message, ex);
+                    Code.LOGIN_RESET_ATTEMPT_ERROR.getCode(), message.toString()));
+            LOGGER.error(message.toString(), ex);
             return false;
         }
     }

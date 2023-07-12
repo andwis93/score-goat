@@ -12,8 +12,8 @@ public class EmailValidator {
                 .matches();
     }
     public boolean emailValidator(String email){
-        String regexPattern = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
-                + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
-        return patternMatches(email, regexPattern);
+        StringBuilder regexPattern = new StringBuilder("^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
+                + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$");
+        return patternMatches(email, regexPattern.toString());
     }
 }

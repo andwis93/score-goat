@@ -43,10 +43,10 @@ public class SessionClientService {
             return true;
 
         } catch (IllegalArgumentException ex) {
-            String message = ex.getMessage() + "  --ERROR: Couldn't execute \"SaveRefreshedSession\"-- ";
+            StringBuilder message = new StringBuilder(ex.getMessage() + "  --ERROR: Couldn't execute \"SaveRefreshedSession\"-- ");
             logDataService.saveLog(new LogData(
-                    null,"With UserID: " + user.getId(), Code.SESSION_REFRESH_ERROR.getCode(), message));
-            LOGGER.error(message,ex);
+                    null,"With UserID: " + user.getId(), Code.SESSION_REFRESH_ERROR.getCode(), message.toString()));
+            LOGGER.error(message.toString(),ex);
             return false ;
         }
     }

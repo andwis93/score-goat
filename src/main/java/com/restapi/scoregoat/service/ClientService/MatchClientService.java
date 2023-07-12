@@ -39,10 +39,10 @@ public class MatchClientService {
             return new MatchRespondDto(param.getId(),Respond.MATCH_UPLOAD_OK_LEAGUE.getRespond() + param.getId()
                     + Respond.MATCH_UPLOAD_OK_SEASON.getRespond() + param.getSeason());
         }catch (Exception ex) {
-            String message = ex.getMessage() + " --ERROR: Couldn't upload Matches to DataBase-- ";
+            StringBuilder message = new StringBuilder(ex.getMessage() + " --ERROR: Couldn't upload Matches to DataBase-- ");
             logDataService.saveLog(new LogData(null,"League ID: "
-                    + param.getId(), Code.MATCH_UPLOAD_ERROR.getCode(), message));
-            LOGGER.error(message,ex);
+                    + param.getId(), Code.MATCH_UPLOAD_ERROR.getCode(), message.toString()));
+            LOGGER.error(message.toString(),ex);
             return null;
         }
     }
@@ -58,10 +58,10 @@ public class MatchClientService {
             }
             return new MatchRespondDto(Respond.ALL_MATCH_UPLOAD_OK.getRespond());
         } catch (Exception ex) {
-            String message = ex.getMessage() + " --ERROR: Couldn't upload all Matches to DataBase-- ";
+            StringBuilder message = new StringBuilder(ex.getMessage() + " --ERROR: Couldn't upload all Matches to DataBase-- ");
             logDataService.saveLog(new LogData(null, "LeagueConfigList"
-                    , Code.MATCH_UPLOAD_ALL_ERROR.getCode(), message));
-            LOGGER.error(message,ex);
+                    , Code.MATCH_UPLOAD_ALL_ERROR.getCode(), message.toString()));
+            LOGGER.error(message.toString(),ex);
             return null;
         }
     }

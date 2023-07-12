@@ -30,10 +30,10 @@ public class  SeasonClientService {
             service.save(season);
             return season;
         }catch (Exception ex) {
-            String message = ex.getMessage() + " --ERROR: Couldn't replace season in DataBase-- ";
+            StringBuilder message = new StringBuilder(ex.getMessage() + " --ERROR: Couldn't replace season in DataBase-- ");
             logDataService.saveLog(new LogData(null,"Setting League ID: "
-                    + SeasonConfig.DEFAULT_LEAGUE.getId(), Code.SEASON_SET_DB_ERROR.getCode(), message));
-            LOGGER.error(message,ex);
+                    + SeasonConfig.DEFAULT_LEAGUE.getId(), Code.SEASON_SET_DB_ERROR.getCode(), message.toString()));
+            LOGGER.error(message.toString(),ex);
             return null;
         }
     }
