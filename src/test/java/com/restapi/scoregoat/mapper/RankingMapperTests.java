@@ -20,7 +20,7 @@ public class RankingMapperTests {
     void testMapRankingToRankingDto() {
         //Given
         User user = new User("Name1","Email1@test.com", "Password1");
-        Ranking ranking = new Ranking(SeasonConfig.DEFAULT_LEAGUE.getId(), user);
+        Ranking ranking = new Ranking(user, SeasonConfig.DEFAULT_LEAGUE.getId());
         ranking.setRank(7);
         ranking.setPoints(45);
         ranking.setStatus(2);
@@ -39,7 +39,7 @@ public class RankingMapperTests {
     void testMapRankingToRankingDtoList() {
         //Given
         User user = new User("Name1","Email1@test.com", "Password1");
-        Ranking ranking = new Ranking(SeasonConfig.DEFAULT_LEAGUE.getId(), user);
+        Ranking ranking = new Ranking(user, SeasonConfig.DEFAULT_LEAGUE.getId());
         ranking.setRank(7);
         ranking.setPoints(45);
         ranking.setStatus(2);

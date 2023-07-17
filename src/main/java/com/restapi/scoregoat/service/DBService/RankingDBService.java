@@ -24,13 +24,7 @@ public class RankingDBService {
     public void saveAll(List<Ranking> list) {
         repository.saveAll(list);
     }
-    public boolean existsRankingByLeagueAndUserId(int leagueId, long userId) {
-        return repository.existsRankingByLeagueIdAndUserId(leagueId, userId);
-    }
-    public Ranking findByLeagueAndUserId(int leagueId, long userId) {
-        return repository.findByLeagueIdAndUserId(leagueId, userId);
-    }
-    public int getRankingSizeByLeagueId(int leagueId) {
-        return repository.countByLeagueId(leagueId);
+    public boolean existsRankingByUserIdAndLeagueId(long userId, int leagueId) {
+        return repository.existsRankingByUserIdAndLeagueId(userId, leagueId);
     }
 }

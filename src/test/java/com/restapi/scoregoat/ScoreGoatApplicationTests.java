@@ -12,8 +12,8 @@ class ScoreGoatApplicationTests {
 
 	@Test
 	void contextLoads() {
-	//		facade.rankPredictions();
-	///		facade.assignRanks();
-			facade.uploadMatchesFromLeagueConfigList();
+			facade.rankPredictions();
+			facade.assignRanks();
+//			facade.uploadMatchesFromLeagueConfigList();
 	}
 }

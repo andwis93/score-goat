@@ -22,24 +22,31 @@ public class Ranking {
     private int points ;
     @Column(name = "RANKS")
     private int rank;
-    @Column(name = "LEAGUE_ID")
-    private int leagueId;
     @ManyToOne
     @JoinColumn(name = "USER_ID", nullable = false)
     private User user;
-
-    public Ranking(int league, User user) {
-        this.points = 0;
-        this.rank = 0;
-        this.leagueId = league;
-        this.user = user;
-    }
-
+    @Column(name = "LEAGUE_ID")
+    private int leagueId;
     @Column(name = "STATUS")
     private int status;
+    @Column(name ="1ST_PLACE_COUNTER")
+    private int counter;
+    @Column(name = "LAST_PLACE")
+    private int last;
+    public Ranking(User user, int league) {
+        this.points = 0;
+        this.rank = 0;
+        this.user = user;
+        this.leagueId = league;
+        this.counter = 0;
+        this.last = 0;
+    }
 
     public void addPoints(int points) {
         this.points += points;
+    }
+    public void addToCounter() {
+        this.counter++;
     }
 
 }

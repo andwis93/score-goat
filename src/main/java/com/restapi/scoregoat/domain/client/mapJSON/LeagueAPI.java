@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class League {
+public class LeagueAPI {
     @JsonProperty("id")
     private int id;
     @JsonProperty("name")

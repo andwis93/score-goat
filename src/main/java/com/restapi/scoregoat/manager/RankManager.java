@@ -5,6 +5,7 @@ import com.restapi.scoregoat.domain.Ranking;
 import com.restapi.scoregoat.domain.RankingNorm;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.util.Collections;
 import java.util.List;
 
 @AllArgsConstructor
@@ -16,7 +17,7 @@ public class RankManager {
         int last;
         double middle;
         middle = ((double) (rankingList.get(rankingList.size() - 1).getRank()) / 2) + .5;
-        last = rankingList.get(rankingList.size() - 1).getRank();
+        last = Collections.max(rankingList.stream().map(Ranking::getRank).toList());
         return new RankingNorm(middle,last);
     }
 

@@ -15,6 +15,7 @@ public class LogInRepositoryTests {
     @Autowired
     private LogInRepository repository;
 
+
     @Test
     void testFindAndSaveAll() {
         //Given

@@ -17,15 +17,15 @@ public class RankingRepositoryTests {
     private UserRepository userRepository;
 
     @Test
-    void testFindByLeagueAndUserId() {
+    void testFindByUserIdAndLeagueId() {
         //Given
         User user = new User("Name1","Email1@test.com", "Password1");
         Long userId = userRepository.save(user).getId();
-        Ranking ranking = new Ranking(SeasonConfig.DEFAULT_LEAGUE.getId(), user);
+        Ranking ranking = new Ranking(user, SeasonConfig.DEFAULT_LEAGUE.getId());
         Long rankingId = repository.save(ranking).getId();
 
         //When
-        Ranking theRanking = repository.findByLeagueIdAndUserId(SeasonConfig.DEFAULT_LEAGUE.getId(), userId);
+        Ranking theRanking = repository.findByUserIdAndLeagueId(userId, SeasonConfig.DEFAULT_LEAGUE.getId());
 
         //Then
         assertEquals(userId, theRanking.getUser().getId());
@@ -40,15 +40,15 @@ public class RankingRepositoryTests {
     }
 
     @Test
-    void testExistsRankingByLeagueAndUserId() {
+    void testExistsRankingByUserIdAndLeagueId() {
         //Given
         User user = new User("Name1","Email1@test.com", "Password1");
         Long userId = userRepository.save(user).getId();
-        Ranking ranking = new Ranking(SeasonConfig.DEFAULT_LEAGUE.getId(), user);
+        Ranking ranking = new Ranking(user, SeasonConfig.DEFAULT_LEAGUE.getId());
         Long rankingId = repository.save(ranking).getId();
 
         //When
-        boolean isExists = repository.existsRankingByLeagueIdAndUserId(SeasonConfig.DEFAULT_LEAGUE.getId(), userId);
+        boolean isExists = repository.existsRankingByUserIdAndLeagueId(userId, SeasonConfig.DEFAULT_LEAGUE.getId());
 
         //Then
         assertTrue(isExists);

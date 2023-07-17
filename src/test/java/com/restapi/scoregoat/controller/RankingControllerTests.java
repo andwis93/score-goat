@@ -34,12 +34,12 @@ public class RankingControllerTests {
         User user = new User("Name1","Email1@test.com", "Password1");
         user.setId(202L);
 
-        Ranking ranking = new Ranking(SeasonConfig.DEFAULT_LEAGUE.getId(), user);
+        Ranking ranking = new Ranking(user, SeasonConfig.DEFAULT_LEAGUE.getId());
         ranking.setRank(1);
         ranking.setPoints(7);
 
         RankingDto rankingDto = new RankingDto(Integer.toString(ranking.getRank()), user.getName(),
-                Integer.toString(ranking.getPoints()), RankStatus.ABOVE.getStatus());
+                Integer.toString(ranking.getPoints()), RankStatus.ABOVE.getStatus(), 4, 18 );
 
         List<Ranking> rankings = new ArrayList<>();
         rankings.add(ranking);
@@ -59,6 +59,8 @@ public class RankingControllerTests {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].rank", Matchers.is("1")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].userName", Matchers.is("Name1")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].points", Matchers.is("7")))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].status", Matchers.is(2)));
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].status", Matchers.is(2)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].counter", Matchers.is(4)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].last", Matchers.is(18)));
     }
 }

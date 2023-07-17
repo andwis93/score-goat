@@ -18,23 +18,24 @@ import java.util.Map;
 @EnableAspectJAutoProxy
 public class RankingClientService {
     private final LeaguesListConfig config;
-    private final RankingDBService service;
+    private final RankingDBService dbService;
     private final UserDBService userService;
     private final SortManager manager;
     private final RankManager rankManager;
     private final RankingMapper mapper;
 
     public void rankingUpdate(MatchPrediction prediction) {
+
         Ranking ranking;
         User user = userService.findById(prediction.getUser().getId());
         if (user != null) {
-            if (service.existsRankingByLeagueAndUserId(prediction.getLeagueId(), user.getId())) {
-                ranking = service.findByLeagueAndUserId(prediction.getLeagueId(), user.getId());
+            if (dbService.existsRankingByUserIdAndLeagueId(user.getId(), prediction.getLeagueId())) {
+                ranking = dbService.findByUserIdAndLeagueId(user.getId(), prediction.getLeagueId());
             } else {
-                ranking = new Ranking(prediction.getLeagueId(), user);
+                ranking = new Ranking(user, prediction.getLeagueId());
             }
             ranking.addPoints(prediction.getPoints());
-            service.save(ranking);
+            dbService.save(ranking);
         } else {
             throw new NullPointerException();
         }
@@ -43,14 +44,16 @@ public class RankingClientService {
     public void executeRankAssign() {
         Map<Integer, String> leagueList = config.getLeagueList();
         leagueList.keySet().forEach(leagueId -> {
-            List<Ranking> rankingList = manager.sortListByPoints(service.findByLeagueId(leagueId));
-            rankAssign(rankingList);
-            service.saveAll(rankingList);
+            List<Ranking> rankingList = manager.sortListByPoints(dbService.findByLeagueId(leagueId));
+            if (rankingList.size() != 0) {
+                rankAssign(rankingList);
+                dbService.saveAll(rankingList);
+            }
         });
     }
 
     public List<RankingDto> fetchRankingListByLeagueId(int leagueId) {
-        List<Ranking> rankings = manager.sortListByRank(service.findByLeagueId(leagueId));
+        List<Ranking> rankings = manager.sortListByRank(dbService.findByLeagueId(leagueId));
         return mapper.mapRankingToRankingDtoList(rankings);
     }
 
@@ -63,6 +66,7 @@ public class RankingClientService {
             }
             rankingList.get(i).setRank(rank);
         }
+        rankingList.stream().filter(r -> r.getRank() == 1).forEach(Ranking::addToCounter);
         statusAssign(rankingList);
     }
 
@@ -70,12 +74,15 @@ public class RankingClientService {
         RankingNorm norm = rankManager.setRankingNorms(rankingList);
         rankingList.forEach(ranking -> {
             ranking.setStatus(rankManager.setRankingStatus(norm, ranking));
+            ranking.setLast(norm.getLast());
         });
     }
 
-    public UserRankDto fetchRankingByUserIdAndLeagueId(Long userId, int leagueId) {
-        RankingDto rankingDto = mapper.mapRankingToRankingDto(service.findByUserIdAndLeagueId(userId, leagueId));
-        int rankingSize = service.getRankingSizeByLeagueId(leagueId);
-        return new UserRankDto(rankingDto, rankingSize) ;
+    public RankingDto fetchRankingByUserIdAndLeagueId(Long userId, int leagueId) {
+        if (dbService.existsRankingByUserIdAndLeagueId(userId, leagueId)) {
+          return  mapper.mapRankingToRankingDto(dbService.findByUserIdAndLeagueId(userId, leagueId));
+        } else {
+            return new RankingDto("0", "", "0", 0, 0, 0);
+        }
     }
 }

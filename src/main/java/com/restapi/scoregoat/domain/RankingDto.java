@@ -14,4 +14,6 @@ public class RankingDto {
     String userName;
     String points;
     int status;
+    int counter;
+    int last;
 }

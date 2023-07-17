@@ -16,7 +16,7 @@ public class FixtureRespond {
     @JsonProperty("fixture")
     private Fixture fixture;
     @JsonProperty("league")
-    private League league;
+    private LeagueAPI league;
     @JsonProperty("teams")
     private Teams teams;
     @JsonProperty("goals")

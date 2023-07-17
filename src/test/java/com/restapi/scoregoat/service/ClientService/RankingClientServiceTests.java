@@ -14,10 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -27,11 +24,11 @@ public class RankingClientServiceTests {
     @InjectMocks
     private RankingClientService service;
     @Mock
-    private LeaguesListConfig config;
-    @Mock
     private RankingDBService dbService;
     @Mock
     private UserDBService userService;
+    @Mock
+    private LeaguesListConfig config;
     @Mock
     private SortManager sortManager;
     @Mock
@@ -56,11 +53,11 @@ public class RankingClientServiceTests {
         MatchPrediction prediction = new MatchPrediction(22L, SeasonConfig.DEFAULT_LEAGUE.getId(), list.get(327L),
                 user,match.getFixtureId(),-1,Result.HOME.getResult());
 
-        Ranking ranking = new Ranking(prediction.getLeagueId(), user);
+        Ranking ranking = new Ranking(user, prediction.getLeagueId());
 
         when(userService.findById(202L)).thenReturn(user);
-        when(dbService.existsRankingByLeagueAndUserId(prediction.getLeagueId(), 202L)).thenReturn(true);
-        when(dbService.findByLeagueAndUserId(prediction.getLeagueId(), 202L)).thenReturn(ranking);
+        when(dbService.existsRankingByUserIdAndLeagueId(202L, prediction.getLeagueId())).thenReturn(true);
+        when(dbService.findByUserIdAndLeagueId(202L, prediction.getLeagueId())).thenReturn(ranking);
 
         //When
         service.rankingUpdate(prediction);
@@ -74,19 +71,19 @@ public class RankingClientServiceTests {
         //Give
         User user1 = new User("Name1","Email1@test.com", "Password1");
         user1.setId(1L);
-        Ranking ranking1 = new Ranking(200L, -2, 0, 39, user1, 1);
+        Ranking ranking1 = new Ranking(200L, -2, 0, user1, 39, 1,0,3);
 
         User user2 = new User("Name2","Email2@test.com", "Password2");
         user2.setId(1L);
-        Ranking ranking2 = new Ranking(100L, 14, 0, 39, user2, 2);
+        Ranking ranking2 = new Ranking(100L, 14, 0, user2, 39, 2,8,1);
 
         User user3 = new User("Name3","Email3@test.com", "Password3");
         user3.setId(1L);
-        Ranking ranking3 = new Ranking(300L, -2, 0, 39, user3, 4);
+        Ranking ranking3 = new Ranking(300L, -2, 0, user3, 39, 4,24,3);
 
         User user4 = new User("Name4","Email4@test.com", "Password4");
         user4.setId(1L);
-        Ranking ranking4 = new Ranking(400L, 8, 0, 39, user4, 3);
+        Ranking ranking4 = new Ranking(400L, 8, 0, user4, 39, 3,17,2);
 
         Map<Integer, String> leagues = new HashMap<>();
         leagues.put(39, "Premier League");
@@ -117,23 +114,23 @@ public class RankingClientServiceTests {
         //Give
         User user1 = new User("Name1","Email1@test.com", "Password1");
         user1.setId(1L);
-        Ranking ranking1 = new Ranking(200L, -2, 3, 39, user1,1);
-        RankingDto rankingDto1 = new RankingDto("3", "Name1", "-2", 5);
+        Ranking ranking1 = new Ranking(200L, -2, 3, user1, 39,1,8,3);
+        RankingDto rankingDto1 = new RankingDto("3", "Name1", "-2", 5,8,3);
 
         User user2 = new User("Name2","Email2@test.com", "Password2");
         user2.setId(1L);
-        Ranking ranking2 = new Ranking(100L, 14, 1, 39, user2, 2);
-        RankingDto rankingDto2 = new RankingDto("1", "Name2", "14", 1);
+        Ranking ranking2 = new Ranking(100L, 14, 1, user2, 39, 2,24,1);
+        RankingDto rankingDto2 = new RankingDto("1", "Name2", "14", 1,24,1);
 
         User user3 = new User("Name3","Email3@test.com", "Password3");
         user3.setId(1L);
-        Ranking ranking3 = new Ranking(300L, -2, 3, 39, user3, 4);
-        RankingDto rankingDto3 = new RankingDto("3", "Name3", "-2", 5);
+        Ranking ranking3 = new Ranking(300L, -2, 3, user3, 39, 4,0,3);
+        RankingDto rankingDto3 = new RankingDto("3", "Name3", "-2", 5,0,3);
 
         User user4 = new User("Name4","Email4@test.com", "Password4");
         user4.setId(1L);
-        Ranking ranking4 = new Ranking(400L, 8, 2, 39, user4, 3);
-        RankingDto rankingDto4 = new RankingDto("2", "Name4", "8", 3);
+        Ranking ranking4 = new Ranking(400L, 8, 2, user4, 39, 3,17,2);
+        RankingDto rankingDto4 = new RankingDto("2", "Name4", "8", 3,17,2);
 
         List<Ranking> rankings = new ArrayList<>();
         rankings.add(ranking1);
@@ -157,5 +154,6 @@ public class RankingClientServiceTests {
         //Then
         assertEquals(4, theRankingDtoList.size());
         assertEquals("3", theRankingDtoList.get(2).getRank());
+        assertEquals(8,theRankingDtoList.get(2).getCounter());
     }
 }

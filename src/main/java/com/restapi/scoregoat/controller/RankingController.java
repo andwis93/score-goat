@@ -1,7 +1,6 @@
 package com.restapi.scoregoat.controller;
 
 import com.restapi.scoregoat.domain.RankingDto;
-import com.restapi.scoregoat.domain.UserRankDto;
 import com.restapi.scoregoat.facade.ScoreGoatFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +20,7 @@ public class RankingController {
     }
 
     @GetMapping("/single")
-    public ResponseEntity<UserRankDto> getRankingByUserIdAndLeagueId(@RequestParam Long userId, @RequestParam int leagueId) {
+    public ResponseEntity<RankingDto> getRankingByUserIdAndLeagueId(@RequestParam Long userId, @RequestParam int leagueId) {
         return ResponseEntity.ok(facade.fetchRankingDtoByUserIdAndLeagueId(userId, leagueId));
     }
 }

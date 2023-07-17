@@ -24,7 +24,7 @@ public class MatchMapperTests {
         Team awayTeam = new Team("Everton", "http://Logo2.png", false);
         Status status = new Status("Not Started", null);
         Fixture fixture = new Fixture(189L,"2023-04-01T14:00:00+00:00", status);
-        League league = new League(SeasonConfig.DEFAULT_LEAGUE.getId(), "Premier League", "http://PremierLeague.png" );
+        LeagueAPI league = new LeagueAPI(SeasonConfig.DEFAULT_LEAGUE.getId(), "Premier League", "http://PremierLeague.png" );
         Teams teams = new Teams(homeTeam, awayTeam);
         Goals goals = new Goals(2,1);
         FixtureRespond fixtureRespond = new FixtureRespond(fixture, league, teams, goals);
