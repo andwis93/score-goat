@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Service
 @EnableAspectJAutoProxy
 public class UserClientService {
-    private final UserDBService userService;
+    private final UserDBService dbService;
     private final LogInDBService logInDBService;
     private final SessionClientService sessionService;
     private final UserMapper mapper;
@@ -31,10 +31,11 @@ public class UserClientService {
                 && userDto.getPassword().matches(".*\\w.*")) {
             User user = mapper.mapUserDtoToUser(userDto);
             if (validator.emailValidator(user.getEmail())) {
-                if (!userService.existsByName(user.getName())) {
-                    if (!userService.existsByEmail(user.getEmail())) {
+                if (!dbService.existsByName(user.getName())) {
+                    if (!dbService.existsByEmail(user.getEmail())) {
                         user.setPassword(encryptor.encryptPassword(user.getPassword()));
-                        user = userService.save(user);
+                        user = dbService.save(user);
+                        logInDBService.save(new LogIn(user));
                         return new UserRespondDto().setExtendResponse(user, Respond.USER_CREATED_OK.getRespond(),
                                 NotificationType.SUCCESS.getType());
                     } else {
@@ -56,15 +57,15 @@ public class UserClientService {
                 && passwordDto.getRepeatPassword()!= null && passwordDto.getOldPassword().matches(".*\\w.*")
                 && passwordDto.getNewPassword().matches(".*\\w.*")
                 && passwordDto.getRepeatPassword().matches(".*\\w.*")) {
-            User user = userService.findById(passwordDto.getUserId());
+            User user = dbService.findById(passwordDto.getUserId());
             if (user != null) {
                 LogIn attempt = logInDBService.findByUser(user);
                 if (attempt.getLocked() == null) {
                     if (encryptor.checkPassword(passwordDto.getOldPassword(), user.getPassword())) {
                         if (passwordDto.getNewPassword().equals(passwordDto.getRepeatPassword())) {
                             user.setPassword(encryptor.encryptPassword(passwordDto.getNewPassword()));
-                            userService.save(user);
-                            sessionService.saveRefreshedSession(user);
+                            dbService.save(user);
+                            sessionService.refreshSession(user);
                             logInDBService.resetAttempt(attempt);
                             return new UserRespondDto().setExtendResponse(
                                     user, Respond.PASSWORD_CHANGED_OK.getRespond(), NotificationType.SUCCESS.getType());
@@ -98,17 +99,17 @@ public class UserClientService {
     public UserRespondDto accountChange(@NotNull AccountDto accountDto){
         if (accountDto.getUserId() != null && accountDto.getPassword() != null &&
                 accountDto.getPassword().matches(".*\\w.*")){
-            User user = userService.findById(accountDto.getUserId());
+            User user = dbService.findById(accountDto.getUserId());
             if (user != null) {
-                if (userService.nameExistCheck(accountDto.getUserId(), accountDto.getUserName())) {
-                    if (userService.emailExistCheck(accountDto.getUserId(), accountDto.getEmail())) {
+                if (dbService.nameExistCheck(accountDto.getUserId(), accountDto.getUserName())) {
+                    if (dbService.emailExistCheck(accountDto.getUserId(), accountDto.getEmail())) {
                         LogIn attempt = logInDBService.findByUser(user);
                         if (attempt.getLocked() == null) {
                             if (encryptor.checkPassword(accountDto.getPassword(), user.getPassword())) {
                                 user.setName(accountDto.getUserName());
                                 user.setEmail(accountDto.getEmail());
-                                userService.save(user);
-                                sessionService.saveRefreshedSession(user);
+                                dbService.save(user);
+                                sessionService.refreshSession(user);
                                 logInDBService.resetAttempt(attempt);
                                 return new UserRespondDto().setExtendResponse(
                                         user, Respond.ACCOUNT_CHANGED_OK.getRespond(), NotificationType.SUCCESS.getType());
@@ -144,11 +145,11 @@ public class UserClientService {
 
     public UserRespondDto deleteUser(UserDto userDto) {
         if (userDto.getId() != null && userDto.getPassword() != null ) {
-            User user = userService.findById(userDto.getId());
+            User user = dbService.findById(userDto.getId());
             if (user != null) {
                 if (encryptor.checkPassword(userDto.getPassword(), user.getPassword())) {
                     logInDBService.delete(user.getLogIn());
-                    userService.deleteById(user.getId());
+                    dbService.deleteById(user.getId());
                     return new UserRespondDto().setExtendResponse(
                             user, Respond.USER_DELETED_OK.getRespond(), NotificationType.SUCCESS.getType());
                 } else {

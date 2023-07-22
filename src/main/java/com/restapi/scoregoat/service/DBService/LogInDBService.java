@@ -6,7 +6,10 @@ import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @Service
@@ -44,5 +47,9 @@ public class LogInDBService {
     }
     public void delete(LogIn logIn) {
         repository.delete(logIn);
+    }
+
+    public Set<LogIn> findBeforeDate(LocalDate date) {
+        return repository.findByLastLoggedInBefore(date);
     }
 }

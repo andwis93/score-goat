@@ -85,7 +85,7 @@ public class UserClientServiceTests {
         when(dbService.findById(1L)).thenReturn(user);
         when(logInService.findByUser(user)).thenReturn(attempt);
         when(encryptor.checkPassword(passwordDto.getOldPassword(), user.getPassword())).thenReturn(true);
-        when(sessionService.saveRefreshedSession(any())).thenReturn(true);
+        when(sessionService.refreshSession(any())).thenReturn(true);
         when(logInService.resetAttempt(attempt)).thenReturn(true);
 
         //When
@@ -110,7 +110,7 @@ public class UserClientServiceTests {
         when(dbService.emailExistCheck(accountDto.getUserId(), accountDto.getEmail())).thenReturn(true);
         when(logInService.findByUser(user)).thenReturn(attempt);
         when(encryptor.checkPassword(accountDto.getPassword(), user.getPassword())).thenReturn(true);
-        when(sessionService.saveRefreshedSession(any())).thenReturn(true);
+        when(sessionService.refreshSession(any())).thenReturn(true);
         when(logInService.resetAttempt(attempt)).thenReturn(true);
 
         //When

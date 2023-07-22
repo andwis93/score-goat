@@ -15,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.time.OffsetDateTime;
 import java.util.*;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -35,6 +34,8 @@ public class MatchPredictionClientServiceTests {
     private SortManager sortManager;
     @Mock
     private RankingClientService rankingService;
+    @Mock
+    private SessionClientService sessionService;
 
     @Test
     void testSavePredictions() {
@@ -59,6 +60,8 @@ public class MatchPredictionClientServiceTests {
         when(predictionDBService.existsMatchPredictionByUserIdAndFixtureId(202L,327L)).thenReturn(false);
         when(matchService.findMatchByFixture(327L)).thenReturn(match);
         when(userDBService.save(user)).thenReturn(user);
+        when(sessionService.checkIfSessionExistsByUser(user)).thenReturn(true);
+        when(sessionService.refreshSession(user)).thenReturn(true);
 
         //When
         NotificationRespondDto respondDto = service.savePredictions(predictionDto);

@@ -27,4 +27,7 @@ public class RankingDBService {
     public boolean existsRankingByUserIdAndLeagueId(long userId, int leagueId) {
         return repository.existsRankingByUserIdAndLeagueId(userId, leagueId);
     }
+    public void deleteAll() {
+        repository.deleteAll();
+    }
 }

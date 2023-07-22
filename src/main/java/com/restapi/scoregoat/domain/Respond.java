@@ -14,6 +14,7 @@ public enum Respond {
     FIELDS_EMPTY("Pleaser provide all necessary information and try again"),
     USER_LOGGED_IN("User logged in successfully"),
     USER_ID_INCORRECT("User id is incorrect"),
+    SESSION_EXPIRED ("Session Expired"),
     USER_NOT_EXIST("User with this name or email does not exist."),
     TO_MANY_ATTEMPTS("You have reached the maximum number of login attempts. Please try again in approximately: "),
     TO_MANY_ATTEMPTS_LESS_THEN_1H("You have reached the maximum number of login attempts. Account will be unlocked within 2 hour"),

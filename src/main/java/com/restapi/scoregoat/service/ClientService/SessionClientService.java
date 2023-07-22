@@ -19,27 +19,27 @@ import java.util.List;
 @EnableAspectJAutoProxy
 public class SessionClientService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SessionClientService.class);
-    private final SessionDBService service;
+    private final SessionDBService dbService;
     private final LogDataDBService logDataService;
 
     public long removeExpiredSession() {
-        List<Session> expiredSession = service.findAll().stream()
+        List<Session> expiredSession = dbService.findAll().stream()
                 .filter(sessionEnd -> sessionEnd.getEnd().isBefore(LocalDateTime.now()))
                 .toList();
-        service.deleteAll(expiredSession);
+        dbService.deleteAll(expiredSession);
         return expiredSession.size();
     }
 
-    public void refreshSession(Session session) {
+    public void setSessionEndTime(Session session) {
         session.setEnd(LocalDateTime.now());
     }
 
-    public boolean saveRefreshedSession(final User user) {
+    public boolean createSession(User user) {
         try{
-            Session session = service.findByUserId(user.getId());
+            Session session = dbService.findByUserId(user.getId());
             session.setUser(user);
-            refreshSession(session);
-            service.save(session);
+            setSessionEndTime(session);
+            dbService.save(session);
             return true;
 
         } catch (IllegalArgumentException ex) {
@@ -50,4 +50,20 @@ public class SessionClientService {
             return false ;
         }
     }
+
+    public boolean refreshSession(User user) {
+        Session session = dbService.findByUserId(user.getId());
+        if (session.getUser() != null) {
+            setSessionEndTime(session);
+            dbService.save(session);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean checkIfSessionExistsByUser(User user) {
+        return dbService.checkIfSessionExistsByUser(user);
+    }
+
 }

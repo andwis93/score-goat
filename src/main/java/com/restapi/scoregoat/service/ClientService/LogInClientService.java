@@ -9,16 +9,18 @@ import lombok.AllArgsConstructor;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @Service
 @EnableAspectJAutoProxy
 public class LogInClientService {
     private final LogInRepository repository;
-    private final LogInDBService logInDBService;
-    private final UserDBService userService;
+    private final LogInDBService dbService;
+    private final UserDBService userDBService;
     private final SessionClientService sessionService;
     private final StrongPasswordEncryptor encryptor;
     private final DurationManager manager;
@@ -26,11 +28,11 @@ public class LogInClientService {
     public UserRespondDto logInAttempt(UserDto userDto) {
         User user = checkIfUserExist(userDto.getName());
         if (user != null) {
-            LogIn attempt = logInDBService.findByUser(user);
+            LogIn attempt = dbService.findByUser(user);
             if (attempt.getLocked() == null) {
                 if (encryptor.checkPassword(userDto.getPassword(), user.getPassword())) {
-                    sessionService.saveRefreshedSession(user);
-                    logInDBService.resetAttempt(attempt);
+                    sessionService.createSession(user);
+                    dbService.resetAttempt(attempt);
                     return new UserRespondDto().setExtendResponse(
                             user, Respond.USER_LOGGED_IN.getRespond(), NotificationType.SUCCESS.getType());
                 } else {
@@ -55,24 +57,30 @@ public class LogInClientService {
     }
 
     public long updateLogInLockedDates(){
-        List<LogIn> expiredLocks = logInDBService.findAll().stream()
+        List<LogIn> expiredLocks = dbService.findAll().stream()
                 .filter(empty -> empty.getLocked() != null)
                 .filter(time -> time.getLocked().isBefore(LocalDateTime.now()))
                 .toList();
         expiredLocks.forEach(LogIn::removeLocked);
-        logInDBService.saveAll(expiredLocks);
+        dbService.saveAll(expiredLocks);
         return expiredLocks.size();
     }
 
     private User checkIfUserExist(final String identification) {
-        if (userService.existsByName(identification)) {
-            return userService.findByName(identification);
+        if (userDBService.existsByName(identification)) {
+            return userDBService.findByName(identification);
         } else {
-            if (userService.existsByEmail(identification)) {
-                return userService.findByEmail(identification);
+            if (userDBService.existsByEmail(identification)) {
+                return userDBService.findByEmail(identification);
             } else {
                 return null;
             }
         }
     }
+
+    public void deleteUnActiveUsers(LocalDate date) {
+      Set<LogIn> logInWithUnActiveUsersList = dbService.findBeforeDate(date);
+      repository.deleteAll(logInWithUnActiveUsersList);
+    }
+
 }

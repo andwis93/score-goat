@@ -92,8 +92,6 @@ public class MatchClientServiceTests {
         FixturesList fixturesList = new FixturesList();
         fixturesList.getFixtureList().add(fixtureRespond);
 
-        doReturn(season).when(seasonService).fetchSeason();
-        when(client.getFixtures(any())).thenReturn(fixturesList);
 
         Match match = new Match(1L, SeasonConfig.DEFAULT_LEAGUE.getId(), 365L, OffsetDateTime.parse("2023-04-01T14:00:00+00:00"),
                 "Not Started", "81:48", "Liverpool", "Liverpool.logo",
@@ -102,6 +100,8 @@ public class MatchClientServiceTests {
         List<Match> matchList = new ArrayList<>();
         matchList.add(match);
 
+        doReturn(season).when(seasonService).fetchSeason();
+        when(client.getFixtures(any())).thenReturn(fixturesList);
         when(mapper.mapFixtureRespondToMatchList(any())).thenReturn(matchList);
 
         //When
@@ -130,6 +130,8 @@ public class MatchClientServiceTests {
         when(dbService.findByLeagueIdOrderByDate(SeasonConfig.DEFAULT_LEAGUE.getId())).thenReturn(matchList);
         when(predictionDBService.existsMatchPredictionByUserIdAndFixtureId(1L,365L)).thenReturn(false);
         when(predictionDBService.existsMatchPredictionByUserIdAndFixtureId(1L,367L)).thenReturn(true);
+        when(config.getFrom()).thenReturn(OffsetDateTime.parse("2023-02-01T14:00:00+00:00"));
+        when(config.getTo()).thenReturn(OffsetDateTime.parse("2023-12-01T14:00:00+00:00"));
 
         //When
         List<Match> theMatchList = service.eliminateSelected(1L, 39);

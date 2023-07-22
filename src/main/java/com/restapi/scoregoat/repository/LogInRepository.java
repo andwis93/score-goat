@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import java.time.LocalDate;
 import java.util.*;
 
 @Transactional
@@ -15,4 +16,5 @@ public interface LogInRepository extends CrudRepository<LogIn, Long> {
     @NotNull
     List<LogIn> findAll();
     Optional<LogIn> findByUser(User user);
+    Set<LogIn> findByLastLoggedInBefore(LocalDate date);
 }

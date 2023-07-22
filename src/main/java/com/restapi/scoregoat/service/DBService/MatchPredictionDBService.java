@@ -33,4 +33,7 @@ public class MatchPredictionDBService {
     public List<MatchPrediction> findAllByPoints(int points) {
         return repository.findAllByPoints(points);
     }
+    public void deleteAll() {
+        repository.deleteAll();
+    }
 }

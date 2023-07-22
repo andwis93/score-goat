@@ -12,4 +12,8 @@ public class LogDataDBService {
     public void saveLog(LogData logData) {
         repository.save(logData);
     }
+
+    public void deleteAll() {
+        repository.deleteAll();
+    }
 }

@@ -66,7 +66,7 @@ public class MatchPredictionControllerTests {
         matchesSelectedList.put(1430L, Result.HOME.getResult());
         PredictionDto predictionDto = new PredictionDto(202L, SeasonConfig.DEFAULT_LEAGUE.getId(), matchesSelectedList);
         NotificationRespondDto notificationRespondDto = new NotificationRespondDto(
-                Respond.PREDICTIONS_SAVE_OK.getRespond(), NotificationType.SUCCESS.getType());
+                Respond.PREDICTIONS_SAVE_OK.getRespond(), NotificationType.SUCCESS.getType(), true);
 
         when(facade.saveUserPredictions(any())).thenReturn(notificationRespondDto);
 

@@ -85,4 +85,8 @@ public class RankingClientService {
             return new RankingDto("0", "", "0", 0, 0, 0);
         }
     }
+
+    public void deleteAll() {
+        dbService.deleteAll();
+    }
 }

@@ -3,7 +3,6 @@ package com.restapi.scoregoat.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import org.jetbrains.annotations.NotNull;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -32,7 +31,9 @@ public class LogIn {
 
     public LogIn(User user) {
         this.attempt = 0;
+        this.lastLoggedIn = LocalDate.now();
         this.user = user;
+
     }
 
     public void addAttempt() {
@@ -41,6 +42,7 @@ public class LogIn {
 
     public void resetAttempt() {
         this.attempt = 0;
+        this.lastLoggedIn = LocalDate.now();
     }
 
     public void removeLocked() {

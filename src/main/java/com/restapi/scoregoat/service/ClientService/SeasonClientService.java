@@ -19,15 +19,15 @@ import java.util.List;
 @EnableAspectJAutoProxy
 public class  SeasonClientService {
     private static final Logger LOGGER = LoggerFactory.getLogger(FootballClient.class);
-    private final SeasonDBService service;
+    private final SeasonDBService dbService;
     private final LogDataDBService logDataService;
     private final FootballClient footballClient;
 
     public Season setSeason() {
         try {
             Season season = new Season(footballClient.getFootballSeason());
-            service.deleteAll();
-            service.save(season);
+            dbService.deleteAll();
+            dbService.save(season);
             return season;
         }catch (Exception ex) {
             StringBuilder message = new StringBuilder(ex.getMessage() + " --ERROR: Couldn't replace season in DataBase-- ");
@@ -39,14 +39,14 @@ public class  SeasonClientService {
     }
 
     public Season fetchSeason() {
-        List<Season> list = service.findAll();
+        List<Season> list = dbService.findAll();
         if (list.size() == 0) {
             setSeason();
-            list = service.findAll();
+            list = dbService.findAll();
         } else {
             if (list.get(0).getYear().equals("")) {
                 setSeason();
-                list = service.findAll();
+                list = dbService.findAll();
             }
         }
         return list.get(0);

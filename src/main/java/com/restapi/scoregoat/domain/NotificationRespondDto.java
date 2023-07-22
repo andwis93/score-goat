@@ -12,4 +12,5 @@ import lombok.Setter;
 public class NotificationRespondDto {
     private String message;
     private String type;
+    private boolean isLoggedIn;
 }

@@ -1,6 +1,7 @@
 package com.restapi.scoregoat.service.DBService;
 
 import com.restapi.scoregoat.domain.Session;
+import com.restapi.scoregoat.domain.User;
 import com.restapi.scoregoat.repository.SessionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,5 +26,8 @@ public class SessionDBService {
 
    public void deleteAll(List<Session> sessions) {
      repository.deleteAll(sessions);
+   }
+   public boolean checkIfSessionExistsByUser(User user) {
+       return repository.existsByUser(user);
    }
 }

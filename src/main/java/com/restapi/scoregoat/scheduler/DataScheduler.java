@@ -1,9 +1,8 @@
 package com.restapi.scoregoat.scheduler;
 
+import com.restapi.scoregoat.config.DateConfig;
 import com.restapi.scoregoat.facade.ScoreGoatFacade;
-import com.restapi.scoregoat.service.ClientService.LogInClientService;
-import com.restapi.scoregoat.service.ClientService.SeasonClientService;
-import com.restapi.scoregoat.service.ClientService.SessionClientService;
+import com.restapi.scoregoat.service.ClientService.*;
 import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -11,10 +10,14 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @Component
 public class DataScheduler {
-    private SeasonClientService seasonService;
-    private LogInClientService logInService;
-    private SessionClientService sessionService;
-    private ScoreGoatFacade facade;
+    private final SeasonClientService seasonService;
+    private final LogInClientService logInService;
+    private final SessionClientService sessionService;
+    private final LogDataClientService logDataService;
+    private final RankingClientService rankingService;
+    private final MatchPredictionClientService matchPredictionService;
+    private final ScoreGoatFacade facade;
+    private final DateConfig config;
 
     @Scheduled(cron = "0 58 3 1 * ?", zone="Europe/Warsaw")
     public void reloadData() {
@@ -40,5 +43,12 @@ public class DataScheduler {
     public void graduatePredictions() {
         facade.rankPredictions();
         facade.assignRanks();
+    }
+    @Scheduled(cron = "0 30 2 10 6 ?", zone="Europe/Warsaw")
+    public void annualCleaning() {
+        logDataService.deleteAllLogs();
+        logInService.deleteUnActiveUsers(config.getUnActiveUser());
+        rankingService.deleteAll();
+        matchPredictionService.deleteAll();
     }
 }
