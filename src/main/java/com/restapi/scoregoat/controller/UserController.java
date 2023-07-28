@@ -1,9 +1,6 @@
 package com.restapi.scoregoat.controller;
 
-import com.restapi.scoregoat.domain.AccountDto;
-import com.restapi.scoregoat.domain.PasswordDto;
-import com.restapi.scoregoat.domain.UserDto;
-import com.restapi.scoregoat.domain.UserRespondDto;
+import com.restapi.scoregoat.domain.*;
 import com.restapi.scoregoat.facade.ScoreGoatFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -30,6 +27,11 @@ public class UserController {
     @PutMapping(value = "/accountchange", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserRespondDto> accountChange(@RequestBody AccountDto accountDto) {
         return ResponseEntity.ok(facade.accountChange(accountDto));
+    }
+
+    @PutMapping(value = "/passwordreset")
+    public ResponseEntity<NotificationRespondDto> resetPassword(@RequestParam String emailOrName){
+        return ResponseEntity.ok(facade.resetPassword(emailOrName));
     }
 
     @DeleteMapping(consumes = MediaType.APPLICATION_JSON_VALUE)

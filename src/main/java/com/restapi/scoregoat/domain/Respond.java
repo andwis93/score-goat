@@ -28,7 +28,9 @@ public enum Respond {
     MATCH_UPLOAD_OK_SEASON(" --For Season: "),
     PREDICTIONS_SAVE_OK("Predictions were saved successfully"),
     USER_DELETED_OK("User deleted successfully"),
-    ALL_MATCH_UPLOAD_OK("All Matches were uploaded successfully.");
+    ALL_MATCH_UPLOAD_OK("All Matches were uploaded successfully."),
+    PASSWORD_RESET_OK("Password was reset successfully. Please check your email for new password."),
+    PASSWORD_RESET_ERROR("Wasn't able to reset password.");
 
     private final String respond;
 }

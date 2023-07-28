@@ -70,11 +70,20 @@ public class Watcher {
     }
 
     @AfterReturning(value = "execution(* com.restapi.scoregoat.service.ClientService.UserClientService.changePassword(..))"
-            + "&&target(object)" , returning = "respond", argNames = "respond,object")
+            + "&&target(object)" , returning = "respond", argNames = "respond, object")
     public void logChangingPassword(UserRespondDto respond, Object object) {
         StringBuilder message = new StringBuilder("Attempt to change password for user with ID: " + respond.getId() + " with respond: "
                 + respond.getRespond() + " -- Class: " + object);
         logDataService.saveLog(new LogData(respond.getId(), null, Code.USER_PASSWORD_CHANGED.getCode(), message.toString()));
+        LOGGER.info(message.toString());
+    }
+
+    @AfterReturning(value = "execution(* com.restapi.scoregoat.service.ClientService.UserClientService.resetPassword(..))"
+            + "&&args(email) && target(object)" , returning = "respond", argNames = "respond, email, object")
+    public void logChangingPassword(NotificationRespondDto respond, String email, Object object) {
+        StringBuilder message = new StringBuilder("Attempt to reset password for: " + email + " with respond: "
+                + respond.getMessage() + " -- Class: " + object);
+        logDataService.saveLog(new LogData(null, null, Code.USER_PASSWORD_CHANGED.getCode(), message.toString()));
         LOGGER.info(message.toString());
     }
 

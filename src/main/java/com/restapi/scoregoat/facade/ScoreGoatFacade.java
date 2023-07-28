@@ -80,4 +80,8 @@ public class ScoreGoatFacade {
     public RankingDto fetchRankingDtoByUserIdAndLeagueId(Long userId, int leagueId) {
         return rankingService.fetchRankingByUserIdAndLeagueId(userId, leagueId);
     }
+
+    public NotificationRespondDto resetPassword(String email) {
+        return userService.resetPassword(email);
+    }
 }

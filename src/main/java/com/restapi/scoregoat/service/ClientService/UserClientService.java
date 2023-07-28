@@ -2,9 +2,11 @@ package com.restapi.scoregoat.service.ClientService;
 
 import com.restapi.scoregoat.domain.*;
 import com.restapi.scoregoat.manager.DurationManager;
+import com.restapi.scoregoat.manager.PasswordManager;
 import com.restapi.scoregoat.mapper.UserMapper;
 import com.restapi.scoregoat.service.DBService.LogInDBService;
 import com.restapi.scoregoat.service.DBService.UserDBService;
+import com.restapi.scoregoat.service.EmailService.EmailService;
 import com.restapi.scoregoat.validator.EmailValidator;
 import lombok.AllArgsConstructor;
 import org.jasypt.util.password.StrongPasswordEncryptor;
@@ -17,13 +19,16 @@ import java.time.LocalDateTime;
 @Service
 @EnableAspectJAutoProxy
 public class UserClientService {
+    public static final String SUBJECT = "Password Reset";
     private final UserDBService dbService;
     private final LogInDBService logInDBService;
     private final SessionClientService sessionService;
+    private final EmailService emailService;
     private final UserMapper mapper;
     private final EmailValidator validator;
     private final StrongPasswordEncryptor encryptor;
     private final DurationManager manager;
+    private final PasswordManager passwordManager;
 
     public UserRespondDto signUpUser(UserDto userDto) {
         if (userDto != null && userDto.getName() != null && userDto.getEmail() != null && userDto.getPassword() != null
@@ -160,6 +165,34 @@ public class UserClientService {
             }
         } else {
             return new UserRespondDto(Respond.FIELDS_EMPTY.getRespond(), NotificationType.ERROR.getType());
+        }
+    }
+
+    public NotificationRespondDto resetPassword(String emailOrName){
+        if (!dbService.existsByEmail(emailOrName)) {
+            if(!dbService.existsByName(emailOrName)) {
+                return new NotificationRespondDto(Respond.USER_NOT_EXIST.getRespond(), NotificationType.ERROR.getType(), false);
+            } else {
+                User user = dbService.findByName(emailOrName);
+                return resetPasswordExecution(user);
+            }
+        } else {
+            User user = dbService.findByEmail(emailOrName);
+            return resetPasswordExecution(user);
+        }
+    }
+
+    private NotificationRespondDto resetPasswordExecution(User user) {
+        try {
+            String newPassword = passwordManager.generateRandomString(20);
+            user.setPassword(encryptor.encryptPassword(newPassword));
+            dbService.save(user);
+            String msg = SUBJECT + System.getProperty("line.separator") + "User name: " + user.getName() +
+                    System.getProperty("line.separator") + "New Password: " + newPassword;
+            emailService.send(new Mail(user.getEmail(), SUBJECT, msg, null));
+            return new NotificationRespondDto(Respond.PASSWORD_RESET_OK.getRespond(), NotificationType.SUCCESS.getType(), false);
+        } catch (Exception ex) {
+            return new NotificationRespondDto(Respond.PASSWORD_RESET_ERROR.getRespond(), NotificationType.ERROR.getType(), false);
         }
     }
 }
