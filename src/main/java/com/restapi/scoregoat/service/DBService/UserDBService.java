@@ -32,7 +32,7 @@ public class UserDBService {
     }
 
     public User findByEmail(String email) {
-        return repository.findByName(email).orElse(null);
+        return repository.findByEmail(email).orElse(null);
     }
 
     public User save(User user) {

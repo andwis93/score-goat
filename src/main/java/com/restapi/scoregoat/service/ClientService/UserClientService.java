@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @Service
 @EnableAspectJAutoProxy
 public class UserClientService {
-    public static final String SUBJECT = "Password Reset";
+    public static final String SUBJECT = "Password reset";
     private final UserDBService dbService;
     private final LogInDBService logInDBService;
     private final SessionClientService sessionService;
@@ -187,9 +187,7 @@ public class UserClientService {
             String newPassword = passwordManager.generateRandomString(20);
             user.setPassword(encryptor.encryptPassword(newPassword));
             dbService.save(user);
-            String msg = SUBJECT + System.getProperty("line.separator") + "User name: " + user.getName() +
-                    System.getProperty("line.separator") + "New Password: " + newPassword;
-            emailService.send(new Mail(user.getEmail(), SUBJECT, msg, null));
+            emailService.send(new Mail(user.getEmail(), SUBJECT, user.getName(), newPassword, null));
             return new NotificationRespondDto(Respond.PASSWORD_RESET_OK.getRespond(), NotificationType.SUCCESS.getType(), false);
         } catch (Exception ex) {
             return new NotificationRespondDto(Respond.PASSWORD_RESET_ERROR.getRespond(), NotificationType.ERROR.getType(), false);

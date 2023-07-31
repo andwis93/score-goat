@@ -8,13 +8,15 @@ import lombok.Getter;
 public class Mail {
     private final String mailTo;
     private final String subject;
-    private final String message;
+    private final String user;
+    private final String newPassword;
     private final String toCcs;
 
     public static class MailBuilder {
         private String mailTo;
         private String subject;
-        private String message;
+        private String user;
+        private String newPassword;
         private String toCcs;
 
         public MailBuilder mailTo(String mailTo) {
@@ -27,8 +29,12 @@ public class Mail {
             return this;
         }
 
-        public MailBuilder message(String message) {
-            this.message = message;
+        public MailBuilder user(String user) {
+            this.user = user;
+            return this;
+        }
+        public MailBuilder newPassword(String newPassword) {
+            this.newPassword = newPassword;
             return this;
         }
 
@@ -43,7 +49,7 @@ public class Mail {
 
         public Mail build() {
 
-            return new Mail(mailTo, subject, message, toCcs);
+            return new Mail(mailTo, subject, user, newPassword, toCcs);
         }
     }
 }
