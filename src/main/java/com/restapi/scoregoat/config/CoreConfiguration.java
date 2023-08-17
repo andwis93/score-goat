@@ -11,6 +11,10 @@ public class CoreConfiguration {
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
+
     @Bean
-    public StrongPasswordEncryptor encryptor(){return new StrongPasswordEncryptor();}
+    public StrongPasswordEncryptor encryptor() {
+        return new StrongPasswordEncryptor();
+    }
+
 }

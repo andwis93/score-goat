@@ -32,4 +32,15 @@ public class UserRespondDto {
                 notificationType
                 );
     }
+
+    public UserRespondDto setShortRespond(String name, String email, String respond, String notificationType) {
+        return new UserRespondDto(
+               null,
+                name,
+                email,
+                false,
+                respond,
+                notificationType
+        );
+    }
 }

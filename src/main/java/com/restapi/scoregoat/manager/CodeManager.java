@@ -10,7 +10,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @Service
-public class PasswordManager {
+public class CodeManager {
     private static final String CHAR ="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-$!@#%&";
 
     private static final SecureRandom random = new SecureRandom();

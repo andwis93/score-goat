@@ -2,7 +2,7 @@ package com.restapi.scoregoat.service.ClientService;
 
 import com.restapi.scoregoat.domain.*;
 import com.restapi.scoregoat.manager.DurationManager;
-import com.restapi.scoregoat.manager.PasswordManager;
+import com.restapi.scoregoat.manager.CodeManager;
 import com.restapi.scoregoat.mapper.UserMapper;
 import com.restapi.scoregoat.service.DBService.LogInDBService;
 import com.restapi.scoregoat.service.DBService.UserDBService;
@@ -19,7 +19,8 @@ import java.time.LocalDateTime;
 @Service
 @EnableAspectJAutoProxy
 public class UserClientService {
-    public static final String SUBJECT = "Password reset";
+    public static final String SUBJECT_RESET = "Password reset";
+    public static final String SUBJECT_VERIFY = "Email verification";
     private final UserDBService dbService;
     private final LogInDBService logInDBService;
     private final SessionClientService sessionService;
@@ -28,7 +29,20 @@ public class UserClientService {
     private final EmailValidator validator;
     private final StrongPasswordEncryptor encryptor;
     private final DurationManager manager;
-    private final PasswordManager passwordManager;
+    private final CodeManager codeManager;
+
+    public UserRespondDto verifyUser(String userName, String email) {
+        if (!dbService.existsByName(userName)) {
+            if (!dbService.existsByEmail(email)) {
+                return new UserRespondDto().setShortRespond(userName, email, Respond.USER_CREATED_OK.getRespond(),
+                        NotificationType.SUCCESS.getType());
+            } else {
+                return new UserRespondDto(Respond.EMAIL_EXISTS.getRespond(), NotificationType.ERROR.getType());
+            }
+        } else {
+            return new UserRespondDto(Respond.USERNAME_EXISTS.getRespond(), NotificationType.ERROR.getType());
+        }
+    }
 
     public UserRespondDto signUpUser(UserDto userDto) {
         if (userDto != null && userDto.getName() != null && userDto.getEmail() != null && userDto.getPassword() != null
@@ -184,13 +198,19 @@ public class UserClientService {
 
     private NotificationRespondDto resetPasswordExecution(User user) {
         try {
-            String newPassword = passwordManager.generateRandomString(20);
+            String newPassword = codeManager.generateRandomString(20);
             user.setPassword(encryptor.encryptPassword(newPassword));
             dbService.save(user);
-            emailService.send(new Mail(user.getEmail(), SUBJECT, user.getName(), newPassword, null));
+            emailService.send(new Mail(user.getEmail(), SUBJECT_RESET, user.getName(), newPassword, null), EmailTypes.RESET);
             return new NotificationRespondDto(Respond.PASSWORD_RESET_OK.getRespond(), NotificationType.SUCCESS.getType(), false);
         } catch (Exception ex) {
             return new NotificationRespondDto(Respond.PASSWORD_RESET_ERROR.getRespond(), NotificationType.ERROR.getType(), false);
         }
+    }
+
+    public String generateVerificationCode(String email) {
+        String code = codeManager.generateRandomString(7);
+        emailService.send(new Mail(email, SUBJECT_VERIFY, "", code, null), EmailTypes.VERIFY);
+        return code;
     }
 }

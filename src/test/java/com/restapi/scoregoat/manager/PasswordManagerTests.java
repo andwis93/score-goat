@@ -9,13 +9,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 public class PasswordManagerTests {
     @Autowired
-    private PasswordManager passwordManager;
+    private CodeManager codeManager;
 
     @Test
     public void shouldGeneratePassword() {
         //Given
         //When
-        String password = passwordManager.generateRandomString(10);
+        String password = codeManager.generateRandomString(10);
 
         //Then
         assertEquals(10, password.length());

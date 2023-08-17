@@ -22,40 +22,34 @@ public class ScoreGoatFacade {
     public Season fetchSeason(){
         return seasonService.fetchSeason();
     }
-
     public Season setSeason(){
         return seasonService.setSeason();
     }
-
     public UserRespondDto createUser(UserDto userDto) {
         return userService.signUpUser(userDto);
     }
-
+    public UserRespondDto verifyUser(String userName, String email) {
+        return userService.verifyUser(userName, email);
+    }
     public UserRespondDto tryLogIn(UserDto userDto) {
         return logInService.logInAttempt(userDto);
     }
-
     public UserRespondDto changePassword(PasswordDto passwordDto) {
         return userService.changePassword(passwordDto);
     }
-
     public UserRespondDto accountChange(AccountDto accountDto) {
         return userService.accountChange(accountDto);
     }
-
     public void uploadMatchesFromLeagueConfigList(){
         matchService.uploadMatchesFromLeagueConfigList();
     }
-
     public List<Match> findByLeagueIdOrderByDate(long userId, int leagueId) {
         return matchService.eliminateSelected(userId, leagueId);
     }
-
     public NotificationRespondDto saveUserPredictions(PredictionDto predictionDto) {
         predictionDto.setMatchSelections(manager.removeEmptyPredictions(predictionDto.getMatchSelections()));
         return predictionService.savePredictions(predictionDto);
     }
-
     public List<UserPredictionDto> getUserMatchPredictions(Long userId, int leagueId) {
         return predictionService.getMatchPredictions(userId, leagueId);
     }
@@ -83,5 +77,9 @@ public class ScoreGoatFacade {
 
     public NotificationRespondDto resetPassword(String email) {
         return userService.resetPassword(email);
+    }
+
+    public String generateVerificationCode(String email) {
+        return userService.generateVerificationCode(email);
     }
 }

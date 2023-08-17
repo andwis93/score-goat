@@ -19,6 +19,11 @@ public class UserController {
         return ResponseEntity.ok(facade.createUser(userDto));
     }
 
+    @GetMapping(value = "/verify")
+    public ResponseEntity<UserRespondDto> verifyUser(@RequestParam String userName, @RequestParam String email) {
+        return ResponseEntity.ok(facade.verifyUser(userName, email));
+    }
+
     @PutMapping(value = "/passwordchange" ,consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserRespondDto> changePassword(@RequestBody PasswordDto passwordDto){
         return ResponseEntity.ok(facade.changePassword(passwordDto));
@@ -37,5 +42,10 @@ public class UserController {
     @DeleteMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserRespondDto> deleteUser(@RequestBody UserDto userDto) {
         return ResponseEntity.ok(facade.deleteUser(userDto));
+    }
+
+    @GetMapping
+    public ResponseEntity<String> provideVerificationCode(@RequestParam String email){
+        return ResponseEntity.ok(facade.generateVerificationCode(email));
     }
 }

@@ -9,7 +9,7 @@ public class Mail {
     private final String mailTo;
     private final String subject;
     private final String user;
-    private final String newPassword;
+    private final String code;
     private final String toCcs;
 
     public static class MailBuilder {
