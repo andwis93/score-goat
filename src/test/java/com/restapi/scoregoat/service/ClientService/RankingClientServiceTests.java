@@ -28,6 +28,8 @@ public class RankingClientServiceTests {
     @Mock
     private UserDBService userService;
     @Mock
+    private ActiveClientService activeService;
+    @Mock
     private LeaguesListConfig config;
     @Mock
     private SortManager sortManager;
@@ -101,6 +103,7 @@ public class RankingClientServiceTests {
         when(rankManager.setRankingNorms(any())).thenReturn(norm);
         when(rankManager.setRankingStatus(any(),any())).thenCallRealMethod();
         when(sortManager.sortListByPoints(any())).thenCallRealMethod();
+
 
         //When
         service.executeRankAssign();

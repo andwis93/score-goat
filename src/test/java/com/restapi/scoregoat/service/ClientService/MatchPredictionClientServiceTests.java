@@ -35,6 +35,8 @@ public class MatchPredictionClientServiceTests {
     @Mock
     private RankingClientService rankingService;
     @Mock
+    private ActiveClientService activeService;
+    @Mock
     private SessionClientService sessionService;
 
     @Test

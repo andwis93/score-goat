@@ -25,6 +25,7 @@ public class MatchPredictionClientService {
     private final LogDataDBService logDataService;
     private final RankingClientService rankingService;
     private final SessionClientService sessionService;
+    private final ActiveClientService activeService;
     private final MatchManager manager;
     private final SortManager sortManager;
 
@@ -106,12 +107,19 @@ public class MatchPredictionClientService {
 
     public long  assignPoints() {
         List<MatchPrediction> predictions = dbService.findAllByPoints(Points.NEUTRAL.getPoints());
+        Set<Integer> leagues = new HashSet<>();
         long count = 0;
-        for(MatchPrediction thePrediction:predictions) {
-            rankingExecution(thePrediction);
-            count++;
+        if (predictions.size() > 0) {
+            for (MatchPrediction thePrediction : predictions) {
+                rankingExecution(thePrediction);
+                count++;
+                leagues.add(thePrediction.getLeagueId());
+            }
+            for (Integer league: leagues) {
+                activeService.setActive(true, league);
+            }
+            dbService.saveAll(predictions);
         }
-        dbService.saveAll(predictions);
         return count;
     }
 

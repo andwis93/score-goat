@@ -18,6 +18,7 @@ import java.util.Map;
 @EnableAspectJAutoProxy
 public class RankingClientService {
     private final LeaguesListConfig config;
+    private final ActiveClientService activeService;
     private final RankingDBService dbService;
     private final UserDBService userService;
     private final SortManager manager;
@@ -46,7 +47,7 @@ public class RankingClientService {
         leagueList.keySet().forEach(leagueId -> {
             List<Ranking> rankingList = manager.sortListByPoints(dbService.findByLeagueId(leagueId));
             if (rankingList.size() != 0) {
-                rankAssign(rankingList);
+                rankAssign(rankingList, leagueId);
                 dbService.saveAll(rankingList);
             }
         });
@@ -57,7 +58,7 @@ public class RankingClientService {
         return mapper.mapRankingToRankingDtoList(rankings);
     }
 
-    private void rankAssign(List<Ranking> rankingList) {
+    private void rankAssign(List<Ranking> rankingList, int leagueId) {
         int rank = 1;
         rankingList.get(0).setRank(rank);
         for(int i = 1; i < rankingList.size(); i++) {
@@ -66,7 +67,10 @@ public class RankingClientService {
             }
             rankingList.get(i).setRank(rank);
         }
-        rankingList.stream().filter(r -> r.getRank() == 1).forEach(Ranking::addToCounter);
+        if (activeService.fetchActiveStatus(leagueId)) {
+            rankingList.stream().filter(r -> r.getRank() == 1).forEach(Ranking::addToCounter);
+            activeService.setActive(false, leagueId);
+        }
         statusAssign(rankingList);
     }
 
