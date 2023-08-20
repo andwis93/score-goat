@@ -18,4 +18,4 @@ http://localhost:8080/ScoreGoat-documentation/
 
 
 API used with this application is free up to 100 Requests/day. This is why this application download necessary information 
-to MySQL database and refer to MySQL database during application operations.
+to MySQL database and refers to MySQL database during application operations.
