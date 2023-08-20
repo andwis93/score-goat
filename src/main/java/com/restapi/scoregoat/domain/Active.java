@@ -25,4 +25,9 @@ public class Active {
     @NotNull
     @Column(name = "LEAGUE_ID")
     private Integer leagueId;
+
+    public Active(@NotNull Integer leagueId) {
+        this.active = true;
+        this.leagueId = leagueId;
+    }
 }

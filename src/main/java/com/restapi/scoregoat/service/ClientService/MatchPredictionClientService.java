@@ -106,7 +106,8 @@ public class MatchPredictionClientService {
     }
 
     public long  assignPoints() {
-        List<MatchPrediction> predictions = dbService.findAllByPoints(Points.NEUTRAL.getPoints());
+        List<MatchPrediction> predictions = dbService.findAllByPoints(Points.NEUTRAL.getPoints()).stream().
+                filter(prediction -> !prediction.getResult().equals(Result.UNSET.getResult())).toList();
         Set<Integer> leagues = new HashSet<>();
         long count = 0;
         if (predictions.size() > 0) {
