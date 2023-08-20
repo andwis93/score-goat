@@ -15,3 +15,7 @@ https://github.com/andwis93/ScoreGoat-Vaadin
 For API documentation please run application and see:
 http://localhost:8080/ScoreGoat-documentation/
 (Please replace "localhost" if different server is used)
+
+
+API used with this application is free up to 100 Requests/day. This is why this application download necessary information 
+to MySQL database and refer to MySQL database during application operations.

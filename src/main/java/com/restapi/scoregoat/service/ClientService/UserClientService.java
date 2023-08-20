@@ -182,16 +182,11 @@ public class UserClientService {
         }
     }
 
-    public NotificationRespondDto resetPassword(String emailOrName){
-        if (!dbService.existsByEmail(emailOrName)) {
-            if(!dbService.existsByName(emailOrName)) {
-                return new NotificationRespondDto(Respond.USER_NOT_EXIST.getRespond(), NotificationType.ERROR.getType(), false);
-            } else {
-                User user = dbService.findByName(emailOrName);
-                return resetPasswordExecution(user);
-            }
+    public NotificationRespondDto resetPassword(String email){
+        if (!dbService.existsByEmail(email)) {
+            return new NotificationRespondDto(Respond.USER_NOT_EXIST.getRespond(), NotificationType.ERROR.getType(), false);
         } else {
-            User user = dbService.findByEmail(emailOrName);
+            User user = dbService.findByEmail(email);
             return resetPasswordExecution(user);
         }
     }
